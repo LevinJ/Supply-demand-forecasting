@@ -2,6 +2,9 @@ from datetime import datetime
 from datetime import timedelta
 
 class Timeslot:
+    """Utility class for converting time slot ID
+    one day is uniformly divided into 144 time slots t1,t2, t144, each 10 minutes long
+    """
     def __init__(self):
         return
     @staticmethod

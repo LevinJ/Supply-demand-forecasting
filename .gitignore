@@ -2,3 +2,4 @@ data/
 .project
 .pydevproject
 exploredata/*.csv
+*.pyc
