@@ -26,10 +26,6 @@ class visualizeOrder(ExploreOrder):
         ax1.bar(res.index, res.values)
         res = self.df.groupby('time_slotid')['missed_request'].sum()
         ax2.bar(res.index.map(lambda x: x[11:]), res.values)
-#         res = self.df.groupby('start_district_id')['missed_request'].sum()
-#         res = self.df.groupby('time_slotid')['missed_request'].sum()
-#         plt.bar(res.index.map(lambda x: x[11:]), res.values)
-#         res.plot()
         plt.show()
         return
     def run(self):
