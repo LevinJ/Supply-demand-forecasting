@@ -15,17 +15,18 @@ class ExploreOrder:
         df['start_district_id'] = df['start_district_hash'].map(singletonDistricId.convertToId)
         df['time_slotid'] = df['Time'].map(singletonTimeslot.convertToSlot)
 #         df['dest_district_id'] = df['dest_district_hash'].map(singletonDistricId.convertToId)
-#         df.to_csv(filename + '.csv')
+        df.to_csv(filename + '.csv')
         print df.describe()
         return df, filename
     def saveGapCSV(self, df, filename):
         items = []
-        grouped  = df.groupby(['time_slotid','start_district_id'])
+        grouped  = df.groupby(['start_district_id','time_slotid'])
         for name, group in grouped:
+            timeslot = singletonTimeslot.convertToStr(name[1])
             missedReqs = group['driver_id'].isnull().sum()
             allReqs = group.shape[0]
-            items.append(list(name) + [missedReqs] + [allReqs])
-        resDf = pd.DataFrame(items, columns=['time_slotid','start_district_id', 'missed_request', 'all_requests'])
+            items.append(list(name) + [timeslot]+[missedReqs] + [allReqs])
+        resDf = pd.DataFrame(items, columns=['start_district_id','time_slotid','time_slot','missed_request', 'all_requests'])
         resDf.to_csv(filename + '_gap.csv')
         print resDf.describe()
         return
