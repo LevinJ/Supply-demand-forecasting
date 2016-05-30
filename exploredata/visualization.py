@@ -10,7 +10,7 @@ sns.set(color_codes=True)
 class visualizeOrder(ExploreOrder):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.df = pd.read_csv('../data/citydata/season_1/training_data/order_data/order_data_2016-01-03_gap.csv')
+        self.df = pd.read_csv('../data/citydata/season_1/training_data/order_data/temp/allorders.csv')
         print self.df.describe()
         return
     def drawOrderDistribution(self):
