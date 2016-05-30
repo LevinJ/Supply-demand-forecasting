@@ -7,7 +7,7 @@ import math
 class GenerateResultCsv:
     def __init__(self):
         return
-    def generateTestDate(self):
+    def generateTestDate_0(self):
         startDate = datetime.strptime('2016-01-01', '%Y-%m-%d')
         
         res = []
@@ -16,14 +16,29 @@ class GenerateResultCsv:
             item = (startDate + deltatime).date()
             res.append(str(item))
         return res
-    def generateSlotSet_0(self):
+    def generateTestDate_1(self):
+        startDate = datetime.strptime('2016-01-22', '%Y-%m-%d')
+        
         res = []
-        testDates = self.generateTestDate()
-        slots = [46,58,70,82,94,106,118,130,142]
+        for i in range(5):
+            deltatime = timedelta(days = 2*i)
+            item = (startDate + deltatime).date()
+            res.append(str(item))
+        return res
+    def generateSlotSet(self, testDates, slots):
+        res = []
         for testDate in testDates:
             for slot in slots:
                 res.append(testDate + '-'+ str(slot))
         return res
+    def generateSlotSet_0(self):
+        testDates = self.generateTestDate_0()
+        slots = [46,58,70,82,94,106,118,130,142]
+        return self.generateSlotSet(testDates, slots)
+    def generateSlotSet_1(self):
+        testDates = self.generateTestDate_1()
+        slots = [46,58,70,82,94,106,118,130,142]
+        return self.generateSlotSet(testDates, slots)
     def generateTestDistrict(self):
         return [i+ 1 for i in range(66)]
     def generatePrediction_0(self):
@@ -73,15 +88,12 @@ class Evaluate(GenerateResultCsv):
     def calFinalResult(self, testSetNum):
         self.loadResultFiles(testSetNum)
         res = []
-        for key, value in self.predictonDict.iteritems():
-            if not key in self.actualDict:
-                print "record {} is not in actual file".format(key)
-                continue
-            actual = self.actualDict[key]
+        for key, value in self.actualDict.iteritems():
+            actual = value
             if actual == 0:
                 print "record {} is 0, not included in final calculation".format(key)
                 continue
-            prediction = value
+            prediction = self.predictonDict[key]
             temp = (actual - prediction)/float(actual)
             if math.isnan(temp):
                 print temp

@@ -14,7 +14,7 @@ class Statistics(Evaluate):
             item = date + [str(slot -i -1)]
             res.append("-".join(item))
         return res
-    def generatePrediction(self, allOderFilePath, testSlots):
+    def generatePrediction(self, allOderFilePath, testSlots,resultFileName):
         res = []
         df = pd.read_csv(allOderFilePath)
         testDistricts = self.generateTestDistrict()
@@ -31,18 +31,24 @@ class Statistics(Evaluate):
                     item = item.mean()
                 res.append((district, timeslot, item))
         df = pd.DataFrame(res, columns=['start_district_id', 'time_slotid', 'missed_request'])
-        self.saveResultCsv(df, 'prediction_0.csv')
+        self.saveResultCsv(df, resultFileName)
         return
         
     def generatePrediction_0(self):
         allOderFilePath = '../data/citydata/season_1/training_data/order_data/temp/allorders.csv'
         testSlots = self.generateSlotSet_0()
-        self.generatePrediction(allOderFilePath, testSlots)
+        self.generatePrediction(allOderFilePath, testSlots, 'prediction_0.csv')
+        return
+    def generatePrediction_1(self):
+        allOderFilePath = '../data/citydata/season_1/test_set_1/order_data/temp/allorders.csv'
+        testSlots = self.generateSlotSet_1()
+        self.generatePrediction(allOderFilePath, testSlots, 'prediction_1.csv')
         return
     def run(self):
         assert  ['2016-01-22-45','2016-01-22-44','2016-01-22-43'] == self.getPrevSlots('2016-01-22-46')
-        self.generatePrediction_0()
-        self.calFinalResult(0)
+        self.generatePrediction_1()
+#         self.generatePrediction_0()
+#         self.calFinalResult(0)
         return
 if __name__ == "__main__":   
     obj= Statistics()
