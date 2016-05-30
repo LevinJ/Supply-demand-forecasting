@@ -31,20 +31,24 @@ class GenerateResultCsv:
         allOderFilePath = '../data/citydata/season_1/training_data/order_data/temp/allorders.csv'
         df = pd.read_csv(allOderFilePath)
         df = df.loc[df['time_slotid'].isin(testSlots)]
+        self.saveResultCsv(df, 'prediction_0.csv')
+        #map 2016-01-22-1 to 2016-01-22-001
+#         df['timeslotrank'] = df['time_slotid'].map(lambda x: "-".join(x.split('-')[:3] + [x.split('-')[-1].zfill(3)]))
+#         df = df.sort_values(by = ['timeslotrank','start_district_id'])
+#         df.to_csv('prediction_0.csv', columns=['start_district_id', 'time_slotid', 'missed_request'], header=None, index=None)
+        return
+    def saveResultCsv(self, df, filename):
         #map 2016-01-22-1 to 2016-01-22-001
         df['timeslotrank'] = df['time_slotid'].map(lambda x: "-".join(x.split('-')[:3] + [x.split('-')[-1].zfill(3)]))
         df = df.sort_values(by = ['timeslotrank','start_district_id'])
-        df.to_csv('prediction_0.csv', columns=['start_district_id', 'time_slotid', 'missed_request'], header=None, index=None)
+        df.to_csv(filename, columns=['start_district_id', 'time_slotid', 'missed_request'], header=None, index=None)
         return
     def generateActual_0(self):
         testSlots = self.generateSlotSet_0()
         allOderFilePath = '../data/citydata/season_1/training_data/order_data/temp/allorders.csv'
         df = pd.read_csv(allOderFilePath)
         df = df.loc[df['time_slotid'].isin(testSlots)]
-        #map 2016-01-22-1 to 2016-01-22-001
-        df['timeslotrank'] = df['time_slotid'].map(lambda x: "-".join(x.split('-')[:3] + [x.split('-')[-1].zfill(3)]))
-        df = df.sort_values(by = ['timeslotrank','start_district_id'])
-        df.to_csv('actual_0.csv', columns=['start_district_id', 'time_slotid', 'missed_request'], header=None, index=None)
+        self.saveResultCsv(df, 'actual_0.csv')
         return
     
     
