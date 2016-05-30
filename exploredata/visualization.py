@@ -3,14 +3,20 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(color_codes=True)
-
+import os.path
 
 
 
 class visualizeOrder(ExploreOrder):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.df = pd.read_csv('../data/citydata/season_1/training_data/order_data/temp/allorders.csv')
+        self.orderFileDir = '../data/citydata/season_1/test_set_1/order_data/'
+#         self.orderFileDir = '../data/citydata/season_1/training_data/order_data/'
+        allOderFilePath = self.orderFileDir + 'temp/allorders.csv'
+        if not os.path.exists(allOderFilePath):
+            self.loadAllOrders()
+            self.combineAllOrders()
+        self.df = pd.read_csv(allOderFilePath)
         print self.df.describe()
         return
     def drawOrderDistribution(self):

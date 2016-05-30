@@ -8,11 +8,11 @@ class Timeslot:
     def __init__(self):
         return
     def convertToSlot(self,strTime):
-        date_object = datetime.strptime(strTime, '%Y-%m-%d %H:%M:%S')
-        hour = date_object.hour
-        minute = date_object.minute
+#         date_object = datetime.strptime(strTime, '%Y-%m-%d %H:%M:%S')
+        hour = int(strTime[11:13])
+        minute = int(strTime[14:16])
         timeslot = hour * 6 + (minute/10) + 1
-        return str(date_object.date()) + "-"+ str(timeslot)
+        return strTime[:10] + "-"+ str(timeslot)
     def convertToStr(self, timeslotID):
         timeslotID = int(timeslotID[11:])
         initialtime = datetime.strptime('2016-01-03 00:00:00', '%Y-%m-%d %H:%M:%S')
