@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from datetime import timedelta
+import math
 
 class GenerateResultCsv:
     def __init__(self):
@@ -15,7 +16,7 @@ class GenerateResultCsv:
             item = (startDate + deltatime).date()
             res.append(str(item))
         return res
-    def generateTestSlots(self):
+    def generateSlotSet_0(self):
         res = []
         testDates = self.generateTestDate()
         slots = [46,58,70,82,94,106,118,130,142]
@@ -26,7 +27,7 @@ class GenerateResultCsv:
     def generateTestDistrict(self):
         return [i+ 1 for i in range(66)]
     def generatePrediction_0(self):
-        testSlots = self.generateTestSlots()
+        testSlots = self.generateSlotSet_0()
         allOderFilePath = '../data/citydata/season_1/training_data/order_data/temp/allorders.csv'
         df = pd.read_csv(allOderFilePath)
         df = df.loc[df['time_slotid'].isin(testSlots)]
@@ -36,7 +37,7 @@ class GenerateResultCsv:
         df.to_csv('prediction_0.csv', columns=['start_district_id', 'time_slotid', 'missed_request'], header=None, index=None)
         return
     def generateActual_0(self):
-        testSlots = self.generateTestSlots()
+        testSlots = self.generateSlotSet_0()
         allOderFilePath = '../data/citydata/season_1/training_data/order_data/temp/allorders.csv'
         df = pd.read_csv(allOderFilePath)
         df = df.loc[df['time_slotid'].isin(testSlots)]
@@ -69,18 +70,26 @@ class Evaluate(GenerateResultCsv):
         self.loadResultFiles(testSetNum)
         res = []
         for key, value in self.predictonDict.iteritems():
+            if not key in self.actualDict:
+                print "record {} is not in actual file".format(key)
+                continue
             actual = self.actualDict[key]
             if actual == 0:
+                print "record {} is 0, not included in final calculation".format(key)
                 continue
             prediction = value
             temp = (actual - prediction)/float(actual)
+            if math.isnan(temp):
+                print temp
             res.append(abs(temp))
-        print "final result: {}".format(np.mean(res))
+        res = np.array(res)
+        pd.DataFrame(res).to_csv('result.csv')
+        print "final result: {}".format(res.mean())
         return np.mean(res)
     
     def run(self):
-#         self.generateActual_0()
-#         self.generatePrediction_0()
+        self.generateActual_0()
+        self.generatePrediction_0()
         self.calFinalResult(0)
         return
     

@@ -4,4 +4,5 @@ data/
 exploredata/*.csv
 evaluation/*.csv
 evaluation/read_me_1.txt
+implement/*.csv
 *.pyc
