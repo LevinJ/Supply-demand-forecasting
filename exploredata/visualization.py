@@ -13,9 +13,6 @@ class visualizeOrder(ExploreOrder):
         self.orderFileDir = '../data/citydata/season_1/test_set_1/order_data/'
 #         self.orderFileDir = '../data/citydata/season_1/training_data/order_data/'
         allOderFilePath = self.orderFileDir + 'temp/allorders.csv'
-        if not os.path.exists(allOderFilePath):
-            self.loadAllOrders()
-            self.combineAllOrders()
         self.df = pd.read_csv(allOderFilePath)
         print self.df.describe()
         return

@@ -13,21 +13,21 @@ class ExploreOrder:
         self.orderFileDir = '../data/citydata/season_1/training_data/order_data/'
         return
     
-    def loadAllOrders(self):
+    def saveAllGapCsv(self):
         filePaths = self.getAllFilePaths(self.orderFileDir)
         for filename in filePaths:
-            res = self.loadorder(filename)
+            res = self.saveOrderCsv(filename)
             self.saveGapCSV(*res)
         return
-    def combineAllOrders(self):
+    def combineAllGapCsv(self):
         print "Combin all orders"
         resDf = pd.DataFrame()
         filePaths = self.getAllFilePaths(self.orderFileDir + 'temp/')
         for filename in filePaths:
             if not filename.endswith('_gap.csv'):
                 continue
-            df = pd.read_csv(filename)
-            resDf = pd.concat([resDf, df])
+            df = pd.read_csv(filename, index_col=0)
+            resDf = pd.concat([resDf, df], ignore_index = True)
         resDf.to_csv(self.orderFileDir + 'temp/'+ 'allorders.csv')
         print "Overall order statistics: \n{}".format(resDf.describe())
         return
@@ -39,7 +39,7 @@ class ExploreOrder:
             f.extend(filenames)
             break
         return f
-    def loadorder(self, filename):
+    def saveOrderCsv(self, filename):
         print("loading file {}".format(filename))
         df = pd.read_csv(filename, delimiter='\t', header=None, names =['order_id','driver_id','passenger_id', 'start_district_hash','dest_district_hash','Price','Time'])
         df['start_district_id'] = df['start_district_hash'].map(singletonDistricId.convertToId)
@@ -61,9 +61,9 @@ class ExploreOrder:
         print resDf.describe()
         return
     def run(self):
-        self.combineAllOrders()
-#         self.loadAllOrders()
-#         res = self.loadorder('../data/citydata/season_1/training_data/order_data/order_data_2016-01-03')
+        self.combineAllGapCsv()
+#         self.saveAllGapCsv()
+#         res = self.saveOrderCsv('../data/citydata/season_1/training_data/order_data/order_data_2016-01-03')
 #         self.saveGapCSV(*res)
         return
 
