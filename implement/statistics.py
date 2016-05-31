@@ -1,6 +1,6 @@
 from  evaluation.evaluate import Evaluate
 import pandas as pd
-import math
+from utility.datafilepath import g_singletonDataFilePath
 
 class Statistics(Evaluate):
     def __init__(self):
@@ -22,7 +22,7 @@ class Statistics(Evaluate):
             for district in testDistricts:
                 prevSlots = self.getPrevSlots(timeslot)
                 sel = df['time_slotid'].isin(prevSlots) & (df['start_district_id'] == district)
-                item = df[sel]['missed_request']    
+                item = df[sel]['gap']    
                 assert item.shape[0] <= 3, item.shape[0]
                 if item.empty:
                     # no previous records found, assume zero
@@ -30,25 +30,23 @@ class Statistics(Evaluate):
                 else:
                     item = item.mean()
                 res.append((district, timeslot, item))
-        df = pd.DataFrame(res, columns=['start_district_id', 'time_slotid', 'missed_request'])
+        df = pd.DataFrame(res, columns=['start_district_id', 'time_slotid', 'gap'])
         self.saveResultCsv(df, resultFileName)
         return
         
     def generatePrediction_0(self):
-        allOderFilePath = '../data/citydata/season_1/training_data/order_data/temp/allorders.csv'
         testSlots = self.generateSlotSet_0()
-        self.generatePrediction(allOderFilePath, testSlots, 'prediction_0.csv')
+        self.generatePrediction(g_singletonDataFilePath.getGapCsv_Train(), testSlots, 'prediction_0.csv')
         return
     def generatePrediction_1(self):
-        allOderFilePath = '../data/citydata/season_1/test_set_1/order_data/temp/allorders.csv'
         testSlots = self.generateSlotSet_1()
-        self.generatePrediction(allOderFilePath, testSlots, 'prediction_1.csv')
+        self.generatePrediction(g_singletonDataFilePath.getGapCsv_Test1(), testSlots, 'prediction_1.csv')
         return
     def run(self):
         assert  ['2016-01-22-45','2016-01-22-44','2016-01-22-43'] == self.getPrevSlots('2016-01-22-46')
         self.generatePrediction_1()
-#         self.generatePrediction_0()
-#         self.calFinalResult(0)
+        self.generatePrediction_0()
+        self.calFinalResult(0)
         return
 if __name__ == "__main__":   
     obj= Statistics()

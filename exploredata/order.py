@@ -3,24 +3,26 @@ from  districtid import singletonDistricId
 from timeslot import singletonTimeslot
 from os import walk
 import os.path
-import pandas as pd
+from utility.datafilepath import g_singletonDataFilePath
 
 
 
 
 class ExploreOrder:
     def __init__(self):
-        self.orderFileDir = '../data/citydata/season_1/training_data/order_data/'
+#         self.orderFileDir = g_singletonDataFilePath.getOrderDir_Train()# for train data
+        self.orderFileDir = g_singletonDataFilePath.getOrderDir_Test1() # for test set1
         return
     
     def saveAllGapCsv(self):
         filePaths = self.getAllFilePaths(self.orderFileDir)
         for filename in filePaths:
+            print "save gap csv for :{}".format(filename)
             res = self.saveOrderCsv(filename)
             self.saveGapCSV(*res)
         return
     def combineAllGapCsv(self):
-        print "Combin all orders"
+        print "Combin all gaps"
         resDf = pd.DataFrame()
         filePaths = self.getAllFilePaths(self.orderFileDir + 'temp/')
         for filename in filePaths:
@@ -28,8 +30,8 @@ class ExploreOrder:
                 continue
             df = pd.read_csv(filename, index_col=0)
             resDf = pd.concat([resDf, df], ignore_index = True)
-        resDf.to_csv(self.orderFileDir + 'temp/'+ 'allorders.csv')
-        print "Overall order statistics: \n{}".format(resDf.describe())
+        resDf.to_csv(self.orderFileDir + 'temp/'+ 'gap.csv')
+        print "Overall gap statistics: \n{}".format(resDf.describe())
         return
     def getAllFilePaths(self, rootpath):
         f = []
@@ -56,13 +58,14 @@ class ExploreOrder:
             missedReqs = group['driver_id'].isnull().sum()
             allReqs = group.shape[0]
             items.append(list(name) + [timeslot]+[missedReqs] + [allReqs])
-        resDf = pd.DataFrame(items, columns=['start_district_id','time_slotid','time_slot','missed_request', 'all_requests'])
+        resDf = pd.DataFrame(items, columns=['start_district_id','time_slotid','time_slot','gap', 'all_requests'])
         resDf.to_csv(os.path.dirname(filename) + '/temp/'+ os.path.basename(filename) + '_gap.csv')
         print resDf.describe()
         return
     def run(self):
+        self.saveAllGapCsv()
         self.combineAllGapCsv()
-#         self.saveAllGapCsv()
+        
 #         res = self.saveOrderCsv('../data/citydata/season_1/training_data/order_data/order_data_2016-01-03')
 #         self.saveGapCSV(*res)
         return
