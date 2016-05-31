@@ -10,15 +10,13 @@ from utility.datafilepath import g_singletonDataFilePath
 class visualizeOrder(ExploreOrder):
     def __init__(self):
         ExploreOrder.__init__(self)
-#         gapCsvFilePath = g_singletonDataFilePath.getGapCsv_Train()
-        gapCsvFilePath = g_singletonDataFilePath.getGapCsv_Test1()
-        self.df = pd.read_csv(gapCsvFilePath)
-        print self.df.describe()
+        gapCsvFilePath = g_singletonDataFilePath.getGapCsv_Train()
+        self.df = self.loadGapCsvFile(gapCsvFilePath)
         return
     def drawOrderDistribution(self):
-#         self.df['gap'].hist(bins=200)
+        self.df[self.df['gap'] < 10]['gap'].hist(bins=50)
 #         sns.distplot(self.df['gap']);
-        sns.distplot(self.df['gap'], hist=False, kde=True, rug=False)
+#         sns.distplot(self.df['gap'], hist=True, kde=False, rug=False)
 #         plt.hist(self.df['gap'])
         plt.show()
         return
@@ -31,8 +29,8 @@ class visualizeOrder(ExploreOrder):
         plt.show()
         return
     def run(self):
-#         self.drawOrderDistribution()
-        self.drawOderCorrelation()
+        self.drawOrderDistribution()
+#         self.drawOderCorrelation()
         return
     
 

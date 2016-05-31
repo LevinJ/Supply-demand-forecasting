@@ -62,12 +62,19 @@ class ExploreOrder:
         resDf.to_csv(os.path.dirname(filename) + '/temp/'+ os.path.basename(filename) + '_gap.csv')
         print resDf.describe()
         return
+    def loadGapCsvFile(self, gapFileName):
+        df = pd.read_csv(gapFileName, index_col= 0)
+        print df.describe()
+        return df
+    def dispInfoAboutGap(self):
+        df = self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
+        print "Number of Gaps with zero value {}, {}".format((df['gap'] == 0).sum(), (df['gap'] == 0).sum()/float(df.shape[0]))
+        return
     def run(self):
-        self.saveAllGapCsv()
-        self.combineAllGapCsv()
-        
-#         res = self.saveOrderCsv('../data/citydata/season_1/training_data/order_data/order_data_2016-01-03')
-#         self.saveGapCSV(*res)
+        self.dispInfoAboutGap()
+#         self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
+#         self.saveAllGapCsv()
+#         self.combineAllGapCsv()
         return
 
  
