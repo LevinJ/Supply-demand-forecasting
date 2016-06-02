@@ -4,6 +4,9 @@ from timeslot import singletonTimeslot
 from os import walk
 import os.path
 from utility.datafilepath import g_singletonDataFilePath
+from time import time
+import cPickle as pickle
+import os
 
 
 
@@ -72,13 +75,29 @@ class ExploreOrder:
         df = pd.read_csv(gapFileName, index_col= 0)
         print df.describe()
         return df
+    def loadGapDict(self, gapFileName):
+        t0 = time()
+        filepath = gapFileName + '.dict.pickle'
+        if os.path.exists(filepath):
+            with open(filepath, 'rb') as handle:
+                return pickle.load(handle)
+        #crate the dict picle
+        resDict = {}
+        df = self.loadGapCsvFile(gapFileName)
+        for _, row in df.iterrows():
+            resDict[tuple(row[['start_district_id','time_slotid']].tolist())] = row['gap']
+        with open(filepath, 'wb') as f:
+            pickle.dump(resDict, f)
+        print "dump gapdict:", round(time()-t0, 3), "s"
+        return resDict
     def dispInfoAboutGap(self):
         df = self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
         print "Number of Gaps with zero value {}, {}".format((df['gap'] == 0).sum(), (df['gap'] == 0).sum()/float(df.shape[0]))
         return
     def run(self):
-        self.combineAllGapCsv()
-        self.dispInfoAboutGap()
+        res = self.loadGapDict(g_singletonDataFilePath.getGapCsv_Train())
+#         self.combineAllGapCsv()
+#         self.dispInfoAboutGap()
 #         self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
 #         self.saveAllGapCsv()
         
