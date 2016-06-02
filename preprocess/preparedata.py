@@ -18,7 +18,8 @@ class PrepareData(ExploreOrder):
         self.gapDf, self.gapDict = self.loadGapData(self.dataDir + g_singletonDataFilePath.getGapFilename())
         return
     def splitTrainTestSet(self):
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.gapDf[['start_district_id', 'time_slotid', 'all_requests']], self.gapDf['gap'], test_size=0.25, random_state=42)
+        xcols = [col for col in self.gapDf.columns if col not in ['gap']]     
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.gapDf[xcols], self.gapDf['gap'], test_size=0.25, random_state=42)
         return
     def transformCategories(self):
         col_data = pd.get_dummies(self.gapDf['start_district_id'], prefix='start_district_')
@@ -59,12 +60,28 @@ class PrepareData(ExploreOrder):
         assert [24,26,37] == self.getPrevGaps(53, '2016-01-04-56', 3)
         print "unit test passed"
         return
-    def run(self):
-        self.loadRawData()       
-        self.unitTest()
+    def removeUnusedCol(self):
+        self.gapDf.drop(['start_district_id', 'time_slotid', 'time_slot', 'all_requests'], axis=1, inplace=True)
+        return
+    def getTrainTestSet(self):
+        self.loadRawData()
         self.transformPreGaps()
+        self.transformCategories()
+        self.removeUnusedCol()
+        self.splitTrainTestSet()
+        return (self.X_train, self.X_test, self.y_train, self.y_test)
+        
+        
+        return
+    def run(self):
+        self.getTrainTestSet()
+#         self.loadRawData()
+#         self.unitTest()       
+#         
+#         self.transformPreGaps()
 #         self.transformCategories()
-        self.gapDf.to_csv('./temp/afterdummy.csv')
+#         
+#         self.gapDf.to_csv('./temp/afterdummy.csv')
 #         self.splitTrainTestSet()
         return
     
