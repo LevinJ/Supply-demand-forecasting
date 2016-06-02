@@ -5,8 +5,7 @@ from os import walk
 import os.path
 from utility.datafilepath import g_singletonDataFilePath
 from time import time
-import cPickle as pickle
-import os
+from utility.dumpload import DumpLoad
 
 
 
@@ -71,23 +70,24 @@ class ExploreOrder:
         resDf.to_csv(os.path.dirname(filename) + '/temp/'+ os.path.basename(filename) + '_gap.csv')
         print resDf.describe()
         return
+    def loadGapData(self, gapFileName):
+        return (self.loadGapCsvFile(gapFileName), self.loadGapDict(gapFileName))
     def loadGapCsvFile(self, gapFileName):
         df = pd.read_csv(gapFileName, index_col= 0)
         print df.describe()
         return df
     def loadGapDict(self, gapFileName):
         t0 = time()
-        filepath = gapFileName + '.dict.pickle'
-        if os.path.exists(filepath):
-            with open(filepath, 'rb') as handle:
-                return pickle.load(handle)
-        #crate the dict picle
+        dumpload = DumpLoad( gapFileName + '.dict.pickle')
+        if dumpload.isExisiting():
+            return dumpload.load()
+        
         resDict = {}
         df = self.loadGapCsvFile(gapFileName)
         for _, row in df.iterrows():
             resDict[tuple(row[['start_district_id','time_slotid']].tolist())] = row['gap']
-        with open(filepath, 'wb') as f:
-            pickle.dump(resDict, f)
+        
+        dumpload.dump(resDict)
         print "dump gapdict:", round(time()-t0, 3), "s"
         return resDict
     def dispInfoAboutGap(self):

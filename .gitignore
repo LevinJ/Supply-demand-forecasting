@@ -1,8 +1,6 @@
 data/
+temp/
 .project
 .pydevproject
-exploredata/*.csv
-evaluation/*.csv
 evaluation/read_me_1.txt
-implement/*.csv
 *.pyc

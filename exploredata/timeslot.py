@@ -29,6 +29,20 @@ class Timeslot:
             timeslotID = '2016-11-03-'+ str(i)
             print i, self.convertToStr(timeslotID)
         return
+    def convertToDateTime(self, timeslotID):
+        tid = int(timeslotID[11:])
+        initialtime = datetime.strptime(timeslotID[:10], '%Y-%m-%d')
+        deltatime1 = timedelta(hours = tid/6, minutes = (tid%6 - 1)* 10 + 5)
+        res = initialtime + deltatime1
+        return res
+    def getPrevSlots(self, timeslotID, preNum):
+        timepoint = self.convertToDateTime(timeslotID)
+        res = []
+        for i in range(preNum):
+            item = timepoint - timedelta(minutes = (i + 1) * 10)
+            item = self.convertToSlot(str(item))
+            res.append(item)
+        return res
     def run(self):
         assert  "2016-01-03-125" == self.convertToSlot('2016-01-03 20:42:30'), "conversion error"
         assert  "2016-11-03-144" == self.convertToSlot('2016-11-03 23:59:30'), "conversion error"
@@ -36,8 +50,17 @@ class Timeslot:
         assert  "00:00:00--00:09:59"==self.convertToStr('2016-11-03-1'), "Acutal " + self.convertToStr(1)
         assert  "23:50:00--23:59:59"==self.convertToStr('2016-11-03-144'), "Acutal " + self.convertToStr(144)
         assert  "07:30:00--07:39:59"==self.convertToStr('2016-11-03-46'), "Acutal " + self.convertToStr(46)
+        
+        assert  datetime.strptime('2016-11-03 00:05:00', '%Y-%m-%d %H:%M:%S')==self.convertToDateTime('2016-11-03-1')
+        assert  datetime.strptime('2016-11-03 23:55:00', '%Y-%m-%d %H:%M:%S')==self.convertToDateTime('2016-11-03-144')
+        assert  datetime.strptime('2016-11-03 07:35:00', '%Y-%m-%d %H:%M:%S')==self.convertToDateTime('2016-11-03-46')
+        
+        assert ['2016-01-10-1','2016-01-09-144' ,'2016-01-09-143' ] == self.getPrevSlots('2016-01-10-2', 3)
+        assert ['2016-01-31-144','2016-01-31-143' ,'2016-01-31-142' ] == self.getPrevSlots('2016-02-01-1', 3)
+        assert ['2015-12-31-144','2015-12-31-143' ,'2015-12-31-142', '2015-12-31-141' ] == self.getPrevSlots('2016-01-01-1', 4)
+        
         print "passed the unit test"
-        self.dispTimerange()
+#         self.dispTimerange()
         return
 
 
