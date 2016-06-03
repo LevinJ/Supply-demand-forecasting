@@ -32,9 +32,11 @@ class PrepareData(ExploreOrder):
         featureDict[2] = districtids
         featureDict[3] = timeids
         return featureDict
-    def getUsedFeatures(self):
+    def specifyUsedFeatures(self):
         if len(self.usedFeatures) == 0:
-            self.usedFeatures = [col for col in self.gapDf.columns if col not in ['gap']] 
+            unused = ['start_district_id', 'time_slotid', 'time_slot', 'all_requests', 'time_id']
+            self.usedFeatures = [col for col in self.X_y_Df.columns if col not in ['gap']] 
+            self.usedFeatures = [x for x in self.usedFeatures if x not in unused]
             return
         res = []
         featureDict = self.getAllFeaturesDict()
@@ -42,16 +44,16 @@ class PrepareData(ExploreOrder):
         self.usedFeatures = res
         return
     def loadRawData(self):
-        self.gapDf, self.gapDict = self.loadGapData(self.dataDir + g_singletonDataFilePath.getGapFilename())
+        gapDf, self.gapDict = self.loadGapData(self.dataDir + g_singletonDataFilePath.getGapFilename())
+        self.X_y_Df = gapDf
         return
     def splitTrainTestSet(self):
-        self.getUsedFeatures()
         # Remove zeros values from data to try things out
         if self.excludeZerosActual:
-            bNonZeros =   self.gapDf['gap'] != 0 
-            self.gapDf = self.gapDf[bNonZeros]
+            bNonZeros =   self.X_y_Df['gap'] != 0 
+            self.X_y_Df = self.X_y_Df[bNonZeros]
         
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.gapDf[self.usedFeatures], self.gapDf['gap'], test_size=0.25, random_state=42)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X_y_Df[self.usedFeatures], self.X_y_Df['gap'], test_size=0.25, random_state=42)
         return
     def rescaleFeatures(self):
         self.rescale(self.X_train)
@@ -70,8 +72,8 @@ class PrepareData(ExploreOrder):
     def transformCategories(self):
         cols = ['start_district_id', 'time_id']
         for col in cols:
-            col_data = pd.get_dummies(self.gapDf[col], prefix= col)
-            self.gapDf = pd.concat([self.gapDf, col_data],  axis=1)
+            col_data = pd.get_dummies(self.X_y_Df[col], prefix= col)
+            self.X_y_Df = pd.concat([self.X_y_Df, col_data],  axis=1)
         return
     def transformPreGaps(self):
         t0 = time()
@@ -79,12 +81,12 @@ class PrepareData(ExploreOrder):
         if dumpload.isExisiting():
             prevGaps = dumpload.load()
         else:
-            prevGaps = self.gapDf.apply(self.getPrevGapsbyRow, axis = 1, raw=False, preNum = 3)
+            prevGaps = self.X_y_Df.apply(self.getPrevGapsbyRow, axis = 1, raw=False, preNum = 3)
             dumpload.dump(prevGaps)
-        self.gapDf = pd.concat([self.gapDf, prevGaps],  axis=1)
-#         self.gapDf.to_csv('./temp/addprevgap.csv')
+        self.X_y_Df = pd.concat([self.X_y_Df, prevGaps],  axis=1)
+#         self.X_y_Df.to_csv('./temp/addprevgap.csv')
         print "transformPreGaps:", round(time()-t0, 3), "s"
-        print "prev gaps:\n", prevGaps.describe()
+#         print "prev gaps:\n", prevGaps.describe()
         
         return
     def getPrevGapsbyRow(self, row, preNum = 3):
@@ -108,15 +110,18 @@ class PrepareData(ExploreOrder):
         assert [24,26,37] == self.getPrevGaps(53, '2016-01-04-56', 3)
         print "unit test passed"
         return
-    def removeUnusedCol(self):
-        self.gapDf.drop(['start_district_id', 'time_slotid', 'time_slot', 'all_requests', 'time_id'], axis=1, inplace=True)
-        return
-    def getTrainTestSet(self):
+#     def removeUnusedCol(self):
+#         self.X_y_Df.drop(['start_district_id', 'time_slotid', 'time_slot', 'all_requests', 'time_id'], axis=1, inplace=True)
+#         return
+    def loadTransformedData(self):
         self.loadRawData()
         self.transformPreGaps()
         self.transformCategories()
-        self.removeUnusedCol()
-#         self.gapDf.to_csv("temp/beforesplit.csv")
+        self.specifyUsedFeatures()
+#         self.X_y_Df.to_csv("temp/transformeddata.csv")
+        return
+    def getTrainTestSet(self):
+        self.loadTransformedData()
         self.splitTrainTestSet()
         self.rescaleFeatures()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
@@ -131,7 +136,7 @@ class PrepareData(ExploreOrder):
 #         self.transformPreGaps()
 #         self.transformCategories()
 #         
-#         self.gapDf.to_csv('./temp/afterdummy.csv')
+#         self.X_y_Df.to_csv('./temp/afterdummy.csv')
 #         self.splitTrainTestSet()
         return
     
