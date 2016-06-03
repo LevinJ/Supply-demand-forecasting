@@ -5,7 +5,8 @@ from sklearn.tree import DecisionTreeRegressor
 class DecisionTreeModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-#         self.usedFeatures = ['gap1', 'gap2', 'gap3']
+        self.usedFeatures = ['gap1', 'gap2', 'gap3']
+        self.excludeZerosActual = True
         return
     def setClf(self):
         self.clf = DecisionTreeRegressor(random_state=0)

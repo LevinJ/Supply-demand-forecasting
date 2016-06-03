@@ -20,6 +20,7 @@ class PrepareData(ExploreOrder):
         self.dataDir = g_singletonDataFilePath.getOrderDir_Train()
         self.scaling = ScaleMethod.NONE
         self.usedFeatures = None
+        self.excludeZerosActual = False
        
         return
     def loadRawData(self):
@@ -29,8 +30,9 @@ class PrepareData(ExploreOrder):
         if self.usedFeatures is None:
             self.usedFeatures = [col for col in self.gapDf.columns if col not in ['gap']] 
         # Remove zeros values from data to try things out
-#         bNonZeros =   self.gapDf['gap'] != 0 
-#         self.gapDf = self.gapDf[bNonZeros]
+        if self.excludeZerosActual:
+            bNonZeros =   self.gapDf['gap'] != 0 
+            self.gapDf = self.gapDf[bNonZeros]
         
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.gapDf[self.usedFeatures], self.gapDf['gap'], test_size=0.25, random_state=42)
         return

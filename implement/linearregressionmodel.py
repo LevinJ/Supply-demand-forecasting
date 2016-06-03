@@ -2,11 +2,13 @@ from basemodel import BaseModel
 import numpy as np
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import LinearRegression
-
+from preprocess.preparedata import ScaleMethod
 class LinearRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = ['gap1', 'gap2', 'gap3']
+#         self.usedFeatures = ['gap1', 'gap2', 'gap3']
+        self.scaling = ScaleMethod.MIN_MAX
+        self.excludeZerosActual = True
         return
     def setClf(self):
 #         self.clf = Ridge(alpha=0.0000001, tol=0.0000001)
