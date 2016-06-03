@@ -27,7 +27,11 @@ class ExploreOrder:
         df['timeslotrank'] = df['time_slotid'].map(lambda x: "-".join(x.split('-')[:3] + [x.split('-')[-1].zfill(3)]))
         df = df.sort_values(by = ['start_district_id','timeslotrank'])
         df = df.drop('timeslotrank', 1)
+        df = df.reset_index(drop=True)
         return df
+    def addTimeIdColumn(self, df):
+        df['time_id'] = df['time_slotid'].apply(singletonTimeslot.getTimeId)
+        return
     def combineAllGapCsv(self):
         print "Combin all gaps"
         resDf = pd.DataFrame()
@@ -38,6 +42,7 @@ class ExploreOrder:
             df = pd.read_csv(filename, index_col=0)
             resDf = pd.concat([resDf, df], ignore_index = True)
         resDf = self.sortGapRows(resDf)
+        self.addTimeIdColumn(resDf)
         resDf.to_csv(self.orderFileDir + 'temp/'+ 'gap.csv')
         print "Overall gap statistics: \n{}".format(resDf.describe())
         return
@@ -95,8 +100,8 @@ class ExploreOrder:
         print "Number of Gaps with zero value {}, {}".format((df['gap'] == 0).sum(), (df['gap'] == 0).sum()/float(df.shape[0]))
         return
     def run(self):
-        res = self.loadGapDict(g_singletonDataFilePath.getGapCsv_Train())
-#         self.combineAllGapCsv()
+#         res = self.loadGapDict(g_singletonDataFilePath.getGapCsv_Train())
+        self.combineAllGapCsv()
 #         self.dispInfoAboutGap()
 #         self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
 #         self.saveAllGapCsv()

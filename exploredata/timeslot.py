@@ -43,6 +43,8 @@ class Timeslot:
             item = self.convertToSlot(str(item))
             res.append(item)
         return res
+    def getTimeId(self, timeslotID):
+        return int(timeslotID[11:])
     def run(self):
         assert  "2016-01-03-125" == self.convertToSlot('2016-01-03 20:42:30'), "conversion error"
         assert  "2016-11-03-144" == self.convertToSlot('2016-11-03 23:59:30'), "conversion error"
@@ -58,6 +60,10 @@ class Timeslot:
         assert ['2016-01-10-1','2016-01-09-144' ,'2016-01-09-143' ] == self.getPrevSlots('2016-01-10-2', 3)
         assert ['2016-01-31-144','2016-01-31-143' ,'2016-01-31-142' ] == self.getPrevSlots('2016-02-01-1', 3)
         assert ['2015-12-31-144','2015-12-31-143' ,'2015-12-31-142', '2015-12-31-141' ] == self.getPrevSlots('2016-01-01-1', 4)
+        
+        assert 142 == self.getTimeId('2015-12-31-142')
+        assert 1 == self.getTimeId('2016-11-03-1')
+        assert 12 == self.getTimeId('2015-12-31-12')
         
         print "passed the unit test"
 #         self.dispTimerange()
