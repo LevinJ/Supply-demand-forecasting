@@ -2,6 +2,7 @@ from preprocess.preparedata import PrepareData
 
 from time import time
 from evaluation.sklearnmape import mean_absolute_percentage_error
+from sklearn.metrics import mean_squared_error
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -24,8 +25,11 @@ class BaseModel(PrepareData):
         t0 = time()
         y_pred_train = self.clf.predict(self.X_train)
         y_pred_test = self.clf.predict(self.X_test)
+        print "features used:\n {}".format(self.usedFeatures)
         print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, y_pred_train))
         print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test))
+        print "MSE for training set: {}".format(mean_squared_error(self.y_train, y_pred_train))
+        print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
         print "test:", round(time()-t0, 3), "s"
         return
     def run(self):

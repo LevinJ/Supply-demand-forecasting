@@ -100,11 +100,8 @@ class ExploreOrder:
         print "Number of Gaps with zero value {}, {}".format((df['gap'] == 0).sum(), (df['gap'] == 0).sum()/float(df.shape[0]))
         return
     def run(self):
-#         res = self.loadGapDict(g_singletonDataFilePath.getGapCsv_Train())
-        self.combineAllGapCsv()
-#         self.dispInfoAboutGap()
-#         self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
-#         self.saveAllGapCsv()
+        res = self.loadGapDict(g_singletonDataFilePath.getGapCsv_Train())
+#         self.combineAllGapCsv()
         
         return
 

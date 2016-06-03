@@ -19,16 +19,33 @@ class PrepareData(ExploreOrder):
         self.count = 1
         self.dataDir = g_singletonDataFilePath.getOrderDir_Train()
         self.scaling = ScaleMethod.NONE
-        self.usedFeatures = None
+        self.usedFeatures = []
         self.excludeZerosActual = False
        
+        return
+    def getAllFeaturesDict(self):
+        featureDict ={}
+        preGaps = ['gap1', 'gap2', 'gap3']
+        districtids = ['start_district_id_' + str(i + 1) for i in range(66)]
+        timeids = ['time_id_' + str(i + 1) for i in range(144)]
+        featureDict[1] = preGaps
+        featureDict[2] = districtids
+        featureDict[3] = timeids
+        return featureDict
+    def getUsedFeatures(self):
+        if len(self.usedFeatures) == 0:
+            self.usedFeatures = [col for col in self.gapDf.columns if col not in ['gap']] 
+            return
+        res = []
+        featureDict = self.getAllFeaturesDict()
+        [res.extend(featureDict[fea]) for fea in self.usedFeatures]
+        self.usedFeatures = res
         return
     def loadRawData(self):
         self.gapDf, self.gapDict = self.loadGapData(self.dataDir + g_singletonDataFilePath.getGapFilename())
         return
     def splitTrainTestSet(self):
-        if self.usedFeatures is None:
-            self.usedFeatures = [col for col in self.gapDf.columns if col not in ['gap']] 
+        self.getUsedFeatures()
         # Remove zeros values from data to try things out
         if self.excludeZerosActual:
             bNonZeros =   self.gapDf['gap'] != 0 
@@ -51,8 +68,10 @@ class PrepareData(ExploreOrder):
         outX[['gap1', 'gap2', 'gap3']] = scaler.fit_transform(outX[['gap1', 'gap2', 'gap3']])
         return outX
     def transformCategories(self):
-        col_data = pd.get_dummies(self.gapDf['start_district_id'], prefix='start_district_')
-        self.gapDf = pd.concat([self.gapDf, col_data],  axis=1)
+        cols = ['start_district_id', 'time_id']
+        for col in cols:
+            col_data = pd.get_dummies(self.gapDf[col], prefix= col)
+            self.gapDf = pd.concat([self.gapDf, col_data],  axis=1)
         return
     def transformPreGaps(self):
         t0 = time()
@@ -90,13 +109,14 @@ class PrepareData(ExploreOrder):
         print "unit test passed"
         return
     def removeUnusedCol(self):
-        self.gapDf.drop(['start_district_id', 'time_slotid', 'time_slot', 'all_requests'], axis=1, inplace=True)
+        self.gapDf.drop(['start_district_id', 'time_slotid', 'time_slot', 'all_requests', 'time_id'], axis=1, inplace=True)
         return
     def getTrainTestSet(self):
         self.loadRawData()
         self.transformPreGaps()
         self.transformCategories()
         self.removeUnusedCol()
+#         self.gapDf.to_csv("temp/beforesplit.csv")
         self.splitTrainTestSet()
         self.rescaleFeatures()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
