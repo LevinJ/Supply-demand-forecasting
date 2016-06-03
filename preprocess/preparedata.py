@@ -5,22 +5,47 @@ from sklearn.cross_validation import train_test_split
 from timeslot import singletonTimeslot
 from time import time
 from utility.dumpload import DumpLoad
+from sklearn import preprocessing
+from enum import Enum
 
-
+class ScaleMethod(Enum):
+    NONE = 1
+    MIN_MAX = 2
+    STD = 3
+    
 class PrepareData(ExploreOrder):
     def __init__(self):
         ExploreOrder.__init__(self)
         self.count = 1
         self.dataDir = g_singletonDataFilePath.getOrderDir_Train()
+        self.scaling = ScaleMethod.MIN_MAX
        
         return
     def loadRawData(self):
         self.gapDf, self.gapDict = self.loadGapData(self.dataDir + g_singletonDataFilePath.getGapFilename())
         return
     def splitTrainTestSet(self):
-        xcols = [col for col in self.gapDf.columns if col not in ['gap']]     
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.gapDf[xcols], self.gapDf['gap'], test_size=0.25, random_state=42)
+        xcols = [col for col in self.gapDf.columns if col not in ['gap']] 
+        # Remove zeros values from data to try things out
+#         bNonZeros =   self.gapDf['gap'] != 0 
+#         self.gapDf = self.gapDf[bNonZeros]
+        
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.gapDf[xcols], self.gapDf['gap'], test_size=0.99, random_state=42)
         return
+    def rescaleFeatures(self):
+        self.rescale(self.X_train)
+        self.rescale(self.X_test)
+        return
+    def rescale(self, outX):
+        scaler = None
+        if self.scaling is ScaleMethod.STD:
+            scaler = preprocessing.StandardScaler()
+        elif self.scaling is ScaleMethod.MIN_MAX:
+            scaler = preprocessing.MinMaxScaler()
+        else:
+            return outX
+        outX[['gap1', 'gap2', 'gap3']] = scaler.fit_transform(outX[['gap1', 'gap2', 'gap3']])
+        return outX
     def transformCategories(self):
         col_data = pd.get_dummies(self.gapDf['start_district_id'], prefix='start_district_')
         self.gapDf = pd.concat([self.gapDf, col_data],  axis=1)
@@ -69,6 +94,7 @@ class PrepareData(ExploreOrder):
         self.transformCategories()
         self.removeUnusedCol()
         self.splitTrainTestSet()
+        self.rescaleFeatures()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
         
         

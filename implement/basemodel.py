@@ -10,17 +10,22 @@ class BaseModel(PrepareData):
         return
     def setClf(self):
         pass
+    def afterTrain(self):
+        pass
     def train(self):
         self.setClf()
         print "Training {}...".format(self.clf.__class__.__name__)
         t0 = time()
         self.clf.fit(self.X_train, self.y_train)
         print "train:", round(time()-t0, 3), "s"
+        self.afterTrain()
         return
     def test(self):
         t0 = time()
-        print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, self.clf.predict(self.X_train)))
-        print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, self.clf.predict(self.X_test)))
+        y_pred_train = self.clf.predict(self.X_train)
+        y_pred_test = self.clf.predict(self.X_test)
+        print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, y_pred_train))
+        print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test))
         print "test:", round(time()-t0, 3), "s"
         return
     def run(self):
