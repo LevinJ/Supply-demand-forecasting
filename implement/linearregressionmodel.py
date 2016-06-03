@@ -6,10 +6,8 @@ from sklearn.linear_model import LinearRegression
 class LinearRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
+        self.usedFeatures = ['gap1', 'gap2', 'gap3']
         return
-    def getTunedParamterOptions(self):
-        parameters = {'n_neighbors':np.arange(4,31,2), 'p':[1, 2]}
-        return parameters
     def setClf(self):
 #         self.clf = Ridge(alpha=0.0000001, tol=0.0000001)
         self.clf = LinearRegression()
