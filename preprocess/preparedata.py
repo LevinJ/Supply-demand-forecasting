@@ -27,6 +27,7 @@ class PrepareData(ExploreOrder):
         self.usedFeatures = []
         self.usedLabel = 'gap'
         self.excludeZerosActual = False
+        self.randomSate = 42
        
         return
     def getAllFeaturesDict(self):
@@ -62,7 +63,7 @@ class PrepareData(ExploreOrder):
             bNonZeros =   self.X_y_Df['gap'] != 0 
             self.X_y_Df = self.X_y_Df[bNonZeros]
         
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X_y_Df[self.usedFeatures], self.X_y_Df['gap'], test_size=0.25, random_state=42)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X_y_Df[self.usedFeatures], self.X_y_Df['gap'], test_size=0.25, random_state=self.randomSate)
         return
     def rescaleFeatures(self):
         self.rescale(self.X_train)

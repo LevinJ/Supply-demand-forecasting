@@ -55,7 +55,7 @@ class GenerateResultCsv:
     def saveResultCsv(self, df, filename):
         #map 2016-01-22-1 to 2016-01-22-001
         df['timeslotrank'] = df['time_slotid'].map(lambda x: "-".join(x.split('-')[:3] + [x.split('-')[-1].zfill(3)]))
-        df = df.sort_values(by = ['timeslotrank','start_district_id'])
+        df = df.sort_values(by = ['start_district_id', 'timeslotrank'])
         df.to_csv(filename, columns=['start_district_id', 'time_slotid', 'gap'], header=None, index=None)
         return
     def generateActual_0(self):

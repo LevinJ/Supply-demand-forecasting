@@ -18,7 +18,7 @@ class TuneModel:
         
         features,labels = model.getFeaturesLabel()
         # do grid search
-        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=ShuffleSplit(labels.shape[0], n_iter=3,test_size=.25, random_state=0),
+        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=ShuffleSplit(labels.shape[0], n_iter=10,test_size=.25, random_state=10),
                        scoring=mean_absolute_percentage_error_scoring)
         estimator.fit(features, labels)
         model.clf = estimator.best_estimator_
