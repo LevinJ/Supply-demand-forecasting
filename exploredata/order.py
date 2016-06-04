@@ -79,7 +79,7 @@ class ExploreOrder:
         return (self.loadGapCsvFile(gapFileName), self.loadGapDict(gapFileName))
     def loadGapCsvFile(self, gapFileName):
         df = pd.read_csv(gapFileName, index_col= 0)
-        print df.describe()
+#         print df.describe()
         return df
     def loadGapDict(self, gapFileName):
         t0 = time()

@@ -1,8 +1,19 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath('..')) 
+# from pprint import pprint as p
+# p(sys.path)
+
+# print os.environ['PYTHONPATH'].split(os.pathsep)
 from basemodel import BaseModel
 import numpy as np
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import LinearRegression
 from preprocess.preparedata import ScaleMethod
+
+
+
+
 class LinearRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)

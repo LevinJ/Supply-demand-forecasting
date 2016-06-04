@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath('..'))
+
 from basemodel import BaseModel
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
@@ -9,20 +13,25 @@ class DecisionTreeModel(BaseModel):
 #         self.excludeZerosActual = True
         return
     def setClf(self):
-        self.clf = DecisionTreeRegressor(random_state=0)
+        self.clf = DecisionTreeRegressor(random_state=0, min_samples_split= 20)
         return
-    def dispFeatureImportance(self, clf):
-        if not hasattr(clf, 'feature_importances_'):
+    def getTunedParamterOptions(self):
+#         tuned_parameters = [{'min_samples_split': [3, 5, 8,10,12,13,15, 17,18,20]}]
+        tuned_parameters = [{'min_samples_split': [5, 8,10,12]}]
+#         tuned_parameters = [{'min_samples_split': [100]}]
+        return tuned_parameters
+    def dispFeatureImportance(self):
+        if not hasattr(self.clf, 'feature_importances_'):
             return
         features_list = np.asanyarray(self.usedFeatures)
-        sortIndexes = clf.feature_importances_.argsort()[::-1]
+        sortIndexes = self.clf.feature_importances_.argsort()[::-1]
         features_rank = features_list[sortIndexes]
-        num_rank = clf.feature_importances_[sortIndexes]
+        num_rank = self.clf.feature_importances_[sortIndexes]
         print "Ranked features: {}".format(features_rank)
         print "Ranked importance: {}".format(num_rank)
         return
     def afterTrain(self):
-        self.dispFeatureImportance(self.clf)
+        self.dispFeatureImportance()
         return
 
 

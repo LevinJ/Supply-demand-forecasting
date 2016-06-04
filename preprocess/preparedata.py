@@ -1,12 +1,20 @@
-from order import ExploreOrder
+import sys
+import os
+sys.path.insert(0, os.path.abspath('..')) 
+# from pprint import pprint as p
+# p(sys.path)
+
+from exploredata.order import ExploreOrder
 import pandas as pd
 from utility.datafilepath import g_singletonDataFilePath
 from sklearn.cross_validation import train_test_split
-from timeslot import singletonTimeslot
+from exploredata.timeslot import singletonTimeslot
 from time import time
 from utility.dumpload import DumpLoad
 from sklearn import preprocessing
 from enum import Enum
+
+
 
 class ScaleMethod(Enum):
     NONE = 1
@@ -20,6 +28,7 @@ class PrepareData(ExploreOrder):
         self.dataDir = g_singletonDataFilePath.getOrderDir_Train()
         self.scaling = ScaleMethod.NONE
         self.usedFeatures = []
+        self.usedLabel = 'gap'
         self.excludeZerosActual = False
        
         return
@@ -32,7 +41,7 @@ class PrepareData(ExploreOrder):
         featureDict[2] = districtids
         featureDict[3] = timeids
         return featureDict
-    def specifyUsedFeatures(self):
+    def translateUsedFeatures(self):
         if len(self.usedFeatures) == 0:
             unused = ['start_district_id', 'time_slotid', 'time_slot', 'all_requests', 'time_id']
             self.usedFeatures = [col for col in self.X_y_Df.columns if col not in ['gap']] 
@@ -76,7 +85,7 @@ class PrepareData(ExploreOrder):
             self.X_y_Df = pd.concat([self.X_y_Df, col_data],  axis=1)
         return
     def transformPreGaps(self):
-        t0 = time()
+#         t0 = time()
         dumpload = DumpLoad(self.dataDir + g_singletonDataFilePath.getPrevGapFileName())
         if dumpload.isExisiting():
             prevGaps = dumpload.load()
@@ -85,7 +94,7 @@ class PrepareData(ExploreOrder):
             dumpload.dump(prevGaps)
         self.X_y_Df = pd.concat([self.X_y_Df, prevGaps],  axis=1)
 #         self.X_y_Df.to_csv('./temp/addprevgap.csv')
-        print "transformPreGaps:", round(time()-t0, 3), "s"
+#         print "transformPreGaps:", round(time()-t0, 3), "s"
 #         print "prev gaps:\n", prevGaps.describe()
         
         return
@@ -117,9 +126,9 @@ class PrepareData(ExploreOrder):
         self.loadRawData()
         self.transformPreGaps()
         self.transformCategories()
-        self.specifyUsedFeatures()
+        self.translateUsedFeatures()
 #         self.X_y_Df.to_csv("temp/transformeddata.csv")
-        return
+        return self.X_y_Df
     def getTrainTestSet(self):
         self.loadTransformedData()
         self.splitTrainTestSet()

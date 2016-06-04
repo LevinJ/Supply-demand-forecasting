@@ -26,7 +26,9 @@ def mean_absolute_percentage_error(y_true, y_pred):
     return np.mean(np.abs((y_true - y_pred) / y_true))
 
 
-
+def mean_absolute_percentage_error_scoring(estimator, X, y):
+    y_pred = estimator.predict(X)
+    return -mean_absolute_percentage_error(y, y_pred)
 
 if __name__ == "__main__":   
     y_true = [3, -0.5, 2, 0,7]
