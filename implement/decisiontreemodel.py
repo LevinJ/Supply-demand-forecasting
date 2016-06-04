@@ -5,20 +5,21 @@ sys.path.insert(0, os.path.abspath('..'))
 from basemodel import BaseModel
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
+from utility.datafilepath import g_singletonDataFilePath
 
 class DecisionTreeModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [1,2,3]
+        self.usedFeatures = [1,4,5]
 #         self.excludeZerosActual = True
         return
     def setClf(self):
-        self.clf = DecisionTreeRegressor(random_state=0, min_samples_split= 20)
+        self.clf = DecisionTreeRegressor(random_state=0, min_samples_split= 12)
         return
     def getTunedParamterOptions(self):
 #         tuned_parameters = [{'min_samples_split': [3, 5, 8,10,12,13,15, 17,18,20]}]
-        tuned_parameters = [{'min_samples_split': [5, 8,10,12]}]
-#         tuned_parameters = [{'min_samples_split': [100]}]
+#         tuned_parameters = [{'min_samples_split': [5, 8,10,12]}]
+        tuned_parameters = [{'min_samples_split': [5, 10]}]
         return tuned_parameters
     def dispFeatureImportance(self):
         if not hasattr(self.clf, 'feature_importances_'):
@@ -32,6 +33,9 @@ class DecisionTreeModel(BaseModel):
         return
     def afterTrain(self):
         self.dispFeatureImportance()
+        return
+    def afterRun(self):
+        self.predictTestSet(g_singletonDataFilePath.getTest1Dir())
         return
 
 

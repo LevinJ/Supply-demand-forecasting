@@ -40,13 +40,13 @@ class Statistics(Evaluate):
         return
     def generatePrediction_1(self):
         testSlots = self.generateSlotSet_1()
-        self.generatePrediction(g_singletonDataFilePath.getGapCsv_Test1(), testSlots, 'prediction_1.csv')
+        self.generatePrediction(g_singletonDataFilePath.getGapCsv_Test1(), testSlots, 'temp/prediction_1.csv')
         return
     def run(self):
         assert  ['2016-01-22-45','2016-01-22-44','2016-01-22-43'] == self.getPrevSlots('2016-01-22-46')
         self.generatePrediction_1()
-        self.generatePrediction_0()
-        self.calFinalResult(0)
+#         self.generatePrediction_0()
+#         self.calFinalResult(0)
         return
 if __name__ == "__main__":   
     obj= Statistics()

@@ -12,12 +12,10 @@ from utility.dumpload import DumpLoad
 
 class ExploreOrder:
     def __init__(self):
-        self.orderFileDir = g_singletonDataFilePath.getOrderDir_Train()# for train data
-#         self.orderFileDir = g_singletonDataFilePath.getOrderDir_Test1() # for test set1
         return
     
-    def saveAllGapCsv(self):
-        filePaths = self.getAllFilePaths(self.orderFileDir)
+    def saveAllGapCsv(self, orderFileDir):
+        filePaths = self.getAllFilePaths(orderFileDir)
         for filename in filePaths:
             print "save gap csv for :{}".format(filename)
             res = self.saveOrderCsv(filename)
@@ -32,10 +30,10 @@ class ExploreOrder:
     def addTimeIdColumn(self, df):
         df['time_id'] = df['time_slotid'].apply(singletonTimeslot.getTimeId)
         return
-    def combineAllGapCsv(self):
+    def combineAllGapCsv(self, orderFileDir):
         print "Combin all gaps"
         resDf = pd.DataFrame()
-        filePaths = self.getAllFilePaths(self.orderFileDir + 'temp/')
+        filePaths = self.getAllFilePaths(orderFileDir + 'temp/')
         for filename in filePaths:
             if not filename.endswith('_gap.csv'):
                 continue
@@ -43,7 +41,7 @@ class ExploreOrder:
             resDf = pd.concat([resDf, df], ignore_index = True)
         resDf = self.sortGapRows(resDf)
         self.addTimeIdColumn(resDf)
-        resDf.to_csv(self.orderFileDir + 'temp/'+ 'gap.csv')
+        resDf.to_csv(orderFileDir + 'temp/'+ 'gap.csv')
         print "Overall gap statistics: \n{}".format(resDf.describe())
         return
     def getAllFilePaths(self, rootpath):
@@ -76,19 +74,27 @@ class ExploreOrder:
         print resDf.describe()
         return
     def loadGapData(self, gapFileName):
+        """
+        This is the only interface taht should be called by outsider 
+        It returns the raw csv file and index hash of district/timeslot for quick retrieval of previous gaps
+        """
         return (self.loadGapCsvFile(gapFileName), self.loadGapDict(gapFileName))
-    def loadGapCsvFile(self, gapFileName):
-        df = pd.read_csv(gapFileName, index_col= 0)
-#         print df.describe()
+    def loadGapCsvFile(self, fileName):
+        if not os.path.exists(fileName):
+            orderFileDir = os.path.dirname(os.path.dirname(fileName)) + r"/"
+            self.saveAllGapCsv(orderFileDir)
+            self.combineAllGapCsv(orderFileDir)
+        df = pd.read_csv(fileName, index_col= 0)
+        print df.describe()
         return df
-    def loadGapDict(self, gapFileName):
+    def loadGapDict(self, fileName):
         t0 = time()
-        dumpload = DumpLoad( gapFileName + '.dict.pickle')
+        dumpload = DumpLoad( fileName)
         if dumpload.isExisiting():
             return dumpload.load()
         
         resDict = {}
-        df = self.loadGapCsvFile(gapFileName)
+        df = self.loadGapCsvFile(fileName)
         for _, row in df.iterrows():
             resDict[tuple(row[['start_district_id','time_slotid']].tolist())] = row['gap']
         
@@ -100,8 +106,8 @@ class ExploreOrder:
         print "Number of Gaps with zero value {}, {}".format((df['gap'] == 0).sum(), (df['gap'] == 0).sum()/float(df.shape[0]))
         return
     def run(self):
-        res = self.loadGapDict(g_singletonDataFilePath.getGapCsv_Train())
-#         self.combineAllGapCsv()
+#         res = self.loadGapData(g_singletonDataFilePath.getGapCsv_Train())
+        res = self.loadGapData(g_singletonDataFilePath.getGapCsv_Test1())
         
         return
 

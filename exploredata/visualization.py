@@ -1,5 +1,4 @@
 from order import ExploreOrder
-import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set(color_codes=True)
@@ -10,17 +9,17 @@ from utility.datafilepath import g_singletonDataFilePath
 class visualizeOrder(ExploreOrder):
     def __init__(self):
         ExploreOrder.__init__(self)
-        gapCsvFilePath = g_singletonDataFilePath.getGapCsv_Train()
-        self.df = self.loadGapCsvFile(gapCsvFilePath)
+#         self.df, _ = self.loadGapData(g_singletonDataFilePath.getGapCsv_Train())
+        self.df, _ = self.loadGapData(g_singletonDataFilePath.getGapCsv_Test1())
         return
-    def drawOrderDistribution(self):
+    def drawGapDistribution(self):
         self.df[self.df['gap'] < 10]['gap'].hist(bins=50)
 #         sns.distplot(self.df['gap']);
 #         sns.distplot(self.df['gap'], hist=True, kde=False, rug=False)
 #         plt.hist(self.df['gap'])
         plt.show()
         return
-    def drawOderCorrelation(self):
+    def drawGapCorrelation(self):
         _, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
         res = self.df.groupby('start_district_id')['gap'].sum()
         ax1.bar(res.index, res.values)
@@ -29,8 +28,8 @@ class visualizeOrder(ExploreOrder):
         plt.show()
         return
     def run(self):
-        self.drawOrderDistribution()
-#         self.drawOderCorrelation()
+#         self.drawGapDistribution()
+        self.drawGapCorrelation()
         return
     
 

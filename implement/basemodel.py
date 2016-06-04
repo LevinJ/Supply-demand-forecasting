@@ -2,7 +2,8 @@ from preprocess.preparedata import PrepareData
 
 from time import time
 from evaluation.sklearnmape import mean_absolute_percentage_error
-from sklearn.metrics import mean_squared_error
+from utility.datafilepath import g_singletonDataFilePath
+from datetime import datetime
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -34,10 +35,21 @@ class BaseModel(PrepareData):
 #         print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
         print "test:", round(time()-t0, 3), "s"
         return
+    def afterRun(self):
+        pass
+    def predictTestSet(self, dataDir):
+        X_y_Df= self.getFeaturesforTestSet(dataDir)
+        y_pred = self.clf.predict(X_y_Df[self.usedFeatures])
+        X_y_Df['y_pred'] = y_pred
+        df = X_y_Df[['start_district_id', 'time_slotid', 'y_pred']]
+        filename = dataDir  +'temp/'+ datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + 'gap_prediction_result.csv'
+        df.to_csv(filename , header=None, index=None)
+        return
     def run(self):
         self.getTrainTestSet()
         self.train()
         self.test()
+        self.afterRun()
         return
     
 if __name__ == "__main__":   
