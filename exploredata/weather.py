@@ -8,11 +8,13 @@ class ExploreWeather(ExploreData ):
         return
     def run(self):
         self.__unittest()
+        self.save_all_csv(g_singletonDataFilePath.getTest1Dir() + 'weather_data/')
+        self.combine_all_csv(g_singletonDataFilePath.getTest1Dir() + 'weather_data/temp/', 'weather_', 'weather.csv')
         return
     def __unittest(self):
-        self.combine_all_csv(g_singletonDataFilePath.getTrainDir() + 'weather_data/temp/', 'weather_', 'weather.csv')
+        #         self.combine_all_csv(g_singletonDataFilePath.getTrainDir() + 'weather_data/temp/', 'weather_', 'weather.csv')
 #         self.save_one_csv(g_singletonDataFilePath.getTrainDir() + 'weather_data/weather_data_2016-01-02')
-#         self.save_all_csv(g_singletonDataFilePath.getTrainDir() + 'weather_data/')
+
         return
     def process_all_df(self, df):
         self.add_timeid_col(df)
