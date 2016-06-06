@@ -40,15 +40,23 @@ class ExploreData(object):
         df.drop('timeslotrank', axis = 1, inplace = True)
         df.reset_index(drop=True, inplace = True)
         return df
+    def sort_by_district_time(self, df):
+        df['timeslotrank'] = df['time_slotid'].map(lambda x: "-".join(x.split('-')[:3] + [x.split('-')[-1].zfill(3)]))
+        df.sort_values(by = ['start_district_id','timeslotrank'], inplace = True)
+        df.drop('timeslotrank', axis = 1, inplace = True)
+        df.reset_index(drop=True, inplace = True)
+        return
     def save_all_csv(self, dataDir):
         filePaths = self.get_all_file_paths(dataDir)
         for filename in filePaths:
             print "save csv for :{}".format(filename)
             self.save_one_csv(filename)
         return
+    def get_intial_colnames(self):
+        pass
     def save_one_csv(self, filename):
         print("loading file {}".format(filename))
-        df = pd.read_csv(filename, delimiter='\t', header=None, names =['Time','weather','temparature', 'pm25'])
+        df = pd.read_csv(filename, delimiter='\t', header=None, names =self.get_intial_colnames())
         df['time_slotid'] = df['Time'].map(singletonTimeslot.convertToSlot)
         
         self.process_one_df(df)
