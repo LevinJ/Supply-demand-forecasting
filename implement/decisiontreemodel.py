@@ -10,15 +10,16 @@ from utility.datafilepath import g_singletonDataFilePath
 class DecisionTreeModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [1,4,5]
+        self.usedFeatures = [1,4,5,6]
         self.randomSate = None
 #         self.excludeZerosActual = True
         return
     def setClf(self):
-        self.clf = DecisionTreeRegressor(random_state=0, min_samples_split= 12)
+        min_samples_split = 100
+        self.clf = DecisionTreeRegressor(random_state=0, min_samples_split= min_samples_split)
         return
     def getTunedParamterOptions(self):
-        tuned_parameters = [{'min_samples_split': np.arange(2, 300, 1)}]
+        tuned_parameters = [{'min_samples_split': np.arange(2, 1000, 1)}]
 #         tuned_parameters = [{'min_samples_split': [5, 8,10,12]}]
 #         tuned_parameters = [{'min_samples_split': [5, 10]}]
         return tuned_parameters

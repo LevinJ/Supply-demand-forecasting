@@ -71,6 +71,10 @@ class Timeslot:
         assert '2016-11-03' == self.getDate('2016-11-03-1')
         assert '2015-12-31' == self.getDate('2015-12-31-12')
         
+        assert ['2016-01-10-1'] == self.getPrevSlots('2016-01-10-2', 1)
+        assert ['2016-01-31-144'] == self.getPrevSlots('2016-02-01-1', 1)
+        assert ['2015-12-31-144'] == self.getPrevSlots('2016-01-01-1', 1)
+        
         print "passed the unit test"
 #         self.dispTimerange()
         return

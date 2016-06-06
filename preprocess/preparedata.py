@@ -12,6 +12,7 @@ from exploredata.timeslot import singletonTimeslot
 from utility.dumpload import DumpLoad
 from sklearn import preprocessing
 from enum import Enum
+from exploredata.weather import ExploreWeather
 
 
 
@@ -20,7 +21,7 @@ class ScaleMethod(Enum):
     MIN_MAX = 2
     STD = 3
     
-class PrepareData(ExploreOrder):
+class PrepareData(ExploreOrder, ExploreWeather):
     def __init__(self):
         ExploreOrder.__init__(self)
         self.scaling = ScaleMethod.NONE
@@ -40,6 +41,7 @@ class PrepareData(ExploreOrder):
         featureDict[3] = timeids
         featureDict[4] = ['time_id']
         featureDict[5] = ['start_district_id']
+        featureDict[6] = ['preweather']
         return featureDict
     def translateUsedFeatures(self):
         if len(self.usedFeatures) == 0:
@@ -119,11 +121,22 @@ class PrepareData(ExploreOrder):
         assert [24,26,37] == self.getPrevGaps(53, '2016-01-04-56', 3)
         print "unit test passed"
         return
-#     def removeUnusedCol(self):
-#         self.X_y_Df.drop(['start_district_id', 'time_slotid', 'time_slot', 'all_requests', 'time_id'], axis=1, inplace=True)
-#         return
-    def transformXfDf(self, prevGapDfDumpDir = None):
-        self.addPreGaps(prevGapDfDumpDir)
+    def add_prev_weather(self, data_dir):
+        dumpload = DumpLoad(data_dir + 'weather_data/temp/prevweather.df.pickle')
+        if dumpload.isExisiting():
+            df = dumpload.load()
+        else:
+            weather_dict = self.get_weather_dict(data_dir)
+            
+            df = self.X_y_Df['time_slotid'].apply(self.find_prev_weather, weather_dict=weather_dict)
+            df = pd.DataFrame(df.values, columns=['preweather'])
+            
+            dumpload.dump(df)
+        self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
+        return
+    def transformXfDf(self, data_dir = None):
+        self.addPreGaps(data_dir + 'order_data/temp/')
+        self.add_prev_weather(data_dir)
 #         self.transformCategories()
         if hasattr(self, 'busedFeaturesTranslated'):
             return
@@ -132,30 +145,31 @@ class PrepareData(ExploreOrder):
 #         self.X_y_Df.to_csv("temp/transformeddata.csv")
         return
     def getTrainTestSet(self):
-        dataDir = g_singletonDataFilePath.getTrainDir()
-        self.X_y_Df = self.loadGapCsvFile(dataDir + 'order_data/temp/gap.csv')
-        self.transformXfDf(prevGapDfDumpDir = dataDir + 'order_data/temp/')
+        data_dir = g_singletonDataFilePath.getTrainDir()
+        self.X_y_Df = self.loadGapCsvFile(data_dir + 'order_data/temp/gap.csv')
+        self.transformXfDf(data_dir)
         
         self.splitTrainTestSet()
         self.rescaleFeatures()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
         
     def getFeaturesLabel(self):
-        dataDir = g_singletonDataFilePath.getTrainDir()
-        self.X_y_Df = self.loadGapCsvFile(dataDir + 'order_data/temp/gap.csv') 
-        self.transformXfDf(prevGapDfDumpDir = dataDir + 'order_data/temp/')
+        data_dir = g_singletonDataFilePath.getTrainDir()
+        self.X_y_Df = self.loadGapCsvFile(data_dir + 'order_data/temp/gap.csv') 
+        self.transformXfDf(data_dir)
          
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel]
-    def getFeaturesforTestSet(self, dataDir):
-        self.X_y_Df = pd.read_csv(dataDir + 'gap_prediction.csv', index_col=0)
-        self.transformXfDf(prevGapDfDumpDir = dataDir + 'order_data/temp/')
+    def getFeaturesforTestSet(self, data_dir):
+        self.X_y_Df = pd.read_csv(data_dir + 'gap_prediction.csv', index_col=0)
+        self.transformXfDf(data_dir)
         return self.X_y_Df
     def run(self):
-        print self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
+#         print self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
         
         
 #         self.getTrainTestSet()
 #         self.getFeaturesLabel()
+        self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
 
         return
     

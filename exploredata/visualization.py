@@ -49,9 +49,9 @@ class visualizeOrder(ExploreOrder, ExploreWeather):
 #             temp = np.empty(group['time_id'].shape[0])
 #             temp.fill(2)
             
-            ax.plot(group['time_id'], group['gap']/group['gap'].max(), 'r', alpha=0.75)
-            ax.plot(group['time_id'], group['weather']/group['weather'].max())
-#             ax.bar(group['time_id'], group['weather'], width=1)
+#             ax.plot(group['time_id'], group['gap']/group['gap'].max(), 'r', alpha=0.75)
+#             ax.plot(group['time_id'], group['weather']/group['weather'].max())
+            ax.bar(group['time_id'], group['weather'], width=1)
             ax.set_title(name)
             count = count + 1
 #             plt.bar(group['time_id'], np.full(group['time_id'].shape[0], 5), width=1)

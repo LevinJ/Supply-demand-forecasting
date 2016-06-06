@@ -18,7 +18,8 @@ class TuneModel:
         
         features,labels = model.getFeaturesLabel()
         # do grid search
-        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=ShuffleSplit(labels.shape[0], n_iter=10,test_size=.25, random_state=10),
+        n_iter=10
+        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=ShuffleSplit(labels.shape[0], n_iter=n_iter,test_size=.25, random_state=10),
                        scoring=mean_absolute_percentage_error_scoring)
         estimator.fit(features, labels)
         model.clf = estimator.best_estimator_
@@ -32,7 +33,7 @@ class TuneModel:
         return
     def run(self):
         model = DecisionTreeModel()
-        model.usedFeatures = [1,4,5]
+        model.usedFeatures = [1,4,5,6]
         t0 = time()
         self.runGridSearch(model)
         print "runGridSearch:", round(time()-t0, 3), "s"
