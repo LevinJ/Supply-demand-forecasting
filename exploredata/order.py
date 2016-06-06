@@ -85,7 +85,7 @@ class ExploreOrder:
             self.saveAllGapCsv(orderFileDir)
             self.combineAllGapCsv(orderFileDir)
         df = pd.read_csv(fileName, index_col= 0)
-        print df.describe()
+#         print df.describe()
         return df
     def loadGapDict(self, fileName):
         t0 = time()
