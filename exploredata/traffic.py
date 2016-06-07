@@ -13,20 +13,18 @@ class ExploreTraffic(ExploreData ):
         return
     def run(self):
         self.__unittest()
-#         self.save_all_csv(g_singletonDataFilePath.getTrainDir()+ 'traffic_data/')
-#         self.combine_all_csv(g_singletonDataFilePath.getTrainDir() + 'traffic_data/temp/', 'traffic_', 'traffic.csv')
-        self.get_traffic_dict(g_singletonDataFilePath.getTrainDir())
+        data_dir = g_singletonDataFilePath.getTrainDir()
+#         self.save_all_csv(data_dir+ 'traffic_data/')
+#         self.combine_all_csv(data_dir + 'traffic_data/temp/', 'traffic_', 'traffic.csv')
+#         self.get_traffic_dict(data_dir)
         return
     def __unittest(self):
         #         self.combine_all_csv(g_singletonDataFilePath.getTrainDir() + 'weather_data/temp/', 'weather_', 'weather.csv')
 #         self.save_one_csv(g_singletonDataFilePath.getTrainDir() + 'traffic_data/traffic_data_2016-01-04')
 #         weatherdf = self.load_weatherdf(g_singletonDataFilePath.getTrainDir())
-#         weather_dict = self.get_weather_dict(g_singletonDataFilePath.getTrainDir())
-#         assert  0== self.find_prev_weather('2016-01-01-1', weather_dict = weather_dict)
-#         assert  2== self.find_prev_weather('2016-01-21-144', weather_dict = weather_dict)
-#         
-#         assert  4== self.find_prev_weather('2016-01-21-115', weather_dict = weather_dict)
-#         assert  4== self.find_prev_weather('2016-01-21-114', weather_dict = weather_dict)
+        traffic_dict = self.get_traffic_dict(g_singletonDataFilePath.getTrainDir())
+        self.find_prev_traffic(pd.Series([1, '2016-01-01-2']), traffic_dict=traffic_dict,pre_num = 3)
+        self.find_prev_traffic(pd.Series([1, '2016-01-01-9']), traffic_dict=traffic_dict,pre_num = 2)
         print 'passed unit test'
         
         
@@ -49,41 +47,34 @@ class ExploreTraffic(ExploreData ):
         print "dump traffic dict:", round(time()-t0, 3), "s"
         return resDict
     def process_all_df(self, df):
-#         self.add_timeid_col(df)
-#         self.add_timedate_col(df)
+        self.add_timeid_col(df)
+        self.add_timedate_col(df)
         self.sort_by_district_time(df)
         df = df.drop('start_district_hash', axis=1, inplace = True)
         return
     def load_trafficdf(self, dataDir):
         filename = dataDir + 'traffic_data/temp/traffic.csv'
         return pd.read_csv(filename, index_col= 0)
-    def is_first_record(self, weather_dict, time_slotid):
-        try:
-            res = weather_dict[time_slotid]
-            if (res[0] == 0):
-                return True
-        except:
-            pass
-        return False
+
     def cal_traffic_value(self, level_series):
         res = 0
         for _, item in level_series.iteritems():
             item = item.split(':')
             res = res + int(item[0]) * int(item[1])            
         return res
-    def find_prev_weather(self, time_slotid, weather_dict=None,):
-        if self.is_first_record(weather_dict, time_slotid):
-            return 0
-        current_slot = time_slotid
-        while(True):
-            res = singletonTimeslot.getPrevSlots(current_slot, 1)
-            current_slot = res[0]
+    def find_prev_traffic(self, series, traffic_dict=None,pre_num = 2):
+        start_district_id = series.iloc[0]
+        time_slotid = series.iloc[1]
+        index = ['traffic' + str(i + 1) for i in range(pre_num)]
+        res = []
+        prevSlots = singletonTimeslot.getPrevSlots(time_slotid, pre_num)
+        for prevslot in prevSlots:
             try:
-                res = weather_dict[current_slot]
-                return res[1]
+                res.append(traffic_dict[(start_district_id, prevslot)])
             except:
-                pass
-        return
+                res.append(0)
+        return pd.Series(res, index = index)
+
     
     def process_one_df(self, df):
         df['start_district_id'] = df['start_district_hash'].map(singletonDistricId.convertToId)

@@ -13,6 +13,7 @@ from utility.dumpload import DumpLoad
 from sklearn import preprocessing
 from enum import Enum
 from exploredata.weather import ExploreWeather
+from exploredata.traffic import ExploreTraffic
 
 
 
@@ -21,7 +22,7 @@ class ScaleMethod(Enum):
     MIN_MAX = 2
     STD = 3
     
-class PrepareData(ExploreOrder, ExploreWeather):
+class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
     def __init__(self):
         ExploreOrder.__init__(self)
         self.scaling = ScaleMethod.NONE
@@ -42,6 +43,7 @@ class PrepareData(ExploreOrder, ExploreWeather):
         featureDict[4] = ['time_id']
         featureDict[5] = ['start_district_id']
         featureDict[6] = ['preweather']
+        featureDict[7] = ['traffic1','traffic2','traffic3']
         return featureDict
     def translateUsedFeatures(self):
         if len(self.usedFeatures) == 0:
@@ -134,9 +136,24 @@ class PrepareData(ExploreOrder, ExploreWeather):
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
+    def add_prev_traffic(self, data_dir):
+        dumpload = DumpLoad(data_dir + 'traffic_data/temp/prevweather.df.pickle')
+        if dumpload.isExisiting():
+            df = dumpload.load()
+        else:
+            traffic_dict = self.get_traffic_dict(data_dir)
+            
+            df = self.X_y_Df[['start_district_id', 'time_slotid']].apply(self.find_prev_traffic,axis = 1, traffic_dict=traffic_dict, pre_num = 3)
+#             df = pd.DataFrame(df.values, columns=['preweather'])
+            
+            dumpload.dump(df)
+        self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
+        return
+    
     def transformXfDf(self, data_dir = None):
         self.addPreGaps(data_dir + 'order_data/temp/')
         self.add_prev_weather(data_dir)
+        self.add_prev_traffic(data_dir)
 #         self.transformCategories()
         if hasattr(self, 'busedFeaturesTranslated'):
             return

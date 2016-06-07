@@ -10,7 +10,7 @@ from utility.datafilepath import g_singletonDataFilePath
 class DecisionTreeModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [1,4,5,6]
+        self.usedFeatures = [1,4,5,6,7]
         self.randomSate = None
 #         self.excludeZerosActual = True
         return

@@ -33,7 +33,7 @@ class TuneModel:
         return
     def run(self):
         model = DecisionTreeModel()
-        model.usedFeatures = [1,4,5,6]
+        model.usedFeatures = [1,4,5,6, 7]
         t0 = time()
         self.runGridSearch(model)
         print "runGridSearch:", round(time()-t0, 3), "s"
