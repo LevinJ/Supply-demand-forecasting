@@ -104,10 +104,24 @@ class ExploreOrder:
         print "Number of Gaps with zero value {}, {}".format((df['gap'] == 0).sum(), (df['gap'] == 0).sum()/float(df.shape[0]))
         return
     def unitTest(self):
-#         data_dict = self.loadDict()
-#         assert [3096,1698,318,33,0,0] == self.find_prev_gap(51, '2016-01-01-5', 6)
-#         assert [0,0,0] == self.find_prev_gap(45, '2016-01-16-2', 3)
-#         assert [24,26,37] == self.find_prev_gap(53, '2016-01-04-56', 3)
+        # test cases for find_prev_gap
+        data_dir = g_singletonDataFilePath.getTrainDir()
+        gap_dict = self.get_gap_dict(data_dir)
+        assert [3096,1698,318,33,0,0] == self.find_prev_gap(pd.Series([51, '2016-01-01-5']), pre_num = 6, gap_dict = gap_dict).tolist()
+        assert [0,0,0] == self.find_prev_gap(pd.Series([45, '2016-01-16-2']), pre_num = 3, gap_dict = gap_dict).tolist()
+        assert [24,26,37] == self.find_prev_gap(pd.Series([53, '2016-01-04-56']), pre_num = 3, gap_dict = gap_dict).tolist()
+        
+        
+        data_dir = g_singletonDataFilePath.getTest1Dir()
+        gap_dict = self.get_gap_dict(data_dir)
+        assert [0,1,0] == self.find_prev_gap(pd.Series([54, '2016-01-24-81']), pre_num = 3, gap_dict = gap_dict).tolist()
+        assert [6,4,0] == self.find_prev_gap(pd.Series([7, '2016-01-30-141']), pre_num = 3, gap_dict = gap_dict).tolist()
+        assert [0,0] == self.find_prev_gap(pd.Series([7, '2016-01-30-138']), pre_num = 2, gap_dict = gap_dict).tolist()
+        assert [0,0,0] == self.find_prev_gap(pd.Series([7, '2016-01-30-139']), pre_num = 3, gap_dict = gap_dict).tolist()
+        assert [0,0,1] == self.find_prev_gap(pd.Series([50, '2016-01-30-143']), pre_num = 3, gap_dict = gap_dict).tolist()
+        assert [245,282,0] == self.find_prev_gap(pd.Series([51, '2016-01-22-141']), pre_num = 3, gap_dict = gap_dict).tolist()
+
+
         print "unit test passed"
         return
     def find_prev_gap(self, row, pre_num = 3, gap_dict = None):
@@ -124,9 +138,10 @@ class ExploreOrder:
         res =pd.Series(res, index = index)
         return res
     def run(self):
-        data_dir = g_singletonDataFilePath.getTrainDir()
-#         data_dir = g_singletonDataFilePath.getTest1Dir()
-        res = self.get_gap_dict(data_dir)
+        self.unitTest()
+#         data_dir = g_singletonDataFilePath.getTrainDir()
+# #         data_dir = g_singletonDataFilePath.getTest1Dir()
+#         res = self.get_gap_dict(data_dir)
 #         res = self.loadGapData(g_singletonDataFilePath.getGapCsv_Test1())
         
         return
