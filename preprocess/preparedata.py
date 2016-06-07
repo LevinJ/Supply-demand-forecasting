@@ -57,10 +57,6 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         [res.extend(featureDict[fea]) for fea in self.usedFeatures]
         self.usedFeatures = res
         return
-#     def loadRawData(self, dataDir):
-#         gapDf, self.gapDict = self.loadGapData(dataDir + g_singletonDataFilePath.getGapFilename())
-#         self.X_y_Df = gapDf
-#         return
     def splitTrainTestSet(self):
         # Remove zeros values from data to try things out
         if self.excludeZerosActual:
@@ -90,38 +86,15 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
             self.X_y_Df = pd.concat([self.X_y_Df, col_data],  axis=1)
         print self.X_y_Df.columns
         return
-    def addPreGaps(self, prevGapDfDumpDir):
-#         t0 = time()
-        dumpload = DumpLoad(prevGapDfDumpDir + 'prevgap.df.pickle')
+    def add_pre_gaps(self, data_dir):
+        dumpload = DumpLoad(data_dir + 'order_data/temp/prevgap.df.pickle')
         if dumpload.isExisiting():
-            prevGaps = dumpload.load()
+            df = dumpload.load()
         else:
-            self.gapDict = self.loadGapDict(prevGapDfDumpDir + 'gap.csv.dict.pickle')
-            prevGaps = self.X_y_Df.apply(self.getPrevGapsbyRow, axis = 1, raw=False, preNum = 3)
-            dumpload.dump(prevGaps)
-        self.X_y_Df = pd.concat([self.X_y_Df, prevGaps],  axis=1)
-        
-        return
-    def getPrevGapsbyRow(self, row, preNum = 3):
-        start_district_id = row['start_district_id']
-        time_slotid = row['time_slotid'] 
-        index = ['gap' + str(i + 1) for i in range(preNum)]
-        res =pd.Series(self.getPrevGaps(start_district_id, time_slotid, preNum), index = index)
-        return res
-    def getPrevGaps(self, start_district_id, time_slotid,preNum):
-        res = []
-        prevSlots = singletonTimeslot.getPrevSlots(time_slotid, preNum)
-        for prevslot in prevSlots:
-            try:
-                res.append(self.gapDict[(start_district_id, prevslot)])
-            except:
-                res.append(0)
-        return res
-    def unitTest(self):
-        assert [3096,1698,318,33,0,0] == self.getPrevGaps(51, '2016-01-01-5', 6)
-        assert [0,0,0] == self.getPrevGaps(45, '2016-01-16-2', 3)
-        assert [24,26,37] == self.getPrevGaps(53, '2016-01-04-56', 3)
-        print "unit test passed"
+            gap_dict = self.get_gap_dict(data_dir)
+            df = self.X_y_Df[['start_district_id', 'time_slotid']].apply(self.find_prev_gap, axis = 1, pre_num = 3, gap_dict = gap_dict)
+            dumpload.dump(df)
+        self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
     def add_prev_weather(self, data_dir):
         dumpload = DumpLoad(data_dir + 'weather_data/temp/prevweather.df.pickle')
@@ -131,27 +104,25 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
             weather_dict = self.get_weather_dict(data_dir)
             
             df = self.X_y_Df['time_slotid'].apply(self.find_prev_weather, weather_dict=weather_dict)
-            df = pd.DataFrame(df.values, columns=['preweather'])
-            
+                    
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
     def add_prev_traffic(self, data_dir):
-        dumpload = DumpLoad(data_dir + 'traffic_data/temp/prevweather.df.pickle')
+        dumpload = DumpLoad(data_dir + 'traffic_data/temp/prevtraffic.df.pickle')
         if dumpload.isExisiting():
             df = dumpload.load()
         else:
             traffic_dict = self.get_traffic_dict(data_dir)
             
             df = self.X_y_Df[['start_district_id', 'time_slotid']].apply(self.find_prev_traffic,axis = 1, traffic_dict=traffic_dict, pre_num = 3)
-#             df = pd.DataFrame(df.values, columns=['preweather'])
             
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
     
     def transformXfDf(self, data_dir = None):
-        self.addPreGaps(data_dir + 'order_data/temp/')
+        self.add_pre_gaps(data_dir)
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
 #         self.transformCategories()
@@ -163,7 +134,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         return
     def getTrainTestSet(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
-        self.X_y_Df = self.loadGapCsvFile(data_dir + 'order_data/temp/gap.csv')
+        self.X_y_Df = self.load_gapdf(data_dir)
         self.transformXfDf(data_dir)
         
         self.splitTrainTestSet()
@@ -172,7 +143,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         
     def getFeaturesLabel(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
-        self.X_y_Df = self.loadGapCsvFile(data_dir + 'order_data/temp/gap.csv') 
+        self.X_y_Df = self.load_gapdf(data_dir) 
         self.transformXfDf(data_dir)
          
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel]
@@ -184,7 +155,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
 #         print self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
         
         
-#         self.getTrainTestSet()
+        self.getTrainTestSet()
 #         self.getFeaturesLabel()
         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
 

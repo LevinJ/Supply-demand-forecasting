@@ -73,28 +73,26 @@ class ExploreOrder:
         resDf.to_csv(os.path.dirname(filename) + '/temp/'+ os.path.basename(filename) + '_gap.csv')
         print resDf.describe()
         return
-    def loadGapData(self, gapFileName):
+    def loadGapData(self, data_dir):
         """
         This is the only interface taht should be called by outsider 
         It returns the raw csv file and index hash of district/timeslot for quick retrieval of previous gaps
         """
-        return (self.loadGapCsvFile(gapFileName), self.loadGapDict(gapFileName))
-    def loadGapCsvFile(self, fileName):
-        if not os.path.exists(fileName):
-            orderFileDir = os.path.dirname(os.path.dirname(fileName)) + r"/"
-            self.saveAllGapCsv(orderFileDir)
-            self.combineAllGapCsv(orderFileDir)
-        df = pd.read_csv(fileName, index_col= 0)
+        return (self.load_gapdf(data_dir), self.get_gap_dict(data_dir))
+    def load_gapdf(self, data_dir):
+        filename = data_dir + 'order_data/temp/gap.csv'
+        df = pd.read_csv(filename, index_col= 0)
 #         print df.describe()
         return df
-    def loadGapDict(self, fileName):
+    def get_gap_dict(self, data_dir):
         t0 = time()
-        dumpload = DumpLoad( fileName)
+        filename = data_dir + 'order_data/temp/gap.csv.dict.pickle'
+        dumpload = DumpLoad( filename)
         if dumpload.isExisiting():
             return dumpload.load()
         
         resDict = {}
-        df = self.loadGapCsvFile(fileName)
+        df = self.load_gapdf(data_dir)
         for _, row in df.iterrows():
             resDict[tuple(row[['start_district_id','time_slotid']].tolist())] = row['gap']
         
@@ -102,12 +100,34 @@ class ExploreOrder:
         print "dump gapdict:", round(time()-t0, 3), "s"
         return resDict
     def dispInfoAboutGap(self):
-        df = self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
+        df = self.load_gapdf(g_singletonDataFilePath.getGapCsv_Train())
         print "Number of Gaps with zero value {}, {}".format((df['gap'] == 0).sum(), (df['gap'] == 0).sum()/float(df.shape[0]))
         return
+    def unitTest(self):
+#         data_dict = self.loadDict()
+#         assert [3096,1698,318,33,0,0] == self.find_prev_gap(51, '2016-01-01-5', 6)
+#         assert [0,0,0] == self.find_prev_gap(45, '2016-01-16-2', 3)
+#         assert [24,26,37] == self.find_prev_gap(53, '2016-01-04-56', 3)
+        print "unit test passed"
+        return
+    def find_prev_gap(self, row, pre_num = 3, gap_dict = None):
+        start_district_id = row.iloc[0]
+        time_slotid = row.iloc[1]
+        index = ['gap' + str(i + 1) for i in range(pre_num)]
+        res = []
+        prevSlots = singletonTimeslot.getPrevSlots(time_slotid, pre_num)
+        for prevslot in prevSlots:
+            try:
+                res.append(gap_dict[(start_district_id, prevslot)])
+            except:
+                res.append(0)
+        res =pd.Series(res, index = index)
+        return res
     def run(self):
-#         res = self.loadGapData(g_singletonDataFilePath.getGapCsv_Train())
-        res = self.loadGapData(g_singletonDataFilePath.getGapCsv_Test1())
+        data_dir = g_singletonDataFilePath.getTrainDir()
+#         data_dir = g_singletonDataFilePath.getTest1Dir()
+        res = self.get_gap_dict(data_dir)
+#         res = self.loadGapData(g_singletonDataFilePath.getGapCsv_Test1())
         
         return
 

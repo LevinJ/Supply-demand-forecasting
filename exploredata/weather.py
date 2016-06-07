@@ -63,14 +63,14 @@ class ExploreWeather(ExploreData ):
         return False
     def find_prev_weather(self, time_slotid, weather_dict=None,):
         if self.is_first_record(weather_dict, time_slotid):
-            return 0
+            return pd.Series([0], index = ['preweather'])
         current_slot = time_slotid
         while(True):
             res = singletonTimeslot.getPrevSlots(current_slot, 1)
             current_slot = res[0]
             try:
                 res = weather_dict[current_slot]
-                return res[1]
+                return  pd.Series([res[1]], index = ['preweather'])
             except:
                 pass
         return
