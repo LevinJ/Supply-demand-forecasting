@@ -13,7 +13,7 @@ class ExploreTraffic(ExploreData ):
         return
     def run(self):
         self.__unittest()
-        data_dir = g_singletonDataFilePath.getTrainDir()
+#         data_dir = g_singletonDataFilePath.getTrainDir()
 #         self.save_all_csv(data_dir+ 'traffic_data/')
 #         self.combine_all_csv(data_dir + 'traffic_data/temp/', 'traffic_', 'traffic.csv')
 #         self.get_traffic_dict(data_dir)
@@ -22,9 +22,18 @@ class ExploreTraffic(ExploreData ):
         #         self.combine_all_csv(g_singletonDataFilePath.getTrainDir() + 'weather_data/temp/', 'weather_', 'weather.csv')
 #         self.save_one_csv(g_singletonDataFilePath.getTrainDir() + 'traffic_data/traffic_data_2016-01-04')
 #         weatherdf = self.load_weatherdf(g_singletonDataFilePath.getTrainDir())
-        traffic_dict = self.get_traffic_dict(g_singletonDataFilePath.getTrainDir())
-        self.find_prev_traffic(pd.Series([1, '2016-01-01-2']), traffic_dict=traffic_dict,pre_num = 3)
-        self.find_prev_traffic(pd.Series([1, '2016-01-01-9']), traffic_dict=traffic_dict,pre_num = 2)
+        data_dir = g_singletonDataFilePath.getTrainDir()
+        traffic_dict = self.get_traffic_dict(data_dir)
+        assert [0,0,0] == self.find_prev_traffic(pd.Series([1, '2016-01-01-2']), traffic_dict=traffic_dict,pre_num = 3).tolist()
+        assert [2246,2081] == self.find_prev_traffic(pd.Series([1, '2016-01-01-9']), traffic_dict=traffic_dict,pre_num = 2).tolist()
+        
+        data_dir = g_singletonDataFilePath.getTest1Dir()
+        traffic_dict = self.get_traffic_dict(data_dir)
+        assert [346,424,0] == self.find_prev_traffic(pd.Series([66, '2016-01-30-141']), traffic_dict=traffic_dict,pre_num = 3).tolist()
+        assert [501,484,447] == self.find_prev_traffic(pd.Series([66, '2016-01-30-70']), traffic_dict=traffic_dict,pre_num = 3).tolist()
+        assert [772,802,775] == self.find_prev_traffic(pd.Series([57, '2016-01-24-58']), traffic_dict=traffic_dict,pre_num = 3).tolist()
+        
+        
         print 'passed unit test'
         
         
