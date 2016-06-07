@@ -18,9 +18,11 @@ class LinearRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
         
-        self.usedFeatures = [1,2, 3]
+        self.usedFeatures = [1,4,5,6,7]
+        self.randomSate = None
+        self.excludeZerosActual = True
         self.scaling = ScaleMethod.MIN_MAX
-#         self.excludeZerosActual = True
+        self.test_size = 0.2
         return
     def setClf(self):
 #         self.clf = Ridge(alpha=0.0000001, tol=0.0000001)

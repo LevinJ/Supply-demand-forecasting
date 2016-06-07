@@ -4,3 +4,4 @@ temp/
 .pydevproject
 evaluation/read_me_1.txt
 *.pyc
+logs/

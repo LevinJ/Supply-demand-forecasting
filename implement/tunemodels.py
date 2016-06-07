@@ -8,35 +8,49 @@ from sklearn.cross_validation import ShuffleSplit
 from evaluation.sklearnmape import mean_absolute_percentage_error_scoring
 from time import time
 from utility.datafilepath import g_singletonDataFilePath
+import logging
+from utility.logger_tool import Logger
+from datetime import datetime
+from knnmodel import KNNModel
+from utility.duration import Duration
+
 
 class TuneModel:
     def __init__(self):
-
+        self.application_start_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        logfile_name = r'logs/tunealgorithm_' +self.application_start_time + '.txt'
+        _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
+        self.durationtool = Duration()
         return
     def runGridSearch(self, model):
         print "run grid search on model {}".format(model.__class__.__name__)
         
         features,labels = model.getFeaturesLabel()
         # do grid search
-        n_iter=2
+        n_iter= 10
         estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=ShuffleSplit(labels.shape[0], n_iter=n_iter,test_size=.25, random_state=10),
                        scoring=mean_absolute_percentage_error_scoring)
         estimator.fit(features, labels)
         model.clf = estimator.best_estimator_
         
         model.dispFeatureImportance()
-        print "Best parameters:", estimator.best_params_
-        print "Best Scores", -estimator.best_score_ 
+        logging.debug('estimaator parameters: {}'.format(estimator.get_params))
+        logging.debug('Best parameters: {}'.format(estimator.best_params_))
+        logging.debug('Best Scores: {}'.format(-estimator.best_score_))
+#         print "Best parameters:", estimator.best_params_
+#         print "Best Scores", -estimator.best_score_ 
         model.predictTestSet(g_singletonDataFilePath.getTest1Dir())
         
         
         return
     def run(self):
-        model = DecisionTreeModel()
+#         model = DecisionTreeModel()
+        model = KNNModel()
+        model.application_start_time = self.application_start_time
         model.usedFeatures = [1,4,5,6, 7]
-        t0 = time()
+        self.durationtool.start()
         self.runGridSearch(model)
-        print "runGridSearch:", round(time()-t0, 3), "s"
+        self.durationtool.end()
         return
 
 

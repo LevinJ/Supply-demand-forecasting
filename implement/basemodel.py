@@ -2,8 +2,7 @@ from preprocess.preparedata import PrepareData
 
 from time import time
 from evaluation.sklearnmape import mean_absolute_percentage_error
-from utility.datafilepath import g_singletonDataFilePath
-from datetime import datetime
+from utility.dumpload import DumpLoad
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -42,8 +41,10 @@ class BaseModel(PrepareData):
         y_pred = self.clf.predict(X_y_Df[self.usedFeatures])
         X_y_Df['y_pred'] = y_pred
         df = X_y_Df[['start_district_id', 'time_slotid', 'y_pred']]
-        filename = dataDir  +'temp/'+ datetime.now().strftime("%Y_%m_%d_%H_%M_%S") + 'gap_prediction_result.csv'
+        filename = 'logs/'+ self.application_start_time + '_gap_prediction_result.csv'
         df.to_csv(filename , header=None, index=None)
+        dumpload = DumpLoad('logs/' + self.application_start_time + '_bestestimator.pickle')
+        dumpload.dump(self.clf)
         return
     def run(self):
         self.getTrainTestSet()

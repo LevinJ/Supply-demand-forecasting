@@ -30,6 +30,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         self.usedLabel = 'gap'
         self.excludeZerosActual = False
         self.randomSate = 42
+        self.test_size = 0.25
        
         return
     def getAllFeaturesDict(self):
@@ -58,12 +59,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         self.usedFeatures = res
         return
     def splitTrainTestSet(self):
-        # Remove zeros values from data to try things out
-        if self.excludeZerosActual:
-            bNonZeros =   self.X_y_Df['gap'] != 0 
-            self.X_y_Df = self.X_y_Df[bNonZeros]
-        
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X_y_Df[self.usedFeatures], self.X_y_Df['gap'], test_size=0.25, random_state=self.randomSate)
+        # Remove zeros values from data to try things out      
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X_y_Df[self.usedFeatures], self.X_y_Df['gap'], test_size=self.test_size, random_state=self.randomSate)
         return
     def rescaleFeatures(self):
         self.rescale(self.X_train)
@@ -120,11 +117,19 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
-    
+    def remove_zero_gap(self):
+        if not 'gap' in self.X_y_Df.columns:
+            # when we perform validation on test set, we do not expect to have 'gap' column
+            return
+        if self.excludeZerosActual:
+            bNonZeros =   self.X_y_Df['gap'] != 0 
+            self.X_y_Df = self.X_y_Df[bNonZeros]
+        return
     def transformXfDf(self, data_dir = None):
         self.add_pre_gaps(data_dir)
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
+        self.remove_zero_gap()
 #         self.transformCategories()
         if hasattr(self, 'busedFeaturesTranslated'):
             return
