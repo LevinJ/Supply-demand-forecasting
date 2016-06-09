@@ -13,6 +13,7 @@ from utility.logger_tool import Logger
 from datetime import datetime
 from knnmodel import KNNModel
 from utility.duration import Duration
+from svmregressionmodel import SVMRegressionModel
 
 
 class TuneModel:
@@ -27,9 +28,9 @@ class TuneModel:
         
         features,labels = model.getFeaturesLabel()
         # do grid search
-        n_iter= 10
-        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=ShuffleSplit(labels.shape[0], n_iter=n_iter,test_size=.25, random_state=10),
-                       scoring=mean_absolute_percentage_error_scoring)
+        n_iter= 1
+        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=ShuffleSplit(labels.shape[0], n_iter=n_iter,test_size=model.test_size, random_state=10),
+                       scoring=mean_absolute_percentage_error_scoring, verbose = 2)
         estimator.fit(features, labels)
         model.clf = estimator.best_estimator_
         
@@ -43,9 +44,17 @@ class TuneModel:
         
         
         return
+    def get_model(self, model_id):
+        model_dict = {}
+        model_dict[1] =DecisionTreeModel
+        model_dict[2] =KNNModel
+        model_dict[3] =SVMRegressionModel
+        return model_dict[model_id]()
     def run(self):
-#         model = DecisionTreeModel()
-        model = KNNModel()
+       
+        model_id = 3
+
+        model = self.get_model(model_id)
         model.application_start_time = self.application_start_time
         model.usedFeatures = [1,4,5,6, 7]
         self.durationtool.start()

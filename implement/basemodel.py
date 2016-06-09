@@ -3,6 +3,7 @@ from preprocess.preparedata import PrepareData
 from time import time
 from evaluation.sklearnmape import mean_absolute_percentage_error
 from utility.dumpload import DumpLoad
+import numpy as np
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -13,7 +14,8 @@ class BaseModel(PrepareData):
     def setClf(self):
         pass
     def afterTrain(self):
-        pass
+        self.dispFeatureImportance()
+        return
     def train(self):
         print "Training {}...".format(self.clf.__class__.__name__)
         t0 = time()
@@ -22,7 +24,15 @@ class BaseModel(PrepareData):
         self.afterTrain()
         return
     def dispFeatureImportance(self):
-        pass
+        if not hasattr(self.clf, 'feature_importances_'):
+            return
+        features_list = np.asanyarray(self.usedFeatures)
+        sortIndexes = self.clf.feature_importances_.argsort()[::-1]
+        features_rank = features_list[sortIndexes]
+        num_rank = self.clf.feature_importances_[sortIndexes]
+        print "Ranked features: {}".format(features_rank)
+        print "Ranked importance: {}".format(num_rank)
+        return
     def test(self):
         t0 = time()
         y_pred_train = self.clf.predict(self.X_train)

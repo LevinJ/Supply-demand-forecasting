@@ -4,10 +4,9 @@ sys.path.insert(0, os.path.abspath('..'))
 
 from basemodel import BaseModel
 import numpy as np
-from sklearn.tree import DecisionTreeRegressor
-from utility.datafilepath import g_singletonDataFilePath
+from sklearn.ensemble import AdaBoostRegressor
 
-class DecisionTreeModel(BaseModel):
+class AdaBoostModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
         self.usedFeatures = [1,4,5,6,7]
@@ -15,8 +14,8 @@ class DecisionTreeModel(BaseModel):
         self.excludeZerosActual = True
         return
     def setClf(self):
-        min_samples_split = 600
-        self.clf = DecisionTreeRegressor(random_state=0, min_samples_split= min_samples_split)
+#         min_samples_split = 3
+        self.clf = AdaBoostRegressor()
         return
     def getTunedParamterOptions(self):
         tuned_parameters = [{'min_samples_split': np.arange(2, 1000, 1)}]
@@ -28,5 +27,5 @@ class DecisionTreeModel(BaseModel):
 
 
 if __name__ == "__main__":   
-    obj= DecisionTreeModel()
+    obj= AdaBoostModel()
     obj.run()

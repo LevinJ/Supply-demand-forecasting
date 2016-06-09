@@ -29,7 +29,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         self.usedFeatures = []
         self.usedLabel = 'gap'
         self.excludeZerosActual = False
-        self.randomSate = 42
+        self.randomSate = None
         self.test_size = 0.25
        
         return
@@ -135,7 +135,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
             return
         self.translateUsedFeatures()
         self.busedFeaturesTranslated = True
-#         self.X_y_Df.to_csv("temp/transformeddata.csv")
+        self.X_y_Df.to_csv("temp/transformeddata.csv")
         return
     def getTrainTestSet(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
