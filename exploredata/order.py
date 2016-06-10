@@ -33,7 +33,7 @@ class ExploreOrder:
     def combineAllGapCsv(self, orderFileDir):
         print "Combin all gaps"
         resDf = pd.DataFrame()
-        filePaths = self.getAllFilePaths(orderFileDir + 'temp/')
+        filePaths = self.getAllFilePaths(orderFileDir + 'order_data/temp/')
         for filename in filePaths:
             if not filename.endswith('_gap.csv'):
                 continue
@@ -41,7 +41,8 @@ class ExploreOrder:
             resDf = pd.concat([resDf, df], ignore_index = True)
         resDf = self.sortGapRows(resDf)
         self.addTimeIdColumn(resDf)
-        resDf.to_csv(orderFileDir + 'temp/'+ 'gap.csv')
+        resDf['time_date'] = resDf['time_slotid'].apply(singletonTimeslot.getDate)
+        resDf.to_csv(orderFileDir + 'order_data/temp/'+ 'gap.csv')
         print "Overall gap statistics: \n{}".format(resDf.describe())
         return
     def getAllFilePaths(self, rootpath):
@@ -82,7 +83,7 @@ class ExploreOrder:
     def load_gapdf(self, data_dir):
         filename = data_dir + 'order_data/temp/gap.csv'
         df = pd.read_csv(filename, index_col= 0)
-#         print df.describe()
+        print df.describe()
         return df
     def get_gap_dict(self, data_dir):
         t0 = time()
@@ -139,6 +140,7 @@ class ExploreOrder:
         return res
     def run(self):
         self.unitTest()
+        self.combineAllGapCsv(g_singletonDataFilePath.getTest1Dir())
 #         data_dir = g_singletonDataFilePath.getTrainDir()
 # #         data_dir = g_singletonDataFilePath.getTest1Dir()
 #         res = self.get_gap_dict(data_dir)
