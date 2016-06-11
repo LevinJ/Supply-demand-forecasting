@@ -6,6 +6,7 @@ from utility.dumpload import DumpLoad
 import numpy as np
 from datetime import datetime
 from utility.datafilepath import g_singletonDataFilePath
+import pandas as pd
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -53,6 +54,8 @@ class BaseModel(PrepareData):
         print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test, dateslot_num = self.dateslot_test_num))
 #         print "MSE for training set: {}".format(mean_squared_error(self.y_train, y_pred_train))
 #         print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
+        pd.DataFrame({'y_train':self.y_train.values, 'y_train_pred':y_pred_train}).to_csv('temp/trainpred.csv')
+        pd.DataFrame({'y_test':self.y_test.values, 'y_test_pred':y_pred_test}).to_csv('temp/testpred.csv')
         print "test:", round(time()-t0, 3), "s"
         return
     def afterRun(self):

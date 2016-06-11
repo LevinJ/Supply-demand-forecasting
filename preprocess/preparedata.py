@@ -26,9 +26,9 @@ class HoldoutSplitMethod(Enum):
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = []
+        self.usedFeatures = [1,4,5,6,7]
         self.usedLabel = 'gap'
-        self.excludeZerosActual = False
+        self.excludeZerosActual = True
         self.randomSate = None
         self.test_size = 0.25
         self.holdout_split = HoldoutSplitMethod.IMITATE_PUBLICSET
@@ -70,13 +70,19 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.splitby_imitate_publicset()
         return
     def splitby_imitate_publicset(self):
-        selected_dateslots = self.get_holdoutset(holdout_id = 1)
+        validation_dateslots = self.get_holdoutset(holdout_id = 1)
+        validation_dateslots = self.X_y_Df['time_slotid'].isin(validation_dateslots)
+        train_dateslots = self.X_y_Df['time_date'] < '2016-01-13'
         
-        all_dateslots = self.X_y_Df['time_slotid'].unique()
-        self.dateslot_test_num = len(selected_dateslots)
-        self.dateslot_train_num = all_dateslots.shape[0] - self.dateslot_test_num
+        self.dateslot_test_num = self.X_y_Df[validation_dateslots]['time_slotid'].unique().shape[0]
+        self.dateslot_train_num = self.X_y_Df[train_dateslots]['time_slotid'].unique().shape[0]
         
-        self.splitby_dateslots(selected_dateslots)    
+        
+        self.X_test = self.X_y_Df[validation_dateslots][self.usedFeatures]
+        self.y_test = self.X_y_Df[validation_dateslots][self.usedLabel]
+        
+        self.X_train = self.X_y_Df[train_dateslots][self.usedFeatures]
+        self.y_train = self.X_y_Df[train_dateslots][self.usedLabel]    
         return
     def splitby_dateslots(self, selected_dateslots):
         selected_dateslots = self.X_y_Df['time_slotid'].isin(selected_dateslots)

@@ -11,11 +11,7 @@ from preprocess.preparedata import HoldoutSplitMethod
 class DecisionTreeModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [1,4,5,6,7]
-        self.randomSate = None
-        self.excludeZerosActual = True
-        self.save_final_model = True
-        self.holdout_split = HoldoutSplitMethod.IMITATE_PUBLICSET
+        self.save_final_model = False
         return
     def setClf(self):
         min_samples_split = 100
