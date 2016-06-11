@@ -4,26 +4,18 @@ sys.path.insert(0, os.path.abspath('..'))
 # from pprint import pprint as p
 # p(sys.path)
 
-from exploredata.order import ExploreOrder
-import pandas as pd
-from utility.datafilepath import g_singletonDataFilePath
-from sklearn.cross_validation import train_test_split
-from exploredata.timeslot import singletonTimeslot
-from utility.dumpload import DumpLoad
-from sklearn import preprocessing
 from enum import Enum
-from exploredata.weather import ExploreWeather
+from exploredata.order import ExploreOrder
 from exploredata.traffic import ExploreTraffic
-import numpy as np
+from exploredata.weather import ExploreWeather
 from prepareholdoutset import PrepareHoldoutSet
+from utility.datafilepath import g_singletonDataFilePath
+from utility.dumpload import DumpLoad
+import numpy as np
+import pandas as pd
 
 
 
-class ScaleMethod(Enum):
-    NONE = 1
-    MIN_MAX = 2
-    STD = 3
-    
     
 class HoldoutSplitMethod(Enum):
 #     NONE = 1
@@ -34,7 +26,6 @@ class HoldoutSplitMethod(Enum):
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.scaling = ScaleMethod.NONE
         self.usedFeatures = []
         self.usedLabel = 'gap'
         self.excludeZerosActual = False
@@ -103,20 +94,6 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.splitby_dateslots(selected_dateslots)
         
         return
-    def rescaleFeatures(self):
-        self.rescale(self.X_train)
-        self.rescale(self.X_test)
-        return
-    def rescale(self, outX):
-        scaler = None
-        if self.scaling is ScaleMethod.STD:
-            scaler = preprocessing.StandardScaler()
-        elif self.scaling is ScaleMethod.MIN_MAX:
-            scaler = preprocessing.MinMaxScaler()
-        else:
-            return outX
-        outX[['gap1', 'gap2', 'gap3']] = scaler.fit_transform(outX[['gap1', 'gap2', 'gap3']])
-        return outX
     def transformCategories(self):
         cols = ['start_district_id', 'time_id']
         for col in cols:
@@ -184,8 +161,6 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.transformXfDf(data_dir)
         
         self.splitTrainTestSet()
-        
-        self.rescaleFeatures()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
         
     def getFeaturesLabel(self):

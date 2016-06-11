@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.abspath('..'))
 from basemodel import BaseModel
 import numpy as np
 from sklearn.svm import SVR
-from preprocess.preparedata import ScaleMethod
 from sklearn import preprocessing
 from sklearn.pipeline import Pipeline
 

@@ -9,7 +9,8 @@ from basemodel import BaseModel
 import numpy as np
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import LinearRegression
-from preprocess.preparedata import ScaleMethod
+from sklearn import preprocessing
+from sklearn.pipeline import Pipeline
 
 
 
@@ -19,18 +20,19 @@ class LinearRegressionModel(BaseModel):
         BaseModel.__init__(self)
         
         self.usedFeatures = [1,4,5,6,7]
-        self.randomSate = None
+
         self.excludeZerosActual = True
-        self.scaling = ScaleMethod.MIN_MAX
-        self.test_size = 0.2
+
         return
     def setClf(self):
 #         self.clf = Ridge(alpha=0.0000001, tol=0.0000001)
-        self.clf = LinearRegression()
+        clf = LinearRegression()
+        min_max_scaler = preprocessing.MinMaxScaler()
+        self.clf = Pipeline([('scaler', min_max_scaler), ('estimator', clf)])
         return
     def afterTrain(self):
-        print "self.clf.coef_:\n{}".format(self.clf.coef_)
-        print "self.clf.intercept_:\n{}".format(self.clf.intercept_)
+        print "self.clf.named_steps['estimator'].coef_:\n{}".format(self.clf.named_steps['estimator'].coef_)
+        print "self.clf.named_steps['estimator'].intercept_:\n{}".format(self.clf.named_steps['estimator'].intercept_)
         return
 
 
