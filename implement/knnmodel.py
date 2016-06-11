@@ -5,6 +5,7 @@ from preprocess.preparedata import ScaleMethod
 import numpy as np
 from sklearn import preprocessing
 from sklearn.pipeline import Pipeline
+from preprocess.preparedata import HoldoutSplitMethod
 
 class KNNModel(BaseModel):
     def __init__(self):
@@ -14,9 +15,11 @@ class KNNModel(BaseModel):
         self.excludeZerosActual = True
 #         self.scaling = ScaleMethod.MIN_MAX
         self.test_size = 0.3
+        self.save_final_model = True
+        self.holdout_split = HoldoutSplitMethod.IMITATE_PUBLICSET
         return
     def setClf(self):
-        clf = KNeighborsClassifier(n_neighbors = 10)
+        clf = KNeighborsClassifier(n_neighbors = 50)
         min_max_scaler = preprocessing.MinMaxScaler()
         self.clf = Pipeline([('scaler', min_max_scaler), ('estimator', clf)])
         return

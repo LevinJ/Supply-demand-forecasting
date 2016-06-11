@@ -1,7 +1,7 @@
 from sklearn.utils import assert_all_finite
 import numpy as np
 
-def mean_absolute_percentage_error(y_true, y_pred): 
+def mean_absolute_percentage_error(y_true, y_pred, district_num = 66, dateslot_num = 144): 
     """
     Use of this metric is not recommended; for illustration only. 
     See other regression metrics on sklearn docs:
@@ -22,8 +22,8 @@ def mean_absolute_percentage_error(y_true, y_pred):
     ## Note: does not handle mix 1d representation
     #if _is_1d(y_true): 
     #    y_true, y_pred = _check_1d_array(y_true, y_pred)
-
-    return np.mean(np.abs((y_true - y_pred) / y_true))
+    return np.abs((y_true - y_pred) / y_true).sum()/float(district_num * dateslot_num)
+#     return np.mean(np.abs((y_true - y_pred) / y_true))
 
 
 def mean_absolute_percentage_error_scoring(estimator, X, y):

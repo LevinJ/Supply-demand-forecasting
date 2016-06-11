@@ -6,6 +6,7 @@ from basemodel import BaseModel
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from utility.datafilepath import g_singletonDataFilePath
+from preprocess.preparedata import HoldoutSplitMethod
 
 class DecisionTreeModel(BaseModel):
     def __init__(self):
@@ -13,9 +14,11 @@ class DecisionTreeModel(BaseModel):
         self.usedFeatures = [1,4,5,6,7]
         self.randomSate = None
         self.excludeZerosActual = True
+        self.save_final_model = True
+        self.holdout_split = HoldoutSplitMethod.IMITATE_PUBLICSET
         return
     def setClf(self):
-        min_samples_split = 600
+        min_samples_split = 100
         self.clf = DecisionTreeRegressor(random_state=0, min_samples_split= min_samples_split)
         return
     def getTunedParamterOptions(self):

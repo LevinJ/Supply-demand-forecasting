@@ -4,11 +4,15 @@ from time import time
 from evaluation.sklearnmape import mean_absolute_percentage_error
 from utility.dumpload import DumpLoad
 import numpy as np
+from datetime import datetime
+from utility.datafilepath import g_singletonDataFilePath
 
 class BaseModel(PrepareData):
     def __init__(self):
         PrepareData.__init__(self)
         self.setClf()
+        self.application_start_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        self.save_final_model =False
         
         return
     def setClf(self):
@@ -22,6 +26,13 @@ class BaseModel(PrepareData):
         self.clf.fit(self.X_train, self.y_train)
         print "train:", round(time()-t0, 3), "s"
         self.afterTrain()
+        return
+    def save_model(self):
+        if not self.save_final_model:
+            return
+        dumpload = DumpLoad('logs/' + self.application_start_time + '_estimator.pickle')
+        dumpload.dump(self)
+        self.predictTestSet(g_singletonDataFilePath.getTest1Dir())
         return
     def dispFeatureImportance(self):
         if not hasattr(self.clf, 'feature_importances_'):
@@ -38,8 +49,8 @@ class BaseModel(PrepareData):
         y_pred_train = self.clf.predict(self.X_train)
         y_pred_test = self.clf.predict(self.X_test)
         print "features used:\n {}".format(self.usedFeatures)
-        print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, y_pred_train))
-        print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test))
+        print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, y_pred_train, dateslot_num = self.dateslot_train_num))
+        print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test, dateslot_num = self.dateslot_test_num))
 #         print "MSE for training set: {}".format(mean_squared_error(self.y_train, y_pred_train))
 #         print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
         print "test:", round(time()-t0, 3), "s"
@@ -53,14 +64,14 @@ class BaseModel(PrepareData):
         df = X_y_Df[['start_district_id', 'time_slotid', 'y_pred']]
         filename = 'logs/'+ self.application_start_time + '_gap_prediction_result.csv'
         df.to_csv(filename , header=None, index=None)
-        dumpload = DumpLoad('logs/' + self.application_start_time + '_bestestimator.pickle')
-        dumpload.dump(self.clf)
+        
         return
     def run(self):
         self.getTrainTestSet()
         self.train()
         self.test()
         self.afterRun()
+        self.save_model()
         return
     
 if __name__ == "__main__":   

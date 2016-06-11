@@ -14,6 +14,8 @@ from sklearn import preprocessing
 from enum import Enum
 from exploredata.weather import ExploreWeather
 from exploredata.traffic import ExploreTraffic
+import numpy as np
+from prepareholdoutset import PrepareHoldoutSet
 
 
 
@@ -22,7 +24,14 @@ class ScaleMethod(Enum):
     MIN_MAX = 2
     STD = 3
     
-class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
+    
+class HoldoutSplitMethod(Enum):
+#     NONE = 1
+    BYDATESLOT_RANDOM = 2
+    IMITATE_PUBLICSET = 3
+
+    
+class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet):
     def __init__(self):
         ExploreOrder.__init__(self)
         self.scaling = ScaleMethod.NONE
@@ -31,6 +40,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         self.excludeZerosActual = False
         self.randomSate = None
         self.test_size = 0.25
+        self.holdout_split = HoldoutSplitMethod.IMITATE_PUBLICSET
        
         return
     def getAllFeaturesDict(self):
@@ -59,8 +69,39 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         self.usedFeatures = res
         return
     def splitTrainTestSet(self):
-        # Remove zeros values from data to try things out      
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X_y_Df[self.usedFeatures], self.X_y_Df['gap'], test_size=self.test_size, random_state=self.randomSate)
+        # Remove zeros values from data to try things out 
+#         if self.holdout_split == HoldoutSplitMethod.NONE:     
+#             self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X_y_Df[self.usedFeatures], self.X_y_Df['gap'], test_size=self.test_size, random_state=self.randomSate)
+#             return
+        if self.holdout_split == HoldoutSplitMethod.BYDATESLOT_RANDOM: 
+            self.splitby_random_dateslot()
+            return
+        self.splitby_imitate_publicset()
+        return
+    def splitby_imitate_publicset(self):
+        selected_dateslots = self.get_holdoutset(holdout_id = 1)
+        
+        all_dateslots = self.X_y_Df['time_slotid'].unique()
+        self.dateslot_test_num = len(selected_dateslots)
+        self.dateslot_train_num = all_dateslots.shape[0] - self.dateslot_test_num
+        
+        self.splitby_dateslots(selected_dateslots)    
+        return
+    def splitby_dateslots(self, selected_dateslots):
+        selected_dateslots = self.X_y_Df['time_slotid'].isin(selected_dateslots)
+        self.X_test = self.X_y_Df[selected_dateslots][self.usedFeatures]
+        self.y_test = self.X_y_Df[selected_dateslots][self.usedLabel]
+        self.X_train = self.X_y_Df[np.logical_not(selected_dateslots)][self.usedFeatures]
+        self.y_train = self.X_y_Df[np.logical_not(selected_dateslots)][self.usedLabel]
+        return
+    def splitby_random_dateslot(self):
+        all_dateslots = self.X_y_Df['time_slotid'].unique()
+        self.dateslot_test_num = int(self.test_size *all_dateslots.shape[0])
+        self.dateslot_train_num = all_dateslots.shape[0] - self.dateslot_test_num
+        
+        selected_dateslots = np.random.choice(all_dateslots,  size=self.dateslot_test_num, replace=False)
+        self.splitby_dateslots(selected_dateslots)
+        
         return
     def rescaleFeatures(self):
         self.rescale(self.X_train)
@@ -143,6 +184,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         self.transformXfDf(data_dir)
         
         self.splitTrainTestSet()
+        
         self.rescaleFeatures()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
         
@@ -150,6 +192,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         data_dir = g_singletonDataFilePath.getTrainDir()
         self.X_y_Df = self.load_gapdf(data_dir) 
         self.transformXfDf(data_dir)
+#         self.remove_zero_gap()
          
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel]
     def getFeaturesforTestSet(self, data_dir):
@@ -161,8 +204,9 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic):
         
         
         self.getTrainTestSet()
+#         self.getTrainTestSet()
 #         self.getFeaturesLabel()
-        self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
+#         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
 
         return
     
