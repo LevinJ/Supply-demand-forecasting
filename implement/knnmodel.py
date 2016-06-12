@@ -8,7 +8,6 @@ from preprocess.preparedata import HoldoutSplitMethod
 class KNNModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [1,4,5,6,7]
         self.save_final_model = True
         return
     def setClf(self):

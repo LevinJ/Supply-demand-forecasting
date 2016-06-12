@@ -26,21 +26,25 @@ class TuneModel:
     def runGridSearch(self, model):
         print "run grid search on model {}".format(model.__class__.__name__)
         
-        features,labels = model.getFeaturesLabel()
+        features,labels,cv = model.getFeaturesLabel()
         # do grid search
-        n_iter= 1
-        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=ShuffleSplit(labels.shape[0], n_iter=n_iter,test_size=model.test_size, random_state=10),
-                       scoring=mean_absolute_percentage_error_scoring, verbose = 2)
+        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=cv,
+                       scoring=mean_absolute_percentage_error_scoring, verbose = 500)
         estimator.fit(features, labels)
         model.clf = estimator.best_estimator_
         
-        model.dispFeatureImportance()
+#         model.dispFeatureImportance()
         logging.debug('estimaator parameters: {}'.format(estimator.get_params))
         logging.debug('Best parameters: {}'.format(estimator.best_params_))
         logging.debug('Best Scores: {}'.format(-estimator.best_score_))
-#         print "Best parameters:", estimator.best_params_
-#         print "Best Scores", -estimator.best_score_ 
-        model.predictTestSet(g_singletonDataFilePath.getTest1Dir())
+        logging.debug('Score grid: {}'.format(estimator.grid_scores_ ))
+        for i in estimator.grid_scores_ :
+            logging.debug('parameters: {}'.format(i.parameters ))
+            logging.debug('mean_validation_score: {}'.format((-i.mean_validation_score) ))
+            val_scores  = [ -x for x in i.cv_validation_scores]
+            logging.debug('cv_validation_scores: {}'.format(val_scores ))
+
+#         model.predictTestSet(g_singletonDataFilePath.getTest1Dir())
         
         
         return
@@ -52,11 +56,10 @@ class TuneModel:
         return model_dict[model_id]()
     def run(self):
        
-        model_id = 3
+        model_id = 1
 
         model = self.get_model(model_id)
         model.application_start_time = self.application_start_time
-        model.usedFeatures = [1,4,5,6, 7]
         self.durationtool.start()
         self.runGridSearch(model)
         self.durationtool.end()

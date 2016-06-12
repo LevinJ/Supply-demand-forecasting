@@ -83,7 +83,7 @@ class ExploreOrder:
     def load_gapdf(self, data_dir):
         filename = data_dir + 'order_data/temp/gap.csv'
         df = pd.read_csv(filename, index_col= 0)
-        print df.describe()
+#         print df.describe()
         return df
     def get_gap_dict(self, data_dir):
         t0 = time()

@@ -13,6 +13,7 @@ from utility.datafilepath import g_singletonDataFilePath
 from utility.dumpload import DumpLoad
 import numpy as np
 import pandas as pd
+from splittrainvalidation import SplitTrainValidation
 
 
 
@@ -21,17 +22,18 @@ class HoldoutSplitMethod(Enum):
 #     NONE = 1
     BYDATESLOT_RANDOM = 2
     IMITATE_PUBLICSET = 3
+    KFOLD_BYDATE      = 4
 
     
-class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet):
+class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = [1,2,3,6,7]
+        self.usedFeatures = [1,2,4,6,7]
         self.usedLabel = 'gap'
         self.excludeZerosActual = True
         self.randomSate = None
         self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.IMITATE_PUBLICSET
+        self.holdout_split = HoldoutSplitMethod.KFOLD_BYDATE
        
         return
     def getAllFeaturesDict(self):
@@ -67,7 +69,27 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         if self.holdout_split == HoldoutSplitMethod.BYDATESLOT_RANDOM: 
             self.splitby_random_dateslot()
             return
+        if self.holdout_split == HoldoutSplitMethod.KFOLD_BYDATE:
+            self.splitby_kfold()
+            return
         self.splitby_imitate_publicset()
+        return
+    def splitby_kfold(self):
+        cv = self.kfold_bydate(self.X_y_Df)
+        count = 0
+        for train_index, test_index in cv:
+            if count != len(cv)-1:
+                count = count + 1
+                continue
+            # just take the last fold as validation fold
+            self.X_train = self.X_y_Df.iloc[train_index][self.usedFeatures]
+            self.y_train = self.X_y_Df.iloc[train_index][self.usedLabel] 
+            self.dateslot_train_num = self.X_y_Df.iloc[train_index]['time_slotid'].unique().shape[0] 
+            
+            self.X_test = self.X_y_Df.iloc[test_index][self.usedFeatures]
+            self.y_test = self.X_y_Df.iloc[test_index][self.usedLabel]
+            self.dateslot_test_num = self.X_y_Df.iloc[test_index]['time_slotid'].unique().shape[0]
+            break
         return
     def splitby_imitate_publicset(self):
         validation_dateslots = self.get_holdoutset(holdout_id = 1)
@@ -101,13 +123,13 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         
         return
     def transformCategories(self):
-        cols = ['start_district_id', 'time_id']
+#         cols = ['start_district_id', 'time_id']
+        cols = ['start_district_id']
         self.X_y_Df['start_district_id'] = self.X_y_Df['start_district_id'].astype('category',categories=(np.arange(66) + 1))
-        self.X_y_Df['time_id'] = self.X_y_Df['time_id'].astype('category',categories=(np.arange(144) + 1))
+#         self.X_y_Df['time_id'] = self.X_y_Df['time_id'].astype('category',categories=(np.arange(144) + 1))
         for col in cols:
             col_data = pd.get_dummies(self.X_y_Df[col], prefix= col)
             self.X_y_Df = pd.concat([self.X_y_Df, col_data],  axis=1)
-        print self.X_y_Df.columns
         return
     def add_pre_gaps(self, data_dir):
         dumpload = DumpLoad(data_dir + 'order_data/temp/prevgap.df.pickle')
@@ -156,7 +178,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
         self.remove_zero_gap()
-#         self.transformCategories()
+        self.transformCategories()
         if hasattr(self, 'busedFeaturesTranslated'):
             return
         self.translateUsedFeatures()
@@ -176,8 +198,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.X_y_Df = self.load_gapdf(data_dir) 
         self.transformXfDf(data_dir)
 #         self.remove_zero_gap()
-         
-        return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel]
+        cv = self.kfold_bydate(self.X_y_Df, n_folds=10) 
+        return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel],cv
     def getFeaturesforTestSet(self, data_dir):
         self.X_y_Df = pd.read_csv(data_dir + 'gap_prediction.csv', index_col=0)
         self.transformXfDf(data_dir)
