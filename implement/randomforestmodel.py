@@ -10,13 +10,11 @@ from utility.datafilepath import g_singletonDataFilePath
 class RandomForestModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [1,4,5,6,7]
-        self.randomSate = None
-        self.excludeZerosActual = True
+        self.save_final_model = False
         return
     def setClf(self):
 #         min_samples_split = 3
-        self.clf = RandomForestRegressor(n_estimators = 10, max_features ='auto', min_samples_split =1, n_jobs=1)
+        self.clf = RandomForestRegressor(n_estimators = 10, max_features =0.8, min_samples_split =1, n_jobs=1)
         return
     def getTunedParamterOptions(self):
         tuned_parameters = [{'min_samples_split': np.arange(2, 1000, 1)}]

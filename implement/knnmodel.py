@@ -8,10 +8,11 @@ from preprocess.preparedata import HoldoutSplitMethod
 class KNNModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.save_final_model = False
+        self.usedFeatures = [1,4,5,6,7]
+        self.save_final_model = True
         return
     def setClf(self):
-        clf = KNeighborsClassifier(n_neighbors = 30)
+        clf = KNeighborsClassifier(n_neighbors = 100)
         min_max_scaler = preprocessing.MinMaxScaler()
         self.clf = Pipeline([('scaler', min_max_scaler), ('estimator', clf)])
         return

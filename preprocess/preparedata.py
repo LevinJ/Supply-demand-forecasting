@@ -26,7 +26,7 @@ class HoldoutSplitMethod(Enum):
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = [1,4,5,6,7]
+        self.usedFeatures = [1,2,3,6,7]
         self.usedLabel = 'gap'
         self.excludeZerosActual = True
         self.randomSate = None
@@ -102,6 +102,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         return
     def transformCategories(self):
         cols = ['start_district_id', 'time_id']
+        self.X_y_Df['start_district_id'] = self.X_y_Df['start_district_id'].astype('category',categories=(np.arange(66) + 1))
+        self.X_y_Df['time_id'] = self.X_y_Df['time_id'].astype('category',categories=(np.arange(144) + 1))
         for col in cols:
             col_data = pd.get_dummies(self.X_y_Df[col], prefix= col)
             self.X_y_Df = pd.concat([self.X_y_Df, col_data],  axis=1)
@@ -159,7 +161,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             return
         self.translateUsedFeatures()
         self.busedFeaturesTranslated = True
-        self.X_y_Df.to_csv("temp/transformeddata.csv")
+#         self.X_y_Df.to_csv("temp/transformeddata.csv")
         return
     def getTrainTestSet(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
