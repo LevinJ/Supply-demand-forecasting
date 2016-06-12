@@ -7,6 +7,7 @@ import numpy as np
 from datetime import datetime
 from utility.datafilepath import g_singletonDataFilePath
 import pandas as pd
+from sklearn import cross_validation
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -14,6 +15,8 @@ class BaseModel(PrepareData):
         self.setClf()
         self.application_start_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         self.save_final_model =False
+        self.do_cross_val = True
+        self.kfold_n_folds=10
         
         return
     def setClf(self):
@@ -69,7 +72,15 @@ class BaseModel(PrepareData):
         df.to_csv(filename , header=None, index=None)
         
         return
+    def run_croos_validation(self):
+        features,labels,cv = self.getFeaturesLabel(n_folds = self.kfold_n_folds)
+        scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv)
+        print "cross validation scores: means, {}, std, {}, details,{}".format(scores.mean(), scores.std(), scores)
+        return
     def run(self):
+        if self.do_cross_val:
+            self.run_croos_validation()
+            return
         self.getTrainTestSet()
         self.train()
         self.test()

@@ -23,6 +23,7 @@ class HoldoutSplitMethod(Enum):
     BYDATESLOT_RANDOM = 2
     IMITATE_PUBLICSET = 3
     KFOLD_BYDATE      = 4
+    kFOLD_FORWARD_CHAINING = 5
 
     
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation):
@@ -33,7 +34,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.excludeZerosActual = True
         self.randomSate = None
         self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.KFOLD_BYDATE
+        self.holdout_split = HoldoutSplitMethod.kFOLD_FORWARD_CHAINING
        
         return
     def getAllFeaturesDict(self):
@@ -193,12 +194,15 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.splitTrainTestSet()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
         
-    def getFeaturesLabel(self):
+    def getFeaturesLabel(self,n_folds=10):
         data_dir = g_singletonDataFilePath.getTrainDir()
         self.X_y_Df = self.load_gapdf(data_dir) 
         self.transformXfDf(data_dir)
 #         self.remove_zero_gap()
-        cv = self.kfold_bydate(self.X_y_Df, n_folds=10) 
+        if self.holdout_split == HoldoutSplitMethod.kFOLD_FORWARD_CHAINING:
+            cv = self.kfold_forward_chaining(self.X_y_Df)
+        else:
+            cv = self.kfold_bydate(self.X_y_Df, n_folds=n_folds) 
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel],cv
     def getFeaturesforTestSet(self, data_dir):
         self.X_y_Df = pd.read_csv(data_dir + 'gap_prediction.csv', index_col=0)

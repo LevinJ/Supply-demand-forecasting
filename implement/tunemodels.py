@@ -4,16 +4,14 @@ sys.path.insert(0, os.path.abspath('..'))
 
 from implement.decisiontreemodel import DecisionTreeModel
 from sklearn.grid_search import GridSearchCV
-from sklearn.cross_validation import ShuffleSplit
 from evaluation.sklearnmape import mean_absolute_percentage_error_scoring
-from time import time
-from utility.datafilepath import g_singletonDataFilePath
 import logging
 from utility.logger_tool import Logger
 from datetime import datetime
 from knnmodel import KNNModel
 from utility.duration import Duration
 from svmregressionmodel import SVMRegressionModel
+from randomforestmodel import RandomForestModel
 
 
 class TuneModel:
@@ -53,10 +51,11 @@ class TuneModel:
         model_dict[1] =DecisionTreeModel
         model_dict[2] =KNNModel
         model_dict[3] =SVMRegressionModel
+        model_dict[4] = RandomForestModel
         return model_dict[model_id]()
     def run(self):
        
-        model_id = 1
+        model_id = 4
 
         model = self.get_model(model_id)
         model.application_start_time = self.application_start_time

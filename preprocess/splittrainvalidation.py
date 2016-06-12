@@ -1,4 +1,5 @@
 from sklearn.cross_validation import KFold
+import numpy as np
 
 
 class SplitTrainValidation(object):
@@ -11,8 +12,31 @@ class SplitTrainValidation(object):
         for train_index, test_index in kf:
             print("TRAIN:", train_index, "TEST:", test_index)
         return kf
+    def kfold_forward_chaining(self, df):
+        res = []
+        df.sort_values(by = ['time_date','time_id','start_district_id'], axis = 0, inplace = True)
+        df.reset_index(drop=True, inplace = True)
+        
+        fold_len = df.shape[0]/10
+        #fold 1-5, 6
+#         item = np.arange(0,5*fold_len), np.arange(5*fold_len, 6*fold_len)
+#         res.append(item)
+        #fold 1-6, 7
+        item = np.arange(0,6*fold_len), np.arange(6*fold_len, 7*fold_len)
+        res.append(item)
+        #fold 1-7, 8
+        item = np.arange(0,7*fold_len), np.arange(7*fold_len, 8*fold_len)
+        res.append(item)
+        #fold 1-8, 9
+        item = np.arange(0,8*fold_len), np.arange(8*fold_len, 9*fold_len)
+        res.append(item)
+        #fold 1-9, 10
+        item = np.arange(0,9*fold_len), np.arange(9*fold_len, 10*fold_len)
+        res.append(item)
+        return res
     def run(self, df):
-        self.kfold_bydate(df)
+#         self.kfold_bydate(df)
+        self.kfold_forward_chaining(df)
         return
     
 

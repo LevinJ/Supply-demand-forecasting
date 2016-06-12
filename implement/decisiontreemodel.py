@@ -12,6 +12,7 @@ class DecisionTreeModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
         self.save_final_model = False
+#         self.kfold_n_folds=3
         return
     def setClf(self):
         min_samples_split = 10
