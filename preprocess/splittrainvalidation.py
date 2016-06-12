@@ -18,9 +18,18 @@ class SplitTrainValidation(object):
         df.reset_index(drop=True, inplace = True)
         
         fold_len = df.shape[0]/10
+        #fold 1-2, 3
+        item = np.arange(0,2*fold_len), np.arange(2*fold_len, 3*fold_len)
+        res.append(item)
+        #fold 1-3, 4
+        item = np.arange(0,3*fold_len), np.arange(3*fold_len, 4*fold_len)
+        res.append(item)
+        #fold 1-4, 5
+        item = np.arange(0,4*fold_len), np.arange(4*fold_len, 5*fold_len)
+        res.append(item)
         #fold 1-5, 6
-#         item = np.arange(0,5*fold_len), np.arange(5*fold_len, 6*fold_len)
-#         res.append(item)
+        item = np.arange(0,5*fold_len), np.arange(5*fold_len, 6*fold_len)
+        res.append(item)
         #fold 1-6, 7
         item = np.arange(0,6*fold_len), np.arange(6*fold_len, 7*fold_len)
         res.append(item)

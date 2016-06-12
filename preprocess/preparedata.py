@@ -193,7 +193,26 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         
         self.splitTrainTestSet()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
-        
+    def get_train_validationset(self, foldid = -1): 
+        _,_,cv = self.getFeaturesLabel(n_folds = self.kfold_n_folds)
+        count = 0
+        fold_len = len(cv)
+        if foldid == -1:
+            foldid = fold_len -1
+        for train_index, test_index in cv:
+            if count != foldid:
+                count = count + 1
+                continue
+            # just take the last fold as validation fold
+            self.X_train = self.X_y_Df.iloc[train_index][self.usedFeatures]
+            self.y_train = self.X_y_Df.iloc[train_index][self.usedLabel] 
+            self.dateslot_train_num = self.X_y_Df.iloc[train_index]['time_slotid'].unique().shape[0] 
+            
+            self.X_test = self.X_y_Df.iloc[test_index][self.usedFeatures]
+            self.y_test = self.X_y_Df.iloc[test_index][self.usedLabel]
+            self.dateslot_test_num = self.X_y_Df.iloc[test_index]['time_slotid'].unique().shape[0]
+            break
+        return   
     def getFeaturesLabel(self,n_folds=10):
         data_dir = g_singletonDataFilePath.getTrainDir()
         self.X_y_Df = self.load_gapdf(data_dir) 
@@ -201,7 +220,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
 #         self.remove_zero_gap()
         if self.holdout_split == HoldoutSplitMethod.kFOLD_FORWARD_CHAINING:
             cv = self.kfold_forward_chaining(self.X_y_Df)
-        else:
+        elif self.holdout_split == HoldoutSplitMethod.KFOLD_BYDATE:
             cv = self.kfold_bydate(self.X_y_Df, n_folds=n_folds) 
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel],cv
     def getFeaturesforTestSet(self, data_dir):

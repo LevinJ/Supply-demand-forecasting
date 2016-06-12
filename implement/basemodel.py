@@ -72,20 +72,25 @@ class BaseModel(PrepareData):
         df.to_csv(filename , header=None, index=None)
         
         return
+    def get_train_validation_foldid(self):
+        return -1
     def run_croos_validation(self):
         features,labels,cv = self.getFeaturesLabel(n_folds = self.kfold_n_folds)
         scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv)
         print "cross validation scores: means, {}, std, {}, details,{}".format(scores.mean(), scores.std(), scores)
         return
-    def run(self):
-        if self.do_cross_val:
-            self.run_croos_validation()
-            return
-        self.getTrainTestSet()
+    def run_train_validation(self):
+        self.get_train_validationset(foldid= self.get_train_validation_foldid())
         self.train()
         self.test()
         self.afterRun()
         self.save_model()
+        return
+    def run(self):
+        if self.do_cross_val:
+            self.run_croos_validation()
+            return
+        self.run_train_validation()
         return
     
 if __name__ == "__main__":   
