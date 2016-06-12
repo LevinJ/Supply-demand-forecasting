@@ -42,7 +42,6 @@ class TuneModel:
             val_scores  = [ -x for x in i.cv_validation_scores]
             logging.debug('cv_validation_scores: {}'.format(val_scores ))
 
-#         model.predictTestSet(g_singletonDataFilePath.getTest1Dir())
         
         
         return

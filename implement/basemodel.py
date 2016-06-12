@@ -36,7 +36,7 @@ class BaseModel(PrepareData):
             return
         dumpload = DumpLoad('logs/' + self.application_start_time + '_estimator.pickle')
         dumpload.dump(self)
-        self.predictTestSet(g_singletonDataFilePath.getTest1Dir())
+        self.predictTestSet(g_singletonDataFilePath.getTest2Dir())
         return
     def dispFeatureImportance(self):
         if not hasattr(self.clf, 'feature_importances_'):
