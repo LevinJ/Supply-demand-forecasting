@@ -9,6 +9,8 @@ class DataFilePath:
         return self.dataDir + 'test_set_1/order_data/'
     def getTest1Dir(self):
         return self.dataDir + 'test_set_1/'
+    def getTest2Dir(self):
+        return self.dataDir + 'test_set_2/'
     def getTrainDir(self):
         return self.dataDir + 'training_data/'
     def getGapCsv_Train(self):
@@ -17,6 +19,8 @@ class DataFilePath:
         return self.getOrderDir_Test1() + self.getGapFilename()
     def getTestset1Readme(self):
         return self.dataDir + 'test_set_1/read_me_1.txt'
+    def getTestset2Readme(self):
+        return self.dataDir + 'test_set_2/read_me_2.txt'
     def getGapFilename(self):
         return "temp/gap.csv"
     def getGapPredictionFileName(self):

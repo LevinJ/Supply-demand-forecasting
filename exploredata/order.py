@@ -14,7 +14,8 @@ class ExploreOrder:
     def __init__(self):
         return
     
-    def saveAllGapCsv(self, orderFileDir):
+    def saveAllGapCsv(self, data_dir):
+        orderFileDir = data_dir + 'order_data/'
         filePaths = self.getAllFilePaths(orderFileDir)
         for filename in filePaths:
             print "save gap csv for :{}".format(filename)
@@ -140,11 +141,10 @@ class ExploreOrder:
         return res
     def run(self):
         self.unitTest()
-        self.combineAllGapCsv(g_singletonDataFilePath.getTest1Dir())
-#         data_dir = g_singletonDataFilePath.getTrainDir()
-# #         data_dir = g_singletonDataFilePath.getTest1Dir()
+        data_dir = g_singletonDataFilePath.getTest2Dir()
+#         self.saveAllGapCsv(data_dir)
+#         self.combineAllGapCsv(data_dir)
 #         res = self.get_gap_dict(data_dir)
-#         res = self.loadGapData(g_singletonDataFilePath.getGapCsv_Test1())
         
         return
 

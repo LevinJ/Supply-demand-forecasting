@@ -10,9 +10,10 @@ class ExploreWeather(ExploreData ):
         return
     def run(self):
         self.__unittest()
-#         self.save_all_csv(g_singletonDataFilePath.getTest1Dir() + 'weather_data/')
-#         self.combine_all_csv(g_singletonDataFilePath.getTest1Dir() + 'weather_data/temp/', 'weather_', 'weather.csv')
-#         self.get_weather_dict(g_singletonDataFilePath.getTest1Dir())
+        data_dir = g_singletonDataFilePath.getTest2Dir()
+#         self.save_all_csv( data_dir+ 'weather_data/')
+#         self.combine_all_csv(data_dir + 'weather_data/temp/', 'weather_', 'weather.csv')
+        self.get_weather_dict(data_dir)
         return
     def __unittest(self):
         #         self.combine_all_csv(g_singletonDataFilePath.getTrainDir() + 'weather_data/temp/', 'weather_', 'weather.csv')

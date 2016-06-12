@@ -10,7 +10,7 @@ class prepareGapCsvForPrediction:
         return
     
     def run(self):
-        self.generatePredictionCsv(g_singletonDataFilePath.getTestset1Readme())
+        self.generatePredictionCsv(g_singletonDataFilePath.getTestset2Readme())
         return
     def generatePredictionCsv(self, readmeFile):
         df = pd.read_csv(readmeFile)

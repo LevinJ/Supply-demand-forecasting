@@ -228,10 +228,10 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.transformXfDf(data_dir)
         return self.X_y_Df
     def run(self):
-#         print self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
+#         print self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
         
         
-        self.getTrainTestSet()
+#         self.getTrainTestSet()
 #         self.getTrainTestSet()
 #         self.getFeaturesLabel()
 #         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())

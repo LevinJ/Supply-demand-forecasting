@@ -13,10 +13,10 @@ class ExploreTraffic(ExploreData ):
         return
     def run(self):
         self.__unittest()
-#         data_dir = g_singletonDataFilePath.getTrainDir()
-#         self.save_all_csv(data_dir+ 'traffic_data/')
-#         self.combine_all_csv(data_dir + 'traffic_data/temp/', 'traffic_', 'traffic.csv')
-#         self.get_traffic_dict(data_dir)
+        data_dir = g_singletonDataFilePath.getTest2Dir()
+        self.save_all_csv(data_dir+ 'traffic_data/')
+        self.combine_all_csv(data_dir + 'traffic_data/temp/', 'traffic_', 'traffic.csv')
+        self.get_traffic_dict(data_dir)
         return
     def __unittest(self):
         #         self.combine_all_csv(g_singletonDataFilePath.getTrainDir() + 'weather_data/temp/', 'weather_', 'weather.csv')
