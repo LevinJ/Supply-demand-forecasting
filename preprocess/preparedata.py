@@ -201,7 +201,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.splitTrainTestSet()
         return (self.X_train, self.X_test, self.y_train, self.y_test)
     def get_train_validationset(self, foldid = -1): 
-        _,_,cv = self.getFeaturesLabel(n_folds = self.kfold_n_folds)
+        _,_,cv = self.getFeaturesLabel()
         count = 0
         fold_len = len(cv)
         if foldid == -1:
@@ -220,7 +220,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
 
             break
         return   
-    def getFeaturesLabel(self,n_folds=10):
+    def getFeaturesLabel(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
         self.X_y_Df = self.load_gapdf(data_dir) 
         self.transformXfDf(data_dir)
@@ -228,7 +228,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         if self.holdout_split == HoldoutSplitMethod.kFOLD_FORWARD_CHAINING:
             cv = self.kfold_forward_chaining(self.X_y_Df)
         elif self.holdout_split == HoldoutSplitMethod.KFOLD_BYDATE:
-            cv = self.kfold_bydate(self.X_y_Df, n_folds=n_folds)
+            cv = self.kfold_bydate(self.X_y_Df)
         elif self.holdout_split == HoldoutSplitMethod.IMITTATE_TEST2:
             cv = self.imitate_testset2(self.X_y_Df)
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel],cv

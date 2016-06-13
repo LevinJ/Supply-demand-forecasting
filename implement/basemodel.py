@@ -16,7 +16,6 @@ class BaseModel(PrepareData):
         self.application_start_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         self.save_final_model =False
         self.do_cross_val = True
-        self.kfold_n_folds=10
         
         return
     def setClf(self):
@@ -75,7 +74,7 @@ class BaseModel(PrepareData):
     def get_train_validation_foldid(self):
         return -1
     def run_croos_validation(self):
-        features,labels,cv = self.getFeaturesLabel(n_folds = self.kfold_n_folds)
+        features,labels,cv = self.getFeaturesLabel()
         scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv, scoring=mean_absolute_percentage_error_scoring)
         print "cross validation scores: means, {}, std, {}, details,{}".format(np.absolute(scores.mean()), scores.std(), np.absolute(scores))
         return
