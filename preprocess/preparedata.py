@@ -34,7 +34,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.excludeZerosActual = True
         self.randomSate = None
         self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.kFOLD_FORWARD_CHAINING
+        self.holdout_split = HoldoutSplitMethod.KFOLD_BYDATE
        
         return
     def getAllFeaturesDict(self):
@@ -206,11 +206,11 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             # just take the last fold as validation fold
             self.X_train = self.X_y_Df.iloc[train_index][self.usedFeatures]
             self.y_train = self.X_y_Df.iloc[train_index][self.usedLabel] 
-            self.dateslot_train_num = self.X_y_Df.iloc[train_index]['time_slotid'].unique().shape[0] 
+ 
             
             self.X_test = self.X_y_Df.iloc[test_index][self.usedFeatures]
             self.y_test = self.X_y_Df.iloc[test_index][self.usedLabel]
-            self.dateslot_test_num = self.X_y_Df.iloc[test_index]['time_slotid'].unique().shape[0]
+
             break
         return   
     def getFeaturesLabel(self,n_folds=10):

@@ -6,7 +6,7 @@ from utility.dumpload import DumpLoad
 import numpy as np
 from datetime import datetime
 from utility.datafilepath import g_singletonDataFilePath
-import pandas as pd
+from evaluation.sklearnmape import mean_absolute_percentage_error_scoring
 from sklearn import cross_validation
 
 class BaseModel(PrepareData):
@@ -57,8 +57,8 @@ class BaseModel(PrepareData):
         print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test))
 #         print "MSE for training set: {}".format(mean_squared_error(self.y_train, y_pred_train))
 #         print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
-        pd.DataFrame({'y_train':self.y_train.values, 'y_train_pred':y_pred_train}).to_csv('temp/trainpred.csv')
-        pd.DataFrame({'y_test':self.y_test.values, 'y_test_pred':y_pred_test}).to_csv('temp/testpred.csv')
+#         pd.DataFrame({'y_train':self.y_train.values, 'y_train_pred':y_pred_train}).to_csv('temp/trainpred.csv')
+#         pd.DataFrame({'y_test':self.y_test.values, 'y_test_pred':y_pred_test}).to_csv('temp/testpred.csv')
         print "test:", round(time()-t0, 3), "s"
         return
     def afterRun(self):
@@ -76,11 +76,12 @@ class BaseModel(PrepareData):
         return -1
     def run_croos_validation(self):
         features,labels,cv = self.getFeaturesLabel(n_folds = self.kfold_n_folds)
-        scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv)
-        print "cross validation scores: means, {}, std, {}, details,{}".format(scores.mean(), scores.std(), scores)
+        scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv, scoring=mean_absolute_percentage_error_scoring)
+        print "cross validation scores: means, {}, std, {}, details,{}".format(np.absolute(scores.mean()), scores.std(), np.absolute(scores))
         return
     def run_train_validation(self):
         self.get_train_validationset(foldid= self.get_train_validation_foldid())
+#         self.getTrainTestSet()
         self.train()
         self.test()
         self.afterRun()

@@ -18,10 +18,11 @@ from sklearn.pipeline import Pipeline
 class LinearRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-
-        self.excludeZerosActual = True
-
+        self.save_final_model = False
+        self.do_cross_val = False
         return
+    def get_train_validation_foldid(self):
+        return -1
     def setClf(self):
 #         self.clf = Ridge(alpha=0.0000001, tol=0.0000001)
         clf = LinearRegression()

@@ -1,7 +1,7 @@
 from sklearn.utils import assert_all_finite
 import numpy as np
 
-def mean_absolute_percentage_error(y_true, y_pred, district_num = 66, dateslot_num = None): 
+def mean_absolute_percentage_error(y_true, y_pred): 
     """
     Use of this metric is not recommended; for illustration only. 
     See other regression metrics on sklearn docs:
