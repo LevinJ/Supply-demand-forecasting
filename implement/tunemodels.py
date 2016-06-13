@@ -12,6 +12,7 @@ from knnmodel import KNNModel
 from utility.duration import Duration
 from svmregressionmodel import SVMRegressionModel
 from randomforestmodel import RandomForestModel
+import numpy as np
 
 
 class TuneModel:
@@ -30,6 +31,8 @@ class TuneModel:
                        scoring=mean_absolute_percentage_error_scoring, verbose = 500)
         estimator.fit(features, labels)
         model.clf = estimator.best_estimator_
+        model.save_final_model = True
+        model.save_model()
         
 #         model.dispFeatureImportance()
         logging.debug('estimaator parameters: {}'.format(estimator.get_params))
@@ -38,9 +41,8 @@ class TuneModel:
         logging.debug('Score grid: {}'.format(estimator.grid_scores_ ))
         for i in estimator.grid_scores_ :
             logging.debug('parameters: {}'.format(i.parameters ))
-            logging.debug('mean_validation_score: {}'.format((-i.mean_validation_score) ))
-            val_scores  = [ -x for x in i.cv_validation_scores]
-            logging.debug('cv_validation_scores: {}'.format(val_scores ))
+            logging.debug('mean_validation_score: {}'.format(np.absolute(i.mean_validation_score)))
+            logging.debug('cv_validation_scores: {}'.format(np.absolute(i.cv_validation_scores) ))
 
         
         

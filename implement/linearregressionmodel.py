@@ -19,7 +19,7 @@ class LinearRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
         self.save_final_model = False
-        self.do_cross_val = False
+        self.do_cross_val = True
         return
     def get_train_validation_foldid(self):
         return -1
