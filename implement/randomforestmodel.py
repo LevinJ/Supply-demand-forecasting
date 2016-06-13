@@ -11,8 +11,8 @@ from preprocess.preparedata import HoldoutSplitMethod
 class RandomForestModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.save_final_model = True
-        self.do_cross_val = False
+        self.save_final_model = False
+        self.do_cross_val = True
         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2
         return
     def get_train_validation_foldid(self):

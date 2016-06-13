@@ -50,6 +50,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         featureDict[5] = ['start_district_id']
         featureDict[6] = ['preweather']
         featureDict[7] = ['traffic1','traffic2','traffic3']
+        featureDict[8] = ['gap_diff1','gap_diff2']
         return featureDict
     def translateUsedFeatures(self):
         if len(self.usedFeatures) == 0:
@@ -175,10 +176,15 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             bNonZeros =   self.X_y_Df['gap'] != 0 
             self.X_y_Df = self.X_y_Df[bNonZeros]
         return
+    def add_gap_difference(self):
+        self.X_y_Df['gap_diff1'] = self.X_y_Df['gap2'] - self.X_y_Df['gap1']
+        self.X_y_Df['gap_diff2'] = self.X_y_Df['gap3'] - self.X_y_Df['gap2']
+        return
     def transformXfDf(self, data_dir = None):
         self.add_pre_gaps(data_dir)
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
+        self.add_gap_difference()
         self.remove_zero_gap()
         self.transformCategories()
         if hasattr(self, 'busedFeaturesTranslated'):
@@ -234,9 +240,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
 #         print self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
         
         
-#         self.getTrainTestSet()
-#         self.getTrainTestSet()
-#         self.getFeaturesLabel()
+
+        self.getFeaturesLabel()
 #         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
 
         return
