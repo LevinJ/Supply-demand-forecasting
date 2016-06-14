@@ -20,10 +20,10 @@ class GrientBoostingModel(BaseModel):
         self.do_cross_val = False
         return
     def setClf(self):
-        self.clf = GradientBoostingRegressor(loss = 'ls', learning_rate= 0.02,  n_estimators=5000, verbose = 300, subsample=0.5)
+        self.clf = GradientBoostingRegressor(loss = 'ls', learning_rate= 0.02,  n_estimators=2, verbose = 300, subsample=0.5)
         return
     def get_train_validation_foldid(self):
-        return -3
+        return 0
     def after_test(self):
         scores_test=[]
         scores_train=[]

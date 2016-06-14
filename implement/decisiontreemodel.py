@@ -13,7 +13,6 @@ class DecisionTreeModel(BaseModel):
         BaseModel.__init__(self)
         self.save_final_model = False
         self.do_cross_val = True
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2
         return
     def setClf(self):
         min_samples_split = 10

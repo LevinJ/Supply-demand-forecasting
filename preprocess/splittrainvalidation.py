@@ -72,67 +72,48 @@ class SplitTrainValidation(object):
         return
     def __get_df_indexes(self, df, dateslots):
         return df[df['time_slotid'].isin(dateslots)].index
-    def imitate_testset2(self, df):
-        res = []
+
+
+    def imitate_testset2_specific(self, df):
+        return self.__imitate_testset2(df, slot_type = 'specific')
+    
+    def imitate_testset2_full(self, df):
+        return self.__imitate_testset2(df, slot_type = 'full')
+    
+    def __imitate_testset2(self,df, slot_type = 'specific'):
         df.sort_values(by = ['time_date','time_id','start_district_id'], axis = 0, inplace = True)
         df.reset_index(drop=True, inplace = True)
-        
-        # train 1-12, 1-144, validation 13-21, specific
-        dates_train = self.__get_date('2016-01-01', 12, days_step=1)
-        slots_train = self.__get_slots_full()
-        dates_slots_train = self.__get_date_slots(dates_train, slots_train)
-        
-        dates_validation = self.__get_date('2016-01-13', 5, days_step=2)
-        slots_validation = self.__get_slots_speicific()
-        dates_slots_validation = self.__get_date_slots(dates_validation, slots_validation)
-        
-        item = self.__get_df_indexes(df, dates_slots_train), self.__get_df_indexes(df, dates_slots_validation)
-        res.append(item)
-        #train 1-12, specific, vaidation 13-21, specific
-        dates_train = self.__get_date('2016-01-01', 12, days_step=1)
-        slots_train = self.__get_slots_speicific()
-        dates_slots_train = self.__get_date_slots(dates_train, slots_train)
-        
-        dates_validation = self.__get_date('2016-01-13', 5, days_step=2)
-        slots_validation = self.__get_slots_speicific()
-        dates_slots_validation = self.__get_date_slots(dates_validation, slots_validation)
-        
-        item = self.__get_df_indexes(df, dates_slots_train), self.__get_df_indexes(df, dates_slots_validation)
-        res.append(item)
-        res.extend(self.imitate_testset2_forwardchaning(df))
-      
-        return res
-    def imitate_testset2_forwardchaning(self, df):
         res = []
         # training 1-15, validation 16-21
-        item = self.__get_specific_indexes(df, '2016-01-01', 15), self.__get_specific_indexes(df, '2016-01-16', 6)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 15, slot_type), self.__get_train_validation_indexes(df, '2016-01-16', 6)
         res.append(item)
         
         # training 1-16, validation 17-21
-        item = self.__get_specific_indexes(df, '2016-01-01', 16), self.__get_specific_indexes(df, '2016-01-17', 5)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 16, slot_type), self.__get_train_validation_indexes(df, '2016-01-17', 5)
         res.append(item)
         
         # training 1-17, validation 18-21
-        item = self.__get_specific_indexes(df, '2016-01-01', 17), self.__get_specific_indexes(df, '2016-01-18', 4)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 17, slot_type), self.__get_train_validation_indexes(df, '2016-01-18', 4)
         res.append(item)
         
         # training 1-18, validation 19-21
-        item = self.__get_specific_indexes(df, '2016-01-01', 18), self.__get_specific_indexes(df, '2016-01-19', 3)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 18, slot_type), self.__get_train_validation_indexes(df, '2016-01-19', 3)
         res.append(item)
         
         # training 1-19, validation 19-21
-        item = self.__get_specific_indexes(df, '2016-01-01', 19), self.__get_specific_indexes(df, '2016-01-20', 2)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 19, slot_type), self.__get_train_validation_indexes(df, '2016-01-20', 2)
         res.append(item)
         
         # training 1-20, validation 21
-        item = self.__get_specific_indexes(df, '2016-01-01', 20), self.__get_specific_indexes(df, '2016-01-21', 1)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 20, slot_type), self.__get_train_validation_indexes(df, '2016-01-21', 1)
         res.append(item)
-        
-        
         return res
-    def __get_specific_indexes(self,df, start_date, days_num):
+    def __get_train_validation_indexes(self,df, start_date, days_num, slot_type = 'specific'):
         dates = self.__get_date(start_date, days_num, days_step=1)
-        slots = self.__get_slots_speicific()
+        if slot_type == 'specific':
+            slots = self.__get_slots_speicific()
+        else:
+            slots = self.__get_slots_full() 
         dates_slots = self.__get_date_slots(dates, slots)
         indexes = self.__get_df_indexes(df, dates_slots)
         return indexes
