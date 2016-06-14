@@ -23,7 +23,10 @@ class TuneModel:
         self.durationtool = Duration()
         return
     def runGridSearch(self, model):
-        print "run grid search on model {}".format(model.__class__.__name__)
+        logging.debug("run grid search on model: {}".format(model.__class__.__name__))
+        logging.debug("cross validation strategy: {}".format(model.holdout_split))
+        logging.debug("used features: {}".format(model.usedFeatures))
+        logging.debug("tuned parameters: {}".format(model.getTunedParamterOptions()))
         
         features,labels,cv = model.getFeaturesLabel()
         # do grid search

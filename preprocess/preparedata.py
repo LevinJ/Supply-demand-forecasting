@@ -202,23 +202,15 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         return (self.X_train, self.X_test, self.y_train, self.y_test)
     def get_train_validationset(self, foldid = -1): 
         _,_,cv = self.getFeaturesLabel()
-        count = 0
-        fold_len = len(cv)
-        if foldid == -1:
-            foldid = fold_len -1
+        folds = []
         for train_index, test_index in cv:
-            if count != foldid:
-                count = count + 1
-                continue
-            # just take the last fold as validation fold
-            self.X_train = self.X_y_Df.iloc[train_index][self.usedFeatures]
-            self.y_train = self.X_y_Df.iloc[train_index][self.usedLabel] 
- 
-            
-            self.X_test = self.X_y_Df.iloc[test_index][self.usedFeatures]
-            self.y_test = self.X_y_Df.iloc[test_index][self.usedLabel]
-
-            break
+            folds.append((train_index, test_index))
+        train_index = folds[foldid][0]
+        test_index = folds[foldid][1]
+        self.X_train = self.X_y_Df.iloc[train_index][self.usedFeatures]
+        self.y_train = self.X_y_Df.iloc[train_index][self.usedLabel]     
+        self.X_test = self.X_y_Df.iloc[test_index][self.usedFeatures]
+        self.y_test = self.X_y_Df.iloc[test_index][self.usedLabel]
         return   
     def getFeaturesLabel(self):
         data_dir = g_singletonDataFilePath.getTrainDir()

@@ -13,9 +13,15 @@ class GrientBoostingModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
         self.save_final_model = False
+        self.do_cross_val = False
         return
     def setClf(self):
-        self.clf = GradientBoostingRegressor()
+        self.clf = GradientBoostingRegressor(verbose = 300)
+        return
+    def get_train_validation_foldid(self):
+        return -3
+    def afterTrain(self):
+        self.dispFeatureImportance()
         return
     def getTunedParamterOptions(self):
         tuned_parameters = [{'min_samples_split': np.arange(2, 10, 1)}]
