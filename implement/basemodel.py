@@ -20,15 +20,15 @@ class BaseModel(PrepareData):
         return
     def setClf(self):
         pass
-    def afterTrain(self):
-        self.dispFeatureImportance()
-        return
+    def after_train(self):
+        pass
     def train(self):
         print "Training {}...".format(self.clf.__class__.__name__)
         t0 = time()
         self.clf.fit(self.X_train, self.y_train)
         print "train:", round(time()-t0, 3), "s"
-        self.afterTrain()
+        self.dispFeatureImportance()
+        self.after_train()
         return
     def save_model(self):
         if not self.save_final_model:
@@ -59,8 +59,9 @@ class BaseModel(PrepareData):
 #         pd.DataFrame({'y_train':self.y_train.values, 'y_train_pred':y_pred_train}).to_csv('temp/trainpred.csv')
 #         pd.DataFrame({'y_test':self.y_test.values, 'y_test_pred':y_pred_test}).to_csv('temp/testpred.csv')
         print "test:", round(time()-t0, 3), "s"
+        self.after_test()
         return
-    def afterRun(self):
+    def after_test(self):
         pass
     def predictTestSet(self, dataDir):
         X_y_Df= self.getFeaturesforTestSet(dataDir)
@@ -79,12 +80,13 @@ class BaseModel(PrepareData):
         print "cross validation scores: means, {}, std, {}, details,{}".format(np.absolute(scores.mean()), scores.std(), np.absolute(scores))
         return
     def run_train_validation(self):
+        t0 = time()
         self.get_train_validationset(foldid= self.get_train_validation_foldid())
 #         self.getTrainTestSet()
         self.train()
         self.test()
-        self.afterRun()
         self.save_model()
+        print "run_train_validation:", round(time()-t0, 3), "s"
         return
     def run(self):
         if self.do_cross_val:

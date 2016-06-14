@@ -29,7 +29,7 @@ class LinearRegressionModel(BaseModel):
         min_max_scaler = preprocessing.MinMaxScaler()
         self.clf = Pipeline([('scaler', min_max_scaler), ('estimator', clf)])
         return
-    def afterTrain(self):
+    def after_train(self):
         print "self.clf.named_steps['estimator'].coef_:\n{}".format(self.clf.named_steps['estimator'].coef_)
         print "self.clf.named_steps['estimator'].intercept_:\n{}".format(self.clf.named_steps['estimator'].intercept_)
         return
