@@ -74,7 +74,7 @@ class SplitTrainValidation(object):
         return df[df['time_slotid'].isin(dateslots)].index
 
 
-    def imitate_testset2_specific(self, df):
+    def imitate_testset2_min(self, df):
         return self.__imitate_testset2(df, slot_type = 'specific')
     
     def imitate_testset2_full(self, df):
