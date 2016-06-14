@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # from pprint import pprint as p
 # p(sys.path)
 
-from enum import Enum
+
 from exploredata.order import ExploreOrder
 from exploredata.traffic import ExploreTraffic
 from exploredata.weather import ExploreWeather
@@ -14,18 +14,12 @@ from utility.dumpload import DumpLoad
 import numpy as np
 import pandas as pd
 from splittrainvalidation import SplitTrainValidation
+from splittrainvalidation import HoldoutSplitMethod
 
 
 
     
-class HoldoutSplitMethod(Enum):
-#     NONE = 1
-    BYDATESLOT_RANDOM = 2
-    IMITATE_PUBLICSET = 3
-    KFOLD_BYDATE      = 4
-    kFOLD_FORWARD_CHAINING = 5
-    IMITTATE_TEST2_MIN = 6
-    IMITTATE_TEST2_FULL = 7
+
 
     
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation):
@@ -222,10 +216,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             cv = self.kfold_forward_chaining(self.X_y_Df)
         elif self.holdout_split == HoldoutSplitMethod.KFOLD_BYDATE:
             cv = self.kfold_bydate(self.X_y_Df)
-        elif self.holdout_split == HoldoutSplitMethod.IMITTATE_TEST2_MIN:
-            cv = self.imitate_testset2_min(self.X_y_Df)
-        elif self.holdout_split == HoldoutSplitMethod.IMITTATE_TEST2_FULL:
-            cv = self.imitate_testset2_full(self.X_y_Df)
+        else:
+            cv = self.get_imitate_testset2(self.X_y_Df, split_method = self.holdout_split)
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel],cv
     def getFeaturesforTestSet(self, data_dir):
         self.X_y_Df = pd.read_csv(data_dir + 'gap_prediction.csv', index_col=0)

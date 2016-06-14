@@ -6,7 +6,7 @@ from basemodel import BaseModel
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from utility.datafilepath import g_singletonDataFilePath
-from preprocess.preparedata import HoldoutSplitMethod
+from preprocess.splittrainvalidation import HoldoutSplitMethod
 
 class DecisionTreeModel(BaseModel):
     def __init__(self):

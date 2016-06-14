@@ -2,8 +2,17 @@ from sklearn.cross_validation import KFold
 import numpy as np
 from datetime import datetime
 from datetime import timedelta
+from enum import Enum
 
-
+class HoldoutSplitMethod(Enum):
+#     NONE = 1
+    BYDATESLOT_RANDOM = 2
+    IMITATE_PUBLICSET = 3
+    KFOLD_BYDATE      = 4
+    kFOLD_FORWARD_CHAINING = 5
+    IMITTATE_TEST2_MIN = 6
+    IMITTATE_TEST2_FULL = 7
+    
 class SplitTrainValidation(object):
     def __init__(self):
         return
@@ -54,7 +63,13 @@ class SplitTrainValidation(object):
             item = (startDate + deltatime).date()
             res.append(str(item))
         return res
-    def __get_slots_speicific(self):
+    def __get_slots(self, split_method):
+        slot_split_dict = {}
+        slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_MIN] = self.__get_slots_min()
+        slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_FULL] = self.__get_slots_full()
+        
+        return slot_split_dict[split_method]
+    def __get_slots_min(self):
         res = [46,58,70,82,94,106,118,130,142]
         return res
     def __get_slots_full(self):
@@ -73,47 +88,38 @@ class SplitTrainValidation(object):
     def __get_df_indexes(self, df, dateslots):
         return df[df['time_slotid'].isin(dateslots)].index
 
-
-    def imitate_testset2_min(self, df):
-        return self.__imitate_testset2(df, slot_type = 'specific')
     
-    def imitate_testset2_full(self, df):
-        return self.__imitate_testset2(df, slot_type = 'full')
-    
-    def __imitate_testset2(self,df, slot_type = 'specific'):
+    def get_imitate_testset2(self,df, split_method = HoldoutSplitMethod.IMITTATE_TEST2_MIN):
         df.sort_values(by = ['time_date','time_id','start_district_id'], axis = 0, inplace = True)
         df.reset_index(drop=True, inplace = True)
         res = []
         # training 1-15, validation 16-21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 15, slot_type), self.__get_train_validation_indexes(df, '2016-01-16', 6)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 15, split_method), self.__get_train_validation_indexes(df, '2016-01-16', 6)
         res.append(item)
         
         # training 1-16, validation 17-21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 16, slot_type), self.__get_train_validation_indexes(df, '2016-01-17', 5)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 16, split_method), self.__get_train_validation_indexes(df, '2016-01-17', 5)
         res.append(item)
         
         # training 1-17, validation 18-21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 17, slot_type), self.__get_train_validation_indexes(df, '2016-01-18', 4)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 17, split_method), self.__get_train_validation_indexes(df, '2016-01-18', 4)
         res.append(item)
         
         # training 1-18, validation 19-21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 18, slot_type), self.__get_train_validation_indexes(df, '2016-01-19', 3)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 18, split_method), self.__get_train_validation_indexes(df, '2016-01-19', 3)
         res.append(item)
         
         # training 1-19, validation 19-21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 19, slot_type), self.__get_train_validation_indexes(df, '2016-01-20', 2)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 19, split_method), self.__get_train_validation_indexes(df, '2016-01-20', 2)
         res.append(item)
         
         # training 1-20, validation 21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 20, slot_type), self.__get_train_validation_indexes(df, '2016-01-21', 1)
+        item = self.__get_train_validation_indexes(df, '2016-01-01', 20, split_method), self.__get_train_validation_indexes(df, '2016-01-21', 1)
         res.append(item)
         return res
-    def __get_train_validation_indexes(self,df, start_date, days_num, slot_type = 'specific'):
+    def __get_train_validation_indexes(self,df, start_date, days_num, split_method = HoldoutSplitMethod.IMITTATE_TEST2_MIN):
         dates = self.__get_date(start_date, days_num, days_step=1)
-        if slot_type == 'specific':
-            slots = self.__get_slots_speicific()
-        else:
-            slots = self.__get_slots_full() 
+        slots = self.__get_slots(split_method) 
         dates_slots = self.__get_date_slots(dates, slots)
         indexes = self.__get_df_indexes(df, dates_slots)
         return indexes
