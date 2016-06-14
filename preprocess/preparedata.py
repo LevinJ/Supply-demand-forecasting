@@ -30,7 +30,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.excludeZerosActual = True
         self.randomSate = None
         self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_MIN
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS4
        
         return
     def getAllFeaturesDict(self):

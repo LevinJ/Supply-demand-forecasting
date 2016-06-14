@@ -12,6 +12,9 @@ class HoldoutSplitMethod(Enum):
     kFOLD_FORWARD_CHAINING = 5
     IMITTATE_TEST2_MIN = 6
     IMITTATE_TEST2_FULL = 7
+    IMITTATE_TEST2_PLUS2 = 8
+    IMITTATE_TEST2_PLUS4 = 9
+    IMITTATE_TEST2_PLUS6 = 10
     
 class SplitTrainValidation(object):
     def __init__(self):
@@ -67,6 +70,9 @@ class SplitTrainValidation(object):
         slot_split_dict = {}
         slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_MIN] = self.__get_slots_min()
         slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_FULL] = self.__get_slots_full()
+        slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_PLUS2] = self.__getplusslots(plus_num = 2)
+        slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_PLUS4] = self.__getplusslots(plus_num = 4)
+        slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_PLUS6] = self.__getplusslots(plus_num = 6)
         
         return slot_split_dict[split_method]
     def __get_slots_min(self):
@@ -77,12 +83,27 @@ class SplitTrainValidation(object):
         return res
     def __get_date_slots(self, dates, slots):
         return [d + '-' + str(s) for d in dates for s in slots]
+    def __getplusslots(self, plus_num = 2):
+        res = []
+        min_slots = self.__get_slots_min()
+        for item in min_slots:
+            for i in range(plus_num+1):
+                x_below = item - i
+                x_above = item + i 
+                if x_below <= 144 and x_below >= 1:
+                    res.append(x_below)
+                if x_above <= 144 and x_above >= 1:
+                    res.append(x_above)
+        return np.sort(list(set(res)))
     def __unit_test(self):
         assert ['2016-01-13','2016-01-15','2016-01-17','2016-01-19','2016-01-21'] == self.__get_date('2016-01-13', 5)
         assert ['2016-01-12','2016-01-14','2016-01-16','2016-01-18','2016-01-20'] == self.__get_date('2016-01-12', 5)
-        self.get_holdoutset(holdout_id = 1)
-        
-        assert ['2016-01-13-46','2016-01-13-58','2016-01-13-70','2016-01-13-82','2016-01-13-94','2016-01-13-106','2016-01-13-118','2016-01-13-130','2016-01-13-142'] == self.get_holdoutset(holdout_id = 101)
+        print self.__getplusslots(2)
+        print self.__getplusslots(4)
+        print self.__getplusslots(6)
+#         self.get_holdoutset(holdout_id = 1)
+#         
+#         assert ['2016-01-13-46','2016-01-13-58','2016-01-13-70','2016-01-13-82','2016-01-13-94','2016-01-13-106','2016-01-13-118','2016-01-13-130','2016-01-13-142'] == self.get_holdoutset(holdout_id = 101)
         print "unit test passed"
         return
     def __get_df_indexes(self, df, dateslots):
@@ -124,7 +145,7 @@ class SplitTrainValidation(object):
         indexes = self.__get_df_indexes(df, dates_slots)
         return indexes
     def run(self, df):
-        self.imitate_testset2(df)
+        self.__unit_test()
 #         self.kfold_bydate(df)
 #         self.kfold_forward_chaining(df)
         return
