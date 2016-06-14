@@ -16,14 +16,15 @@ import matplotlib.pyplot as plt
 class GrientBoostingModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.save_final_model = False
+#         self.save_final_model = True
         self.do_cross_val = False
         return
     def setClf(self):
-        self.clf = GradientBoostingRegressor(loss = 'ls', learning_rate= 0.02,  n_estimators=10, verbose = 300, subsample=0.5)
+#         self.clf = GradientBoostingRegressor(loss = 'ls', learning_rate= 0.02,  n_estimators=10, verbose = 300, subsample=0.5)
+        self.clf = GradientBoostingRegressor(loss = 'ls', learning_rate= 0.1,  n_estimators=1000, verbose = 300)
         return
     def get_train_validation_foldid(self):
-        return 0
+        return 1
     def after_test(self):
         scores_test=[]
         scores_train=[]
@@ -38,27 +39,13 @@ class GrientBoostingModel(BaseModel):
             scores_train_mse.append(mean_absolute_percentage_error(self.y_train, y_pred))
         
         pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test,'scores_train_mse': scores_train_mse, 'scores_test_mse': scores_test_mse}).to_csv('temp/trend.csv')
-            
-#         pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test}).plot()
-#         plt.show()
-#         for i, pred in enumerate(clf.staged_decision_function(X_test)):
-#             test_score[i] = clf.loss_(y_test, pred)
-#     
-#         for i, pred in enumerate(clf.staged_decision_function(X_train)):
-#             train_score[i] = clf.loss_(y_train, pred)
-#         
-#         plot(test_score)
-#         plot(train_score)
-#         legend(['test score', 'train score'])
-#         y_pred_train = self.clf.predict(self.X_train)
-#         y_pred_test = self.clf.predict(self.X_test)
-#         print "MSE for training set: {}".format(mean_squared_error(self.y_train, y_pred_train))
-#         print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
+        df = pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test})
+        df.plot()
+        plt.show()
         return
     def getTunedParamterOptions(self):
-        tuned_parameters = [{'n_estimators': [300]}]
-#         tuned_parameters = [{'min_samples_split': [5, 8,10,12]}]
-#         tuned_parameters = [{'min_samples_split': [5, 10]}]
+        tuned_parameters = [{'learning_rate': [0.1,0.05,0.01,0.002],'subsample': [1.0,0.5], 'n_estimators':[15000]}]
+#         tuned_parameters = [{'n_estimators': [2]}]
         return tuned_parameters
 
 

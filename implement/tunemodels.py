@@ -13,6 +13,7 @@ from utility.duration import Duration
 from svmregressionmodel import SVMRegressionModel
 from randomforestmodel import RandomForestModel
 import numpy as np
+from gradientboostingmodel import GrientBoostingModel
 
 
 class TuneModel:
@@ -56,10 +57,11 @@ class TuneModel:
         model_dict[2] =KNNModel
         model_dict[3] =SVMRegressionModel
         model_dict[4] = RandomForestModel
+        model_dict[5] = GrientBoostingModel
         return model_dict[model_id]()
     def run(self):
        
-        model_id = 4
+        model_id = 5
 
         model = self.get_model(model_id)
         model.application_start_time = self.application_start_time

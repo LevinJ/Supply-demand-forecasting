@@ -12,9 +12,10 @@ class HoldoutSplitMethod(Enum):
     kFOLD_FORWARD_CHAINING = 5
     IMITTATE_TEST2_MIN = 6
     IMITTATE_TEST2_FULL = 7
-    IMITTATE_TEST2_PLUS2 = 8
-    IMITTATE_TEST2_PLUS4 = 9
-    IMITTATE_TEST2_PLUS6 = 10
+    IMITTATE_TEST2_PLUS1 = 8
+    IMITTATE_TEST2_PLUS2 = 9
+    IMITTATE_TEST2_PLUS4 = 10
+    IMITTATE_TEST2_PLUS6 = 1
     
 class SplitTrainValidation(object):
     def __init__(self):
@@ -70,6 +71,7 @@ class SplitTrainValidation(object):
         slot_split_dict = {}
         slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_MIN] = self.__get_slots_min()
         slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_FULL] = self.__get_slots_full()
+        slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_PLUS1] = self.__getplusslots(plus_num = 1)
         slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_PLUS2] = self.__getplusslots(plus_num = 2)
         slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_PLUS4] = self.__getplusslots(plus_num = 4)
         slot_split_dict[HoldoutSplitMethod.IMITTATE_TEST2_PLUS6] = self.__getplusslots(plus_num = 6)
