@@ -8,6 +8,9 @@ from datetime import datetime
 from utility.datafilepath import g_singletonDataFilePath
 from evaluation.sklearnmape import mean_absolute_percentage_error_scoring
 from sklearn import cross_validation
+from utility.duration import Duration
+import logging
+from utility.logger_tool import Logger
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -16,6 +19,9 @@ class BaseModel(PrepareData):
         self.application_start_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         self.save_final_model =False
         self.do_cross_val = True
+        logfile_name = r'logs//' + self.__class__.__name__+ '_' +self.application_start_time + '.txt'
+        _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
+        self.durationtool = Duration()
         
         return
     def setClf(self):
@@ -80,19 +86,19 @@ class BaseModel(PrepareData):
         print "cross validation scores: means, {}, std, {}, details,{}".format(np.absolute(scores.mean()), scores.std(), np.absolute(scores))
         return
     def run_train_validation(self):
-        t0 = time()
         self.get_train_validationset(foldid= self.get_train_validation_foldid())
 #         self.getTrainTestSet()
         self.train()
         self.test()
         self.save_model()
-        print "run_train_validation:", round(time()-t0, 3), "s"
         return
     def run(self):
+        self.durationtool.start()
         if self.do_cross_val:
             self.run_croos_validation()
             return
         self.run_train_validation()
+        self.durationtool.end()
         return
     
 if __name__ == "__main__":   

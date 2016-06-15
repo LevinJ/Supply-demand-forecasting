@@ -16,15 +16,15 @@ import matplotlib.pyplot as plt
 class GrientBoostingModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-#         self.save_final_model = True
+        self.save_final_model = True
         self.do_cross_val = False
         return
     def setClf(self):
 #         self.clf = GradientBoostingRegressor(loss = 'ls', learning_rate= 0.02,  n_estimators=10, verbose = 300, subsample=0.5)
-        self.clf = GradientBoostingRegressor(loss = 'ls', learning_rate= 0.1,  n_estimators=1000, verbose = 300)
+        self.clf = GradientBoostingRegressor(loss = 'ls', verbose = 300, n_estimators=15000,    learning_rate= 0.03,subsample=0.5, max_features = 1.0)
         return
     def get_train_validation_foldid(self):
-        return 1
+        return -4
     def after_test(self):
         scores_test=[]
         scores_train=[]
@@ -40,6 +40,7 @@ class GrientBoostingModel(BaseModel):
         
         pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test,'scores_train_mse': scores_train_mse, 'scores_test_mse': scores_test_mse}).to_csv('temp/trend.csv')
         df = pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test})
+        print "Test set MAPE minimum: {}".format(np.array(scores_test).min())
         df.plot()
         plt.show()
         return
