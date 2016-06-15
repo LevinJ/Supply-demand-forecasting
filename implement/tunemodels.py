@@ -3,7 +3,7 @@ import os
 sys.path.insert(0, os.path.abspath('..'))
 
 from implement.decisiontreemodel import DecisionTreeModel
-from sklearn.grid_search import GridSearchCV
+from sklearn.grid_search import GridSearchCV, RandomizedSearchCV
 from evaluation.sklearnmape import mean_absolute_percentage_error_scoring
 import logging
 from utility.logger_tool import Logger
@@ -22,6 +22,8 @@ class TuneModel:
         logfile_name = r'logs/tunealgorithm_' +self.application_start_time + '.txt'
         _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
         self.durationtool = Duration()
+        self.do_random_gridsearch = True
+        self.n_iter_randomsearch = 5
         return
     def runGridSearch(self, model):
         logging.debug("run grid search on model: {}".format(model.__class__.__name__))
@@ -31,7 +33,11 @@ class TuneModel:
         
         features,labels,cv = model.getFeaturesLabel()
         # do grid search
-        estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=cv,
+        if self.do_random_gridsearch:
+            estimator = RandomizedSearchCV(model.clf, model.getTunedParamterOptions(), cv=cv,
+                       scoring=mean_absolute_percentage_error_scoring, verbose = 500, n_iter=self.n_iter_randomsearch)
+        else:
+            estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=cv,
                        scoring=mean_absolute_percentage_error_scoring, verbose = 500)
         estimator.fit(features, labels)
         model.clf = estimator.best_estimator_

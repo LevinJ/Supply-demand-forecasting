@@ -99,7 +99,7 @@ class BaseModel(PrepareData):
             print "test:", round(time()-t0, 3), "s"
             return
         self.run_train_validation()
-        print "test:", round(time()-t0, 3), "s"
+        print "run:", round(time()-t0, 3), "s"
         return
     
 if __name__ == "__main__":   
