@@ -19,8 +19,8 @@ class BaseModel(PrepareData):
         self.application_start_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         self.save_final_model =False
         self.do_cross_val = True
-        logfile_name = r'logs//' + self.__class__.__name__+ '_' +self.application_start_time + '.txt'
-        _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
+#         logfile_name = r'logs//' + self.__class__.__name__+ '_' +self.application_start_time + '.txt'
+#         _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
         self.durationtool = Duration()
         
         return
@@ -54,7 +54,7 @@ class BaseModel(PrepareData):
         print "Ranked importance: {}".format(num_rank)
         return
     def test(self):
-        t0 = time()
+        
         y_pred_train = self.clf.predict(self.X_train)
         y_pred_test = self.clf.predict(self.X_test)
         print "features used:\n {}".format(self.usedFeatures)
@@ -64,7 +64,7 @@ class BaseModel(PrepareData):
 #         print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
 #         pd.DataFrame({'y_train':self.y_train.values, 'y_train_pred':y_pred_train}).to_csv('temp/trainpred.csv')
 #         pd.DataFrame({'y_test':self.y_test.values, 'y_test_pred':y_pred_test}).to_csv('temp/testpred.csv')
-        print "test:", round(time()-t0, 3), "s"
+        
         self.after_test()
         return
     def after_test(self):
@@ -93,12 +93,13 @@ class BaseModel(PrepareData):
         self.save_model()
         return
     def run(self):
-        self.durationtool.start()
+        t0 = time()
         if self.do_cross_val:
             self.run_croos_validation()
+            print "test:", round(time()-t0, 3), "s"
             return
         self.run_train_validation()
-        self.durationtool.end()
+        print "test:", round(time()-t0, 3), "s"
         return
     
 if __name__ == "__main__":   
