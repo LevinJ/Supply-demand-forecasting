@@ -23,7 +23,8 @@ class TuneModel:
         _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
         self.durationtool = Duration()
         self.do_random_gridsearch = True
-        self.n_iter_randomsearch = 5
+        self.n_iter_randomsearch = 260
+        self.n_jobs = 1
         return
     def runGridSearch(self, model):
         logging.debug("run grid search on model: {}".format(model.__class__.__name__))
@@ -34,10 +35,10 @@ class TuneModel:
         features,labels,cv = model.getFeaturesLabel()
         # do grid search
         if self.do_random_gridsearch:
-            estimator = RandomizedSearchCV(model.clf, model.getTunedParamterOptions(), cv=cv,
+            estimator = RandomizedSearchCV(model.clf, model.getTunedParamterOptions(), cv=cv, n_jobs=self.n_jobs,
                        scoring=mean_absolute_percentage_error_scoring, verbose = 500, n_iter=self.n_iter_randomsearch)
         else:
-            estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=cv,
+            estimator = GridSearchCV(model.clf, model.getTunedParamterOptions(), cv=cv,n_jobs=-self.n_jobs,
                        scoring=mean_absolute_percentage_error_scoring, verbose = 500)
         estimator.fit(features, labels)
         model.clf = estimator.best_estimator_
