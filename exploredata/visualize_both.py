@@ -27,12 +27,12 @@ class VisualizeBothData(visualizeData):
     def disp_bydistrictid(self):
         
         _, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-        gaps_mean = self.gap_traindf.groupby('start_district_id')['gap'].mean()
+        gaps_mean = self.gap_traindf.groupby('start_district_id')['gap'].sum()
         for i in gaps_mean.index:
             ax1.plot([i,i], [0, gaps_mean[i]], 'k-')
         
         
-        gaps_mean = self.gap_testdf.groupby('start_district_id')['gap'].mean()
+        gaps_mean = self.gap_testdf.groupby('start_district_id')['gap'].sum()
         for i in gaps_mean.index:
             ax2.plot([i,i], [0, gaps_mean[i]], 'k-')
             
@@ -72,13 +72,14 @@ class VisualizeBothData(visualizeData):
 #         plt.show()
         return
     def run(self):
-        self.disp_gap_by_dateandslot(self.gap_traindf)
-        self.disp_gap_by_dateandslot(self.gap_testdf)
-        plt.show()
+#         self.disp_gap_by_dateandslot(self.gap_traindf)
+#         self.disp_gap_by_dateandslot(self.gap_testdf)
+        
 #         self.disp_gap_series(51)
 #         self.disp_timeid()
 #         self.disp_bydate()
-#         self.disp_bydistrictid()
+        self.disp_bydistrictid()
+        plt.show()
 #         self.disp_gap_bytimeiid()
 #         self.disp_gap_bydistrict()
 #         self.disp_gap_bydate()

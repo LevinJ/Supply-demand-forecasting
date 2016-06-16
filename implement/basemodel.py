@@ -11,6 +11,8 @@ from sklearn import cross_validation
 from utility.duration import Duration
 import logging
 from utility.logger_tool import Logger
+import matplotlib.pyplot as plt
+import pandas as pd
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -50,6 +52,10 @@ class BaseModel(PrepareData):
         sortIndexes = self.clf.feature_importances_.argsort()[::-1]
         features_rank = features_list[sortIndexes]
         num_rank = self.clf.feature_importances_[sortIndexes]
+        
+        feat_imp = pd.Series(self.clf.feature_importances_, features_list).sort_values(ascending=False)
+        feat_imp.plot(kind='bar', title='Feature Importances')
+        plt.ylabel('Feature Importance Score')
         print "Ranked features: {}".format(features_rank)
         print "Ranked importance: {}".format(num_rank)
         return

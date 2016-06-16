@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 from utility.datafilepath import g_singletonDataFilePath
 from preprocess.splittrainvalidation import HoldoutSplitMethod
+import matplotlib.pyplot as plt
 
 class DecisionTreeModel(BaseModel):
     def __init__(self):
@@ -20,6 +21,9 @@ class DecisionTreeModel(BaseModel):
         return
     def get_train_validation_foldid(self):
         return -1
+    def after_test(self):
+        plt.show()
+        return
     def getTunedParamterOptions(self):
 #         tuned_parameters = [{'min_samples_split': np.arange(2, 10, 1)}]
 #         tuned_parameters = [{'min_samples_split': [5, 8,10,12]}]

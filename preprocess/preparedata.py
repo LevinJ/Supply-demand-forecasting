@@ -25,7 +25,7 @@ from splittrainvalidation import HoldoutSplitMethod
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = [1,4,6,7,9]
+        self.usedFeatures = [1,2,4,6,7,8,9,10]
 #         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
 #                                        'preweather', 'start_district_id_28', 'start_district_id_8',
 #                                        'start_district_id_7', 'start_district_id_48']
@@ -50,6 +50,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         featureDict[7] = ['traffic1','traffic2','traffic3']
         featureDict[8] = ['gap_diff1','gap_diff2']
         featureDict[9] = ['mean','median','plus_mean','plus_median']
+        featureDict[10] = ['district_gap_sum']
         return featureDict
     def translateUsedFeatures(self):
         if  hasattr(self, 'override_used_features'):
@@ -192,9 +193,14 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.X_y_Df['gap_diff1'] = self.X_y_Df['gap2'] - self.X_y_Df['gap1']
         self.X_y_Df['gap_diff2'] = self.X_y_Df['gap3'] - self.X_y_Df['gap2']
         return
+    def add_district_gap_sum(self):
+        district_gap_sum_dict = self.X_y_Df.groupby('start_district_id')['gap'].sum().to_dict()
+        self.X_y_Df["district_gap_sum"] = self.X_y_Df["start_district_id"].map(district_gap_sum_dict)
+        return
     def transformXfDf(self, data_dir = None):
         self.add_pre_gaps(data_dir)
         self.add_gap_mean_median(data_dir)
+        self.add_district_gap_sum()
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
         self.add_gap_difference()
