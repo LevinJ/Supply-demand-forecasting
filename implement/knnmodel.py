@@ -8,9 +8,13 @@ from preprocess.preparedata import HoldoutSplitMethod
 class KNNModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.save_final_model = False
-        self.do_cross_val = True
+        self.usedFeatures = [1,4,5,6,7]
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS4
+#         self.save_final_model = True
+        self.do_cross_val = False
         return
+    def get_train_validation_foldid(self):
+        return -4
     def setClf(self):
         clf = KNeighborsClassifier(n_neighbors = 50)
         min_max_scaler = preprocessing.MinMaxScaler()
