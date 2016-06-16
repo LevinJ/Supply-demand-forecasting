@@ -16,12 +16,11 @@ import matplotlib.pyplot as plt
 class GrientBoostingModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-#         self.usedFeatures = [1,4,5,6,7]
 #         self.save_final_model = True
         self.do_cross_val = False
         return
     def setClf(self):
-        self.clf = GradientBoostingRegressor(max_depth=7,learning_rate= 0.1, n_estimators=1000)
+        self.clf = GradientBoostingRegressor(n_estimators=1000)
 #         self.clf = GradientBoostingRegressor(loss = 'ls', verbose = 300, n_estimators=70,    learning_rate= 0.1,subsample=1.0, max_features = 1.0)
         return
     def get_train_validation_foldid(self):
@@ -49,7 +48,7 @@ class GrientBoostingModel(BaseModel):
         
         return {'max_depth': [8],'max_features': [9], 'subsample':[0.8], 'learning_rate':[0.1], 'n_estimators': np.arange(20, 81, 10)}
     def __get_model_param(self):
-        return {'max_depth': np.arange(3,16,1),'max_features': np.linspace(0.5, 1.0,6), 'subsample': np.linspace(0.5, 1.0,6), 'learning_rate':[0.2, 0.1,0.8,0.06,0.04, 0.02,0.01], 'n_estimators': [1000]}
+        return {'max_depth': np.arange(3,9,1),'subsample': np.linspace(0.5, 1.0,6), 'learning_rate':[0.2, 0.1,0.08,0.06,0.04, 0.02,0.01], 'n_estimators': [1000,1300,1500]}
     def getTunedParamterOptions(self):
 #         tuned_parameters = self.__get_intial_model_param()
         tuned_parameters = self.__get_model_param()
