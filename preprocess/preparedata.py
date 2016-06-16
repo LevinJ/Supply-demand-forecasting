@@ -26,11 +26,14 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
     def __init__(self):
         ExploreOrder.__init__(self)
         self.usedFeatures = [1,2,4,6,7]
+        self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
+                                       'preweather', 'start_district_id_28', 'start_district_id_8',
+                                       'start_district_id_7', 'start_district_id_48']
         self.usedLabel = 'gap'
         self.excludeZerosActual = True
         self.randomSate = None
         self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS4
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS1
        
         return
     def getAllFeaturesDict(self):
@@ -48,6 +51,9 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         featureDict[8] = ['gap_diff1','gap_diff2']
         return featureDict
     def translateUsedFeatures(self):
+        if  hasattr(self, 'override_used_features'):
+            self.usedFeatures = self.override_used_features
+            return
         if len(self.usedFeatures) == 0:
             unused = ['time_slotid', 'time_slot', 'all_requests']
 #             unused = ['start_district_id', 'time_slotid', 'time_slot', 'all_requests', 'time_id']
