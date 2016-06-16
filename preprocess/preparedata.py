@@ -25,10 +25,10 @@ from splittrainvalidation import HoldoutSplitMethod
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = [1,2,4,6,7]
-        self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
-                                       'preweather', 'start_district_id_28', 'start_district_id_8',
-                                       'start_district_id_7', 'start_district_id_48']
+        self.usedFeatures = [1,2,4,6,7,9]
+#         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
+#                                        'preweather', 'start_district_id_28', 'start_district_id_8',
+#                                        'start_district_id_7', 'start_district_id_48']
         self.usedLabel = 'gap'
         self.excludeZerosActual = True
         self.randomSate = None
@@ -49,6 +49,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         featureDict[6] = ['preweather']
         featureDict[7] = ['traffic1','traffic2','traffic3']
         featureDict[8] = ['gap_diff1','gap_diff2']
+        featureDict[9] = ['mean','median','plus_mean','plus_median']
         return featureDict
     def translateUsedFeatures(self):
         if  hasattr(self, 'override_used_features'):
@@ -145,6 +146,16 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
+    def add_gap_mean_median(self, data_dir):
+        dumpload = DumpLoad(data_dir + 'order_data/temp/gapmeanmedian.df.pickle')
+        if dumpload.isExisiting():
+            df = dumpload.load()
+        else:
+            temp_dict = self.get_gap_meanmedian_dict()
+            df = self.X_y_Df[['start_district_id', 'time_id']].apply(self.find_gap_meanmedian, axis = 1, gap_meanmedian_dict = temp_dict)
+            dumpload.dump(df)
+        self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
+        return
     def add_prev_weather(self, data_dir):
         dumpload = DumpLoad(data_dir + 'weather_data/temp/prevweather.df.pickle')
         if dumpload.isExisiting():
@@ -183,6 +194,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         return
     def transformXfDf(self, data_dir = None):
         self.add_pre_gaps(data_dir)
+        self.add_gap_mean_median(data_dir)
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
         self.add_gap_difference()

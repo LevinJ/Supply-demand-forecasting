@@ -6,6 +6,7 @@ import os.path
 from utility.datafilepath import g_singletonDataFilePath
 from time import time
 from utility.dumpload import DumpLoad
+import numpy as np
 
 
 
@@ -122,7 +123,9 @@ class ExploreOrder:
         assert [0,0,0] == self.find_prev_gap(pd.Series([7, '2016-01-30-139']), pre_num = 3, gap_dict = gap_dict).tolist()
         assert [0,0,1] == self.find_prev_gap(pd.Series([50, '2016-01-30-143']), pre_num = 3, gap_dict = gap_dict).tolist()
         assert [245,282,0] == self.find_prev_gap(pd.Series([51, '2016-01-22-141']), pre_num = 3, gap_dict = gap_dict).tolist()
-
+        
+        gap_meanmedian_dict = self.get_gap_meanmedian_dict()
+        self.find_gap_meanmedian(pd.Series([5,55]),gap_meanmedian_dict = gap_meanmedian_dict)
 
         print "unit test passed"
         return
@@ -139,9 +142,50 @@ class ExploreOrder:
                 res.append(0)
         res =pd.Series(res, index = index)
         return res
+    def get_gap_meanmedian_dict(self):
+        data_dir = g_singletonDataFilePath.getTrainDir()
+        filename = data_dir + 'order_data/temp/gap_meanmedian.dict.pickle'
+        dumpload = DumpLoad( filename)
+        if dumpload.isExisiting():
+            return dumpload.load()
+        
+        resDict = {}
+        df = self.load_gapdf(data_dir)
+        grps = df.groupby(['start_district_id','time_id'])
+        for name, row in grps:
+            resDict[name] = row['gap'].tolist()
+#             resDict[name] = [i for i in row['gap'].tolist() if i !=0]
+            
+        
+        dumpload.dump(resDict)
+        return resDict 
+    def get_gapmeanmedainlist_from_dict(self,gap_meanmedian_dict,start_district_id, time_id):
+        res = [0]
+        try:
+            res = gap_meanmedian_dict[(start_district_id, time_id)]
+            if len(res) == 0:
+                res = [0]
+        except:
+            pass
+        return res
+    def find_gap_meanmedian(self, row,gap_meanmedian_dict = None):
+        start_district_id = row.iloc[0]
+        time_id = row.iloc[1]
+        index = ['mean','median','plus_mean','plus_median']
+
+        min_list = self.get_gapmeanmedainlist_from_dict(gap_meanmedian_dict, start_district_id, time_id)
+        plus_list1 = self.get_gapmeanmedainlist_from_dict(gap_meanmedian_dict, start_district_id, time_id-1)
+        plus_list2 = self.get_gapmeanmedainlist_from_dict(gap_meanmedian_dict, start_district_id, time_id+1)
+        plus_list = np.array((plus_list1 + plus_list2 + min_list))
+        min_list = np.array(min_list)
+        
+        res =pd.Series([min_list.mean(), np.median(min_list), plus_list.mean(), np.median(plus_list)], index = index)
+        
+        return res
     def run(self):
         self.unitTest()
-        data_dir = g_singletonDataFilePath.getTest2Dir()
+#         self.get_gap_meanmedian_dict()
+#         data_dir = g_singletonDataFilePath.getTest2Dir()
 #         self.saveAllGapCsv(data_dir)
 #         self.combineAllGapCsv(data_dir)
 #         res = self.get_gap_dict(data_dir)

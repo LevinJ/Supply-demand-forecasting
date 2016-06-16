@@ -12,7 +12,7 @@ class DecisionTreeModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
 #         self.save_final_model = True
-#         self.do_cross_val = False
+        self.do_cross_val = False
         return
     def setClf(self):
         min_samples_split = 10
