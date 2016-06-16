@@ -194,7 +194,13 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.X_y_Df['gap_diff2'] = self.X_y_Df['gap3'] - self.X_y_Df['gap2']
         return
     def add_district_gap_sum(self):
-        district_gap_sum_dict = self.X_y_Df.groupby('start_district_id')['gap'].sum().to_dict()
+        dumpload = DumpLoad(g_singletonDataFilePath.getTrainDir() + 'order_data/temp/district_gap_sum.dict.pickle')
+        if dumpload.isExisiting():
+            district_gap_sum_dict = dumpload.load()
+        else:
+            district_gap_sum_dict = self.X_y_Df.groupby('start_district_id')['gap'].sum().to_dict()
+            dumpload.dump(district_gap_sum_dict)
+            
         self.X_y_Df["district_gap_sum"] = self.X_y_Df["start_district_id"].map(district_gap_sum_dict)
         return
     def transformXfDf(self, data_dir = None):
