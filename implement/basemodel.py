@@ -88,9 +88,9 @@ class BaseModel(PrepareData):
         return -1
     def run_croos_validation(self):
         features,labels,cv = self.getFeaturesLabel()
-        scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv, scoring=mean_absolute_percentage_error_scoring)
+        scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv, scoring=mean_absolute_percentage_error_scoring, n_jobs = -1)
         print "cross validation scores: means, {}, std, {}, details,{}".format(np.absolute(scores.mean()), scores.std(), np.absolute(scores))
-        return
+        return np.absolute(scores.mean())
     def run_train_validation(self):
         self.get_train_validationset(foldid= self.get_train_validation_foldid())
 #         self.getTrainTestSet()
