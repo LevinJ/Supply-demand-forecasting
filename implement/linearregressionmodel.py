@@ -11,6 +11,7 @@ from sklearn.linear_model import Ridge
 from sklearn.linear_model import LinearRegression
 from sklearn import preprocessing
 from sklearn.pipeline import Pipeline
+from preprocess.preparedata import HoldoutSplitMethod
 
 
 
@@ -18,6 +19,8 @@ from sklearn.pipeline import Pipeline
 class LinearRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
+        self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,901,902]
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS1
         self.save_final_model = False
         self.do_cross_val = True
         return

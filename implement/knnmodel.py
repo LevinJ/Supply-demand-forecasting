@@ -8,8 +8,8 @@ from preprocess.preparedata import HoldoutSplitMethod
 class KNNModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [9,1]
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_MIN
+        self.usedFeatures = [1201, 101, 5, 1203, 901, 6, 11, 1206, 1202, 902]
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS4
         self.save_final_model = True
         self.do_cross_val = False
         return
