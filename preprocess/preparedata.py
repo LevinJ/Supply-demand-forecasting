@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 from splittrainvalidation import SplitTrainValidation
 from splittrainvalidation import HoldoutSplitMethod
+from preprocess.historicaldata import HistoricalData
 
 
 
@@ -22,10 +23,10 @@ from splittrainvalidation import HoldoutSplitMethod
 
 
     
-class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation):
+class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = [1,4,5,6,7,8,9,10]
+        self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,901,902,903,904,10,11,1201,1202,1203,1204,1205,1206]
 #         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
 #                                        'preweather', 'start_district_id_28', 'start_district_id_8',
 #                                        'start_district_id_7', 'start_district_id_48']
@@ -38,19 +39,44 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         return
     def getAllFeaturesDict(self):
         featureDict ={}
-        preGaps = ['gap1', 'gap2', 'gap3']
+#         preGaps = ['gap1', 'gap2', 'gap3']
         districtids = ['start_district_id_' + str(i + 1) for i in range(66)]
         timeids = ['time_id_' + str(i + 1) for i in range(144)]
-        featureDict[1] = preGaps
+        featureDict[101] = ['gap1']
+        featureDict[102] = ['gap2']
+        featureDict[103] = ['gap3']
+        
         featureDict[2] = districtids
         featureDict[3] = timeids
+        
         featureDict[4] = ['time_id']
         featureDict[5] = ['start_district_id']
         featureDict[6] = ['preweather']
-        featureDict[7] = ['traffic1','traffic2','traffic3']
-        featureDict[8] = ['gap_diff1','gap_diff2']
-        featureDict[9] = ['mean','median','plus_mean','plus_median']
+        
+        featureDict[701] = ['traffic1']
+        featureDict[702] = ['traffic2']
+        featureDict[703] = ['traffic3']
+        
+        
+        featureDict[801] = ['gap_diff1']
+        featureDict[802] = ['gap_diff2']
+        
+        featureDict[901] = ['mean']
+        featureDict[902] = ['median']
+        featureDict[903] = ['plus_mean']
+        featureDict[904] = ['plus_median']
+        
         featureDict[10] = ['district_gap_sum']
+        featureDict[11] = ["rain_check"]
+        
+        featureDict[1201] = ['history_mean']
+        featureDict[1202] = ['history_median']
+        featureDict[1203] = ['history_mode']
+        featureDict[1204] = ['history_plus_mean']
+        featureDict[1205] = ['history_plus_median']
+        featureDict[1206] = ['history_plus_mode']
+        
+        
         return featureDict
     def translateUsedFeatures(self):
         if  hasattr(self, 'override_used_features'):
@@ -157,6 +183,10 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
+    def add_rain_check(self):
+        rain_dict ={1:1, 2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0}
+        self.X_y_Df["rain_check"] = self.X_y_Df["preweather"].map(rain_dict)
+        return
     def add_prev_weather(self, data_dir):
         dumpload = DumpLoad(data_dir + 'weather_data/temp/prevweather.df.pickle')
         if dumpload.isExisiting():
@@ -164,10 +194,11 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         else:
             weather_dict = self.get_weather_dict(data_dir)
             
-            df = self.X_y_Df['time_slotid'].apply(self.find_prev_weather, weather_dict=weather_dict)
+            df = self.X_y_Df['time_slotid'].apply(self.find_prev_weather_mode, weather_dict=weather_dict)
                     
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
+        self.add_rain_check()
         return
     def add_prev_traffic(self, data_dir):
         dumpload = DumpLoad(data_dir + 'traffic_data/temp/prevtraffic.df.pickle')
@@ -203,6 +234,16 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             
         self.X_y_Df["district_gap_sum"] = self.X_y_Df["start_district_id"].map(district_gap_sum_dict)
         return
+    def add_history_data(self,data_dir):
+        dumpload = DumpLoad(data_dir + 'order_data/temp/history_data.df.pickle')
+        if dumpload.isExisiting():
+            df = dumpload.load()
+        else:
+            temp_dict = self.get_history_data_dict()
+            df = self.X_y_Df[['start_district_id', 'time_id']].apply(self.find_history_data, axis = 1, history_dict = temp_dict)
+            dumpload.dump(df)
+        self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
+        return
     def transformXfDf(self, data_dir = None):
         self.add_pre_gaps(data_dir)
         self.add_gap_mean_median(data_dir)
@@ -210,6 +251,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
         self.add_gap_difference()
+        self.add_history_data(data_dir)
         self.remove_zero_gap()
         self.transformCategories()
         if hasattr(self, 'busedFeaturesTranslated'):
@@ -259,7 +301,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         
 
         self.getFeaturesLabel()
-#         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
+        self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
 
         return
     

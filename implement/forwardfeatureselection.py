@@ -10,11 +10,12 @@ class ForwardFeatureSel:
         clfDict = {'1': GrientBoostingModel, '2':KNNModel}
         self.clf =  clfDict['1']()
         self.result = []
-        self.featureList =  [1,4,5,6,7,8,9,10]
+        self.featureList =  [101,102,103,4,5,6, 701,702,703,801,802,901,902,903,904,10,11,1201,1202,1203,1204,1205,1206]
 #         self.featureList =  [1,9]
-        self.cv_method =[HoldoutSplitMethod.IMITTATE_TEST2_MIN, HoldoutSplitMethod.IMITTATE_TEST2_PLUS1, HoldoutSplitMethod.IMITTATE_TEST2_PLUS2,
-                         HoldoutSplitMethod.IMITTATE_TEST2_PLUS3,HoldoutSplitMethod.IMITTATE_TEST2_PLUS4,HoldoutSplitMethod.IMITTATE_TEST2_PLUS6,
-                         HoldoutSplitMethod.IMITTATE_TEST2_FULL]
+        self.cv_method =[HoldoutSplitMethod.IMITTATE_TEST2_MIN]
+#         self.cv_method =[HoldoutSplitMethod.IMITTATE_TEST2_MIN, HoldoutSplitMethod.IMITTATE_TEST2_PLUS1, HoldoutSplitMethod.IMITTATE_TEST2_PLUS2,
+#                          HoldoutSplitMethod.IMITTATE_TEST2_PLUS3,HoldoutSplitMethod.IMITTATE_TEST2_PLUS4,HoldoutSplitMethod.IMITTATE_TEST2_PLUS6,
+#                          HoldoutSplitMethod.IMITTATE_TEST2_FULL]
         return
     
     def selectBestFeaturList(self, featureLists):
@@ -33,7 +34,7 @@ class ForwardFeatureSel:
         return
     def run(self):
     
-        featureLists =  self.generateFeatureList([9,1])
+        featureLists =  self.generateFeatureList([1201,101,5,1203,901,6,11,1206,1202,902,10,801])
         self.selectBestFeaturList(featureLists)
         
         return

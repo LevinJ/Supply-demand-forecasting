@@ -6,12 +6,15 @@ from utility.datafilepath import g_singletonDataFilePath
 from visualization import visualizeData
 import numpy as np
 import math
+import pandas as pd
 
 
 class VisualizeTrainData(visualizeData):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.gapdf = self.load_gapdf(g_singletonDataFilePath.getTrainDir())
+        data_dir = g_singletonDataFilePath.getTrainDir()
+        self.gapdf = self.load_gapdf(data_dir)
+        self.weathdf = self.load_weatherdf(data_dir)
         self.gapdf.describe()
         return
     def disp_gap_bydistrict(self, disp_ids = np.arange(34,67,1), cls1 = 'start_district_id', cls2 = 'time_id'):
@@ -29,8 +32,22 @@ class VisualizeTrainData(visualizeData):
             group.groupby(cls2)['gap'].mean().plot()
             count += 1   
         return
+    def disp_by_weather(self):
+        by_weatehr = self.weathdf.groupby('weather')
+        res = []
+        
+        for name, group in by_weatehr:
+            gaps = self.gapdf[self.gapdf['time_slotid'].isin(group['time_slotid'])].shape[0]
+#             gaps = self.gapdf[self.gapdf['time_slotid'].isin(group['time_slotid'])]['gap'].mean()
+            res.append([name, gaps])
+        
+        df = pd.DataFrame(res, columns = ['weather', 'gaps'])
+#         plt.scatter(df['weather'], df['gaps'])
+        plt.scatter(df['weather'], df['gaps'])
+        return
     def run(self):
-        self.disp_gap_bydistrict(cls2 = 'time_id')
+        self.disp_by_weather()
+#         self.disp_gap_bydistrict(cls2 = 'time_id')
 #         self.disp_gap_bydistrict(cls2 = 'time_date')
         plt.show()
 #         self.disp_gap_bytimeiid()
