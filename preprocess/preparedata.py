@@ -26,7 +26,7 @@ from preprocess.historicaldata import HistoricalData
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,901,902,903,904,10,11,1201,1202,1203,1204,1205,1206]
+        self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206]
 #         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
 #                                        'preweather', 'start_district_id_28', 'start_district_id_8',
 #                                        'start_district_id_7', 'start_district_id_48']
@@ -34,7 +34,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.excludeZerosActual = True
         self.randomSate = None
         self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS1
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS4
        
         return
     def getAllFeaturesDict(self):

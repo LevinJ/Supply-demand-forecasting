@@ -23,7 +23,7 @@ class TuneModel:
         _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
         self.durationtool = Duration()
         self.do_random_gridsearch = True
-        self.n_iter_randomsearch = 50
+        self.n_iter_randomsearch = 500
         self.n_jobs = -1
         return
     def runGridSearch(self, model):

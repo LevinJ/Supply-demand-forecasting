@@ -22,7 +22,7 @@ class GrientBoostingModel(BaseModel):
         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
         return
     def setClf(self):
-        self.clf = GradientBoostingRegressor(n_estimators=2500,subsample=0.8, max_depth=6)
+        self.clf = GradientBoostingRegressor(n_estimators=2500,learning_rate= 0.08, subsample=0.7, max_depth=6)
 #         self.clf = GradientBoostingRegressor(loss = 'ls', verbose = 300, n_estimators=70,    learning_rate= 0.1,subsample=1.0, max_features = 1.0)
         return
     def get_train_validation_foldid(self):
@@ -50,7 +50,7 @@ class GrientBoostingModel(BaseModel):
         
         return {'max_depth': [8],'max_features': [9], 'subsample':[0.8], 'learning_rate':[0.1], 'n_estimators': np.arange(20, 81, 10)}
     def __get_model_param(self):
-        return {'max_depth': np.arange(3,9,1),'subsample': np.linspace(0.5, 1.0,6), 'learning_rate':[0.1,0.08,0.15], 'n_estimators': [60]}
+        return {'max_depth': np.arange(3,15,1),'subsample': np.linspace(0.5, 1.0,6), 'learning_rate':[0.15,0.1,0.08,0.06,0.04,0.02, 0.01], 'n_estimators': [1000,1300,1500,1800,2000]}
     def getTunedParamterOptions(self):
 #         tuned_parameters = self.__get_intial_model_param()
         tuned_parameters = self.__get_model_param()

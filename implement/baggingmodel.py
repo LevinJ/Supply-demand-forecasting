@@ -11,9 +11,8 @@ class BaggingModel(BaseModel):
         BaseModel.__init__(self)
         return
     def setClf(self):
-        self.usedFeatures = [1,2,4,6,7]
 #         min_samples_split = 3
-        self.clf = BaggingRegressor(n_estimators = 10, max_samples =0.5, max_features =0.5, verbose = 100)
+        self.clf = BaggingRegressor(n_estimators = 100, max_samples =0.5, max_features =0.5, verbose = 100)
         return
     def getTunedParamterOptions(self):
         tuned_parameters = [{'min_samples_split': np.arange(2, 1000, 1)}]
