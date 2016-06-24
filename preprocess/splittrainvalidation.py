@@ -161,5 +161,5 @@ if __name__ == "__main__":
     from utility.datafilepath import g_singletonDataFilePath
     pre = PrepareData()
     pre.X_y_Df = pre.load_gapdf(g_singletonDataFilePath.getTrainDir())
-    pre.transformXfDf(g_singletonDataFilePath.getTrainDir())
+    pre.__engineer_feature(g_singletonDataFilePath.getTrainDir())
     obj.run(pre.X_y_Df)

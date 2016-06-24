@@ -1,0 +1,7 @@
+https://discussions.udacity.com/t/why-use-mape-as-a-metric/171160
+
+
+(Didi MAPE) : MAPE = NonZero/(NonZero + Zero) = 0.636364
+
+
+target MAPE = 0.250/0.636364 = 0.39285692

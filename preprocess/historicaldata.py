@@ -1,9 +1,7 @@
 from exploredata.order import ExploreOrder
-from exploredata.weather import ExploreWeather
 from utility.datafilepath import g_singletonDataFilePath
 from time import time
 from utility.dumpload import DumpLoad
-from utility.datafilepath import g_singletonDataFilePath
 import pandas as pd
 from scipy.stats import mode
 import numpy as np
@@ -69,16 +67,6 @@ class HistoricalData(object):
         for name, row in by_group:
             res_dict[name] = row['gap'].tolist()
         return res_dict
-    def __get_combined_gap_weather(self, data_dir):
-        gapdf = ExploreOrder().load_gapdf(data_dir)
-        weather = ExploreWeather()
-        weather_dict = weather.get_weather_dict(data_dir)
-        
-        df = gapdf['time_slotid'].apply(weather.find_prev_weather_mode, weather_dict=weather_dict)
-        
-        df = pd.concat([gapdf, df],  axis=1)
-        
-        return df
     def get_bydistrict_time_dict(self):
         return
     

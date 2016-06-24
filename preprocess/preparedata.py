@@ -26,7 +26,7 @@ from preprocess.historicaldata import HistoricalData
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206]
+        self.usedFeatures = [101,102,103,2, 4,6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206]
 #         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
 #                                        'preweather', 'start_district_id_28', 'start_district_id_8',
 #                                        'start_district_id_7', 'start_district_id_48']
@@ -34,7 +34,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.excludeZerosActual = True
         self.randomSate = None
         self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS4
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS6
        
         return
     def getAllFeaturesDict(self):
@@ -61,10 +61,10 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         featureDict[801] = ['gap_diff1']
         featureDict[802] = ['gap_diff2']
         
-        featureDict[901] = ['mean']
-        featureDict[902] = ['median']
-        featureDict[903] = ['plus_mean']
-        featureDict[904] = ['plus_median']
+#         featureDict[901] = ['mean']
+#         featureDict[902] = ['median']
+#         featureDict[903] = ['plus_mean']
+#         featureDict[904] = ['plus_median']
         
         featureDict[10] = ['district_gap_sum']
         featureDict[11] = ["rain_check"]
@@ -93,67 +93,6 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         [res.extend(featureDict[fea]) for fea in self.usedFeatures]
         self.usedFeatures = res
         return
-    def splitTrainTestSet(self):
-        # Remove zeros values from data to try things out 
-#         if self.holdout_split == HoldoutSplitMethod.NONE:     
-#             self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X_y_Df[self.usedFeatures], self.X_y_Df['gap'], test_size=self.test_size, random_state=self.randomSate)
-#             return
-        if self.holdout_split == HoldoutSplitMethod.BYDATESLOT_RANDOM: 
-            self.splitby_random_dateslot()
-            return
-        if self.holdout_split == HoldoutSplitMethod.KFOLD_BYDATE:
-            self.splitby_kfold()
-            return
-        self.splitby_imitate_publicset()
-        return
-    def splitby_kfold(self):
-        cv = self.kfold_bydate(self.X_y_Df)
-        count = 0
-        for train_index, test_index in cv:
-            if count != len(cv)-1:
-                count = count + 1
-                continue
-            # just take the last fold as validation fold
-            self.X_train = self.X_y_Df.iloc[train_index][self.usedFeatures]
-            self.y_train = self.X_y_Df.iloc[train_index][self.usedLabel] 
-            self.dateslot_train_num = self.X_y_Df.iloc[train_index]['time_slotid'].unique().shape[0] 
-            
-            self.X_test = self.X_y_Df.iloc[test_index][self.usedFeatures]
-            self.y_test = self.X_y_Df.iloc[test_index][self.usedLabel]
-            self.dateslot_test_num = self.X_y_Df.iloc[test_index]['time_slotid'].unique().shape[0]
-            break
-        return
-    def splitby_imitate_publicset(self):
-        validation_dateslots = self.get_holdoutset(holdout_id = 1)
-        validation_dateslots = self.X_y_Df['time_slotid'].isin(validation_dateslots)
-        train_dateslots = self.X_y_Df['time_date'] < '2016-01-13'
-        
-        self.dateslot_test_num = self.X_y_Df[validation_dateslots]['time_slotid'].unique().shape[0]
-        self.dateslot_train_num = self.X_y_Df[train_dateslots]['time_slotid'].unique().shape[0]
-        
-        
-        self.X_test = self.X_y_Df[validation_dateslots][self.usedFeatures]
-        self.y_test = self.X_y_Df[validation_dateslots][self.usedLabel]
-        
-        self.X_train = self.X_y_Df[train_dateslots][self.usedFeatures]
-        self.y_train = self.X_y_Df[train_dateslots][self.usedLabel]    
-        return
-    def splitby_dateslots(self, selected_dateslots):
-        selected_dateslots = self.X_y_Df['time_slotid'].isin(selected_dateslots)
-        self.X_test = self.X_y_Df[selected_dateslots][self.usedFeatures]
-        self.y_test = self.X_y_Df[selected_dateslots][self.usedLabel]
-        self.X_train = self.X_y_Df[np.logical_not(selected_dateslots)][self.usedFeatures]
-        self.y_train = self.X_y_Df[np.logical_not(selected_dateslots)][self.usedLabel]
-        return
-    def splitby_random_dateslot(self):
-        all_dateslots = self.X_y_Df['time_slotid'].unique()
-        self.dateslot_test_num = int(self.test_size *all_dateslots.shape[0])
-        self.dateslot_train_num = all_dateslots.shape[0] - self.dateslot_test_num
-        
-        selected_dateslots = np.random.choice(all_dateslots,  size=self.dateslot_test_num, replace=False)
-        self.splitby_dateslots(selected_dateslots)
-        
-        return
     def transformCategories(self):
 #         cols = ['start_district_id', 'time_id']
         cols = ['start_district_id']
@@ -173,16 +112,16 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
-    def add_gap_mean_median(self, data_dir):
-        dumpload = DumpLoad(data_dir + 'order_data/temp/gapmeanmedian.df.pickle')
-        if dumpload.isExisiting():
-            df = dumpload.load()
-        else:
-            temp_dict = self.get_gap_meanmedian_dict()
-            df = self.X_y_Df[['start_district_id', 'time_id']].apply(self.find_gap_meanmedian, axis = 1, gap_meanmedian_dict = temp_dict)
-            dumpload.dump(df)
-        self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
-        return
+#     def add_gap_mean_median(self, data_dir):
+#         dumpload = DumpLoad(data_dir + 'order_data/temp/gapmeanmedian.df.pickle')
+#         if dumpload.isExisiting():
+#             df = dumpload.load()
+#         else:
+#             temp_dict = self.get_gap_meanmedian_dict()
+#             df = self.X_y_Df[['start_district_id', 'time_id']].apply(self.find_gap_meanmedian, axis = 1, gap_meanmedian_dict = temp_dict)
+#             dumpload.dump(df)
+#         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
+#         return
     def add_rain_check(self):
         rain_dict ={1:1, 2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0}
         self.X_y_Df["rain_check"] = self.X_y_Df["preweather"].map(rain_dict)
@@ -244,9 +183,9 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
-    def transformXfDf(self, data_dir = None):
+    def __engineer_feature(self, data_dir = None):
         self.add_pre_gaps(data_dir)
-        self.add_gap_mean_median(data_dir)
+#         self.add_gap_mean_median(data_dir)
         self.add_district_gap_sum()
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
@@ -260,13 +199,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.busedFeaturesTranslated = True
 #         self.X_y_Df.to_csv("temp/transformeddata.csv")
         return
-    def getTrainTestSet(self):
-        data_dir = g_singletonDataFilePath.getTrainDir()
-        self.X_y_Df = self.load_gapdf(data_dir)
-        self.transformXfDf(data_dir)
-        
-        self.splitTrainTestSet()
-        return (self.X_train, self.X_test, self.y_train, self.y_test)
+
     def get_train_validationset(self, foldid = -1): 
         _,_,cv = self.getFeaturesLabel()
         folds = []
@@ -282,7 +215,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
     def getFeaturesLabel(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
         self.X_y_Df = self.load_gapdf(data_dir) 
-        self.transformXfDf(data_dir)
+        self.__engineer_feature(data_dir)
 #         self.remove_zero_gap()
         if self.holdout_split == HoldoutSplitMethod.kFOLD_FORWARD_CHAINING:
             cv = self.kfold_forward_chaining(self.X_y_Df)
@@ -293,7 +226,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel],cv
     def getFeaturesforTestSet(self, data_dir):
         self.X_y_Df = pd.read_csv(data_dir + 'gap_prediction.csv', index_col=0)
-        self.transformXfDf(data_dir)
+        self.__engineer_feature(data_dir)
         return self.X_y_Df
     def run(self):
 #         print self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
@@ -302,6 +235,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
 
         self.getFeaturesLabel()
         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
+        self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
 
         return
     

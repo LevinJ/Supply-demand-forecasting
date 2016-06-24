@@ -16,13 +16,12 @@ import matplotlib.pyplot as plt
 class GrientBoostingModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.save_final_model = True
+#         self.save_final_model = True
         self.do_cross_val = False
-        self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,901,902,903,904,10,11,1201,1202,1203,1204,1205,1206]
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_MIN
         return
     def setClf(self):
-        self.clf = GradientBoostingRegressor(n_estimators=2500,learning_rate= 0.08, subsample=0.7, max_depth=6)
+        self.clf = GradientBoostingRegressor(n_estimators=1500)
 #         self.clf = GradientBoostingRegressor(loss = 'ls', verbose = 300, n_estimators=70,    learning_rate= 0.1,subsample=1.0, max_features = 1.0)
         return
     def get_train_validation_foldid(self):
@@ -43,8 +42,8 @@ class GrientBoostingModel(BaseModel):
         pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test,'scores_train_mse': scores_train_mse, 'scores_test_mse': scores_test_mse}).to_csv('temp/trend.csv')
         df = pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test})
         print "Test set MAPE minimum: {}".format(np.array(scores_test).min())
-        df.plot()
-        plt.show()
+#         df.plot()
+#         plt.show()
         return
     def __get_intial_model_param(self):
         
