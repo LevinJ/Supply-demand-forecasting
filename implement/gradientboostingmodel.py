@@ -18,10 +18,9 @@ class GrientBoostingModel(BaseModel):
         BaseModel.__init__(self)
 #         self.save_final_model = True
         self.do_cross_val = False
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_MIN
         return
     def setClf(self):
-        self.clf = GradientBoostingRegressor(n_estimators=1500)
+        self.clf = GradientBoostingRegressor()
 #         self.clf = GradientBoostingRegressor(loss = 'ls', verbose = 300, n_estimators=70,    learning_rate= 0.1,subsample=1.0, max_features = 1.0)
         return
     def get_train_validation_foldid(self):
@@ -33,11 +32,11 @@ class GrientBoostingModel(BaseModel):
         scores_train_mse = []
         for i, y_pred in enumerate(self.clf.staged_predict(self.X_test)):
             scores_test.append(mean_absolute_percentage_error(self.y_test, y_pred))
-            scores_test_mse.append(mean_absolute_percentage_error(self.y_test, y_pred))
+            scores_test_mse.append(mean_squared_error(self.y_test, y_pred))
         
         for i, y_pred in enumerate(self.clf.staged_predict(self.X_train)):
             scores_train.append(mean_absolute_percentage_error(self.y_train, y_pred))
-            scores_train_mse.append(mean_absolute_percentage_error(self.y_train, y_pred))
+            scores_train_mse.append(mean_squared_error(self.y_train, y_pred))
         
         pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test,'scores_train_mse': scores_train_mse, 'scores_test_mse': scores_test_mse}).to_csv('temp/trend.csv')
         df = pd.DataFrame({'scores_train': scores_train, 'scores_test': scores_test})

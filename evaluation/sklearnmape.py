@@ -1,5 +1,7 @@
 from sklearn.utils import assert_all_finite
 import numpy as np
+from sklearn.metrics import mean_squared_error
+from math import sqrt
 
 def mean_absolute_percentage_error(y_true, y_pred): 
     """
@@ -24,6 +26,14 @@ def mean_absolute_percentage_error(y_true, y_pred):
     #    y_true, y_pred = _check_1d_array(y_true, y_pred)
 #     return np.abs((y_true - y_pred) / y_true.astype(np.float32)).sum()/float(district_num * dateslot_num)
     return np.mean(np.abs((y_true - y_pred) / y_true.astype(np.float32)))
+
+
+def mean_absolute_percentage_error_xgboost(y_predicted, y_true):
+    y_true = y_true.get_label()
+    score = -mean_absolute_percentage_error(y_true, y_predicted)
+    mse = mean_squared_error(y_true, y_predicted)
+    return ('mape', score)
+#     return [('mse', mse),('mape', score)]
 
 
 def mean_absolute_percentage_error_scoring(estimator, X, y):

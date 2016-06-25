@@ -32,9 +32,9 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
 #                                        'start_district_id_7', 'start_district_id_48']
         self.usedLabel = 'gap'
         self.excludeZerosActual = True
-        self.randomSate = None
-        self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS6
+#         self.randomSate = None
+#         self.test_size = 0.25
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
        
         return
     def getAllFeaturesDict(self):
