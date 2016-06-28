@@ -33,7 +33,9 @@ class BaseModel(PrepareData):
     def train(self):
         print "Training {}...".format(self.clf.__class__.__name__)
         t0 = time()
-        self.clf.fit(self.X_train, self.y_train)
+        fit_params = self.get_fit_params()
+        fit_params = fit_params if fit_params is not None else {}
+        self.clf.fit(self.X_train, self.y_train, **fit_params)
         print "train:", round(time()-t0, 3), "s"
         self.dispFeatureImportance()
         self.after_train()
@@ -45,6 +47,8 @@ class BaseModel(PrepareData):
         dumpload.dump(self)
         self.predictTestSet(g_singletonDataFilePath.getTest2Dir())
         return
+    def get_fit_params(self):
+        return None
     def dispFeatureImportance(self):
         if not hasattr(self.clf, 'feature_importances_'):
             return

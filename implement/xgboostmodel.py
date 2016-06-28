@@ -11,44 +11,43 @@ import matplotlib.pyplot as plt
 import xgboost as xgb
 from evaluation.sklearnmape import mean_absolute_percentage_error_xgboost
 from evaluation.sklearnmape import mean_absolute_percentage_error
+from utility.xgboostgridsearch import XGBoost_GridSearch
 
 class XGBoostModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
 #         self.save_final_model = True
-        self.do_cross_val = False
+#         self.do_cross_val = False
         return
-    def get_train_validation_foldid(self):
-        return -3
-    def run_croos_validation(self):
-        features,labels,cv = self.getFeaturesLabel()
-        
-        dtrain = xgb.DMatrix(features, label= labels,feature_names=features.columns)
+    def run_croos_validation(self, dtrain,cv):
          
         # specify parameters via map, definition are same as c++ version
-        param = {'max_depth':7, 'eta':0.01, 'silent':1, 'objective':'reg:linear' }
+        param = {'max_depth':14, 'eta':0.02, 'silent':1, 'objective':'reg:linear' }
          
         # specify validations set to watch performance
-        num_round = 100
+        num_boost_round = 1000
         early_stopping_rounds = 3
-        bst = xgb.cv(param, dtrain, num_boost_round=num_round,  feval = mean_absolute_percentage_error_xgboost, folds = cv,callbacks=[xgb.callback.print_evaluation(show_stdv=True),
+        bst = xgb.cv(param, dtrain, num_boost_round=num_boost_round,  feval = mean_absolute_percentage_error_xgboost, folds = cv,callbacks=[xgb.callback.print_evaluation(show_stdv=True),
                         xgb.callback.early_stop(early_stopping_rounds)])
          
-        print bst
+#         print bst
 
         return 
-    def run_tainvalidation(self):
-        self.get_train_validationset(foldid= self.get_train_validation_foldid())
+    def run_train_validation(self):
+        fold_id = -3
+        self.get_train_validationset(fold_id)
+        
         dtrain = xgb.DMatrix(self.X_train, label= self.y_train,feature_names=self.X_train.columns)
         dtest =  xgb.DMatrix(self.X_test, label= self.y_test,feature_names=self.X_test.columns)
          
         # specify parameters via map, definition are same as c++ version
-        param = {'max_depth':10, 'eta':0.01, 'silent':1, 'objective':'reg:linear' }
+        param = {'max_depth':14, 'eta':0.02, 'silent':1, 'objective':'reg:linear' }
          
         # specify validations set to watch performance
-        watchlist  = [(dtrain,'train'),(dtest,'eval')]
-        num_round = 100
-        bst = xgb.train(param, dtrain, num_boost_round=num_round, evals = watchlist, feval = mean_absolute_percentage_error_xgboost, early_stopping_rounds=3)
+        evals  = [(dtrain,'train'),(dtest,'eval')]
+        num_boost_round = 100
+        early_stopping_rounds=3
+        bst = xgb.train(param, dtrain, num_boost_round=num_boost_round, evals = evals, feval = mean_absolute_percentage_error_xgboost, early_stopping_rounds=early_stopping_rounds)
          
  
         y_pred_train = bst.predict(dtrain)
@@ -58,9 +57,27 @@ class XGBoostModel(BaseModel):
         print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, y_pred_train))
         print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test))
         return
+    def run_grid_search(self, dtrain,cv):
+#         param_grid = {'max_depth':[7,8], 'eta':[0.015], 'silent':[1], 'objective':['reg:linear'] }
+        param_grid = {'max_depth':range(5,15), 'eta':[0.01, 0.02,0.005], 'silent':[1], 'objective':['reg:linear'] }
+        num_boost_round = 100
+        early_stopping_rounds = 3
+        grid = XGBoost_GridSearch( param_grid,  cv=cv, num_boost_round = num_boost_round, 
+                                   early_stopping_rounds=early_stopping_rounds, feval = mean_absolute_percentage_error_xgboost)
+        grid.fit(dtrain)
+        return
     def run(self):
-#         self.run_tainvalidation()
-        self.run_croos_validation()
+        sel = 1
+        if sel == 1:
+            return self.run_train_validation()
+        
+        # now for cross validation and parameter tuning
+        features,labels,cv = self.getFeaturesLabel()
+        dtrain = xgb.DMatrix(features, label= labels,feature_names=features.columns)
+        if sel == 2:
+            return self.run_croos_validation(dtrain,cv)
+        self.run_grid_search(dtrain,cv)     
+        
          
         return
 
