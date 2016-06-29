@@ -1,8 +1,11 @@
 from sklearn.grid_search import ParameterGrid
+from sklearn.grid_search import ParameterSampler
 import xgboost as xgb
 import pandas as pd
 
-class XGBoost_GridSearch(object):
+
+    
+class BaseSearchCV(object):
     def __init__(self, param_grid, cv=None, num_boost_round = 10, early_stopping_rounds=3, feval = None):
         self.param_grid = param_grid
         self.cv = cv
@@ -52,8 +55,36 @@ class XGBoost_GridSearch(object):
         return
 
     
+class GridSearchCV(BaseSearchCV):
+    def __init__(self, param_grid, cv=None, num_boost_round = 10, early_stopping_rounds=3, feval = None):
+        BaseSearchCV.__init__(self, param_grid, cv, num_boost_round, early_stopping_rounds, feval)
+        return
 
+class RandomizedSearchCV(BaseSearchCV):
+    def __init__(self, param_grid, cv=None, num_boost_round = 10, early_stopping_rounds=3, feval = None,n_iter=10,random_state=None):
+        self.n_iter = n_iter
+        self.random_state = random_state
+        BaseSearchCV.__init__(self, param_grid, cv, num_boost_round, early_stopping_rounds, feval)
+        return
+    def fit(self, dtrain=None):
+        """Run fit on the estimator with randomly drawn parameters.
+
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, n_features]
+            Training vector, where n_samples in the number of samples and
+            n_features is the number of features.
+
+        y : array-like, shape = [n_samples] or [n_samples, n_output], optional
+            Target relative to X for classification or regression;
+            None for unsupervised learning.
+
+        """
+        sampled_params = ParameterSampler(self.param_grid,
+                                          self.n_iter,
+                                          random_state=self.random_state)
+        return self._fit(dtrain, sampled_params)
     
 if __name__ == "__main__":   
-    obj= XGBoost_GridSearch()
+    obj= GridSearchCV()
     obj.run()

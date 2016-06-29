@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 import xgboost as xgb
 from evaluation.sklearnmape import mean_absolute_percentage_error_xgboost
 from evaluation.sklearnmape import mean_absolute_percentage_error
-from utility.xgboostgridsearch import XGBoost_GridSearch
+from utility.xgboostgridsearch import GridSearchCV
+from utility.xgboostgridsearch import RandomizedSearchCV
 
 class XGBoostModel(BaseModel):
     def __init__(self):
@@ -60,9 +61,16 @@ class XGBoostModel(BaseModel):
     def run_grid_search(self, dtrain,cv):
 #         param_grid = {'max_depth':[7,8], 'eta':[0.01], 'silent':[1], 'objective':['reg:linear'] }
         param_grid = {'max_depth':range(5,15), 'eta':[0.01, 0.02,0.005], 'silent':[1], 'objective':['reg:linear'] }
-        num_boost_round = 100
+        num_boost_round = 500
         early_stopping_rounds = 3
-        grid = XGBoost_GridSearch( param_grid,  cv=cv, num_boost_round = num_boost_round, 
+        do_random_gridsearch = True 
+        n_iter=10
+        
+        if do_random_gridsearch:
+            grid = RandomizedSearchCV( param_grid,  cv=cv, num_boost_round = num_boost_round, 
+                                   early_stopping_rounds=early_stopping_rounds,feval = mean_absolute_percentage_error_xgboost, n_iter=n_iter)
+        else:
+            grid = GridSearchCV( param_grid,  cv=cv, num_boost_round = num_boost_round, 
                                    early_stopping_rounds=early_stopping_rounds,feval = mean_absolute_percentage_error_xgboost)
         grid.fit(dtrain)
         return

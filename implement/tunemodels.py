@@ -23,7 +23,7 @@ class TuneModel:
         logfile_name = r'logs/tunealgorithm_' +self.application_start_time + '.txt'
         _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
         self.durationtool = Duration()
-        self.do_random_gridsearch = False
+        self.do_random_gridsearch = True
         self.n_iter_randomsearch = 2
         self.n_jobs = 1
         return
