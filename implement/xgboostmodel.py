@@ -11,12 +11,16 @@ import matplotlib.pyplot as plt
 import xgboost as xgb
 from evaluation.sklearnmape import mean_absolute_percentage_error_xgboost
 from evaluation.sklearnmape import mean_absolute_percentage_error
-from utility.xgboostgridsearch import GridSearchCV
-from utility.xgboostgridsearch import RandomizedSearchCV
+# from utility.xgboostgridsearch import GridSearchCV
+# from utility.xgboostgridsearch import RandomizedSearchCV
+from utility.finetunexgboost import Fine_Tune_XGBoost
 
-class XGBoostModel(BaseModel):
+
+
+    
+class XGBoostModel(Fine_Tune_XGBoost):
     def __init__(self):
-        BaseModel.__init__(self)
+        Fine_Tune_XGBoost.__init__(self)
 #         self.save_final_model = True
 #         self.do_cross_val = False
         return
@@ -35,7 +39,7 @@ class XGBoostModel(BaseModel):
 
         return 
     def run_train_validation(self):
-        fold_id = -1
+        fold_id = -3
         self.get_train_validationset(fold_id)
         
         dtrain = xgb.DMatrix(self.X_train, label= self.y_train,feature_names=self.X_train.columns)
@@ -58,22 +62,42 @@ class XGBoostModel(BaseModel):
         print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, y_pred_train))
         print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test))
         return
-    def run_grid_search(self, dtrain,cv):
-#         param_grid = {'max_depth':[7,8], 'eta':[0.01], 'silent':[1], 'objective':['reg:linear'] }
-        param_grid = {'max_depth':range(5,15), 'eta':[0.01, 0.02,0.005], 'silent':[1], 'objective':['reg:linear'] }
-        num_boost_round = 500
-        early_stopping_rounds = 3
-        do_random_gridsearch = True 
-        n_iter=10
+    def adjust_cv_param(self):
+        self.use_randomized_search = False
+        self.n_iter_randomized_search = 3
         
-        if do_random_gridsearch:
-            grid = RandomizedSearchCV( param_grid,  cv=cv, num_boost_round = num_boost_round, 
-                                   early_stopping_rounds=early_stopping_rounds,feval = mean_absolute_percentage_error_xgboost, n_iter=n_iter)
-        else:
-            grid = GridSearchCV( param_grid,  cv=cv, num_boost_round = num_boost_round, 
-                                   early_stopping_rounds=early_stopping_rounds,feval = mean_absolute_percentage_error_xgboost)
-        grid.fit(dtrain)
+        
+        num_boost_round = 3
+        early_stopping_rounds = 3
+        folds = 5
+        
+        kwargs = {'num_boost_round':num_boost_round, 'folds':folds,
+                  'callbacks':[xgb.callback.print_evaluation(show_stdv=True),xgb.callback.early_stop(early_stopping_rounds)]}
+        return kwargs
+#     def run_grid_search(self, dtrain,cv):
+#         self.tune(dtrain, cv)
+# #         param_grid = {'max_depth':[7,8], 'eta':[0.01], 'silent':[1], 'objective':['reg:linear'] }
+#         param_grid = {'max_depth':range(5,15), 'eta':[0.01, 0.02,0.005], 'silent':[1], 'objective':['reg:linear'] }
+#         num_boost_round = 500
+#         early_stopping_rounds = 3
+#         do_random_gridsearch = True 
+#         n_iter=10
+#         
+#         if do_random_gridsearch:
+#             grid = RandomizedSearchCV( param_grid,  cv=cv, num_boost_round = num_boost_round, 
+#                                    early_stopping_rounds=early_stopping_rounds,feval = mean_absolute_percentage_error_xgboost, n_iter=n_iter)
+#         else:
+#             grid = GridSearchCV( param_grid,  cv=cv, num_boost_round = num_boost_round, 
+#                                    early_stopping_rounds=early_stopping_rounds,feval = mean_absolute_percentage_error_xgboost)
+#         grid.fit(dtrain)
+#         return
+
+class DidiXGBoostModel( BaseModel, XGBoostModel):
+    def __init__(self):
+        BaseModel.__init__(self)
+        XGBoostModel.__init__(self)
         return
+    
     def run(self):
         sel = 3
         if sel == 1:
@@ -84,14 +108,35 @@ class XGBoostModel(BaseModel):
         dtrain = xgb.DMatrix(features, label= labels,feature_names=features.columns)
         if sel == 2:
             return self.run_croos_validation(dtrain,cv)
-        self.run_grid_search(dtrain,cv)     
+        
+        self.run_grid_search(dtrain,{'folds':cv, 'feval':mean_absolute_percentage_error_xgboost})     
         
          
         return
+    def adjust_intial_param(self):
+        param = {'max_depth':6, 'eta':0.1,  'min_child_weight':1,'silent':1, 
+                 'objective':'reg:linear','colsample_bytree':0.8,'subsample':0.8,'min_child_weight':1 }
+        return param
+    
+    def adjust_param(self, param_grid):
+        self.use_randomized_search = False
+        self.n_iter_randomized_search = 3
+        self.display_result = False
 
-
+        param_grid['eta'] = [0.01]  #[54]    train-mape:-0.450673+0.00167039    test-mape:-0.45734+0.00530681
+        param_grid['max_depth'] = [13] #[78]    train-mape:-0.406378+0.00244131    test-mape:-0.456578+0.0100904
+        return param_grid
+    
+    def adjust_cv_param(self):
+        num_boost_round = 200
+        early_stopping_rounds = 10
+        
+        kwargs = {'num_boost_round':num_boost_round, 
+                  'callbacks':[xgb.callback.print_evaluation(show_stdv=True),xgb.callback.early_stop(early_stopping_rounds)]}
+        return kwargs
+    
 
 
 if __name__ == "__main__":   
-    obj= XGBoostModel()
+    obj= DidiXGBoostModel()
     obj.run()
