@@ -96,6 +96,12 @@ class DidiXGBoostModel( BaseModel, XGBoostModel):
     def __init__(self):
         BaseModel.__init__(self)
         XGBoostModel.__init__(self)
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_MIN #[78]    train-mape:-0.373462+0.00492894    test-mape:-0.46214+0.0114662
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS1 # [79]    train-mape:-0.396072+0.00363566    test-mape:-0.459982+0.0100845
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS3 #[78]    train-mape:-0.411597+0.00219856    test-mape:-0.454906+0.0124385
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS4#[78]    train-mape:-0.411597+0.00219856    test-mape:-0.454906+0.0124385
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS6# [82]    train-mape:-0.421504+0.00191357    test-mape:-0.453868+0.0116971
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_FULL#[81]    train-mape:-0.428109+0.000703088    test-mape:-0.451429+0.0114696
         return
     
     def run(self):
