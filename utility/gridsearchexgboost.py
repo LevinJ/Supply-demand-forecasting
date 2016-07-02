@@ -6,14 +6,16 @@ import pandas as pd
 
 
 
-class Fine_Tune_XGBoost(object):
+class GridSearchXGBoost(object):
     def __init__(self):
-        self.n_iter = 10
-        self.sampler_random_state = None
-        self.display_result = True
-        self.use_randomized_search = False
-        self.search_result = []
-        self.early_stop_metric = None
+        self.ramdonized_search_enable = False
+        self.randomized_search_n_iter = 10
+        self.ramdonized_search_random_state = None
+        
+        self.grid_search_display_result = True
+        self.__grid_search_result = []
+        self.__grid_search_early_stop_metric = None
+        
         return
     def run(self):
         self.tune()
@@ -25,8 +27,6 @@ class Fine_Tune_XGBoost(object):
     def adjust_param(self, param):
         pass
     def adjust_cv_param(self):
-        self.use_randomized_search = False
-        self.n_iter_randomized_search = 10
         
         num_boost_round = 100
         early_stopping_rounds = 3
@@ -36,10 +36,10 @@ class Fine_Tune_XGBoost(object):
                   'callbacks':[xgb.callback.print_evaluation(show_stdv=True),xgb.callback.early_stop(early_stopping_rounds)]}
         return kwargs
     def __get_param_iterable(self, param_grid):
-        if self.use_randomized_search:
+        if self.ramdonized_search_enable:
             parameter_iterable = ParameterSampler(param_grid,
-                                          self.n_iter,
-                                          random_state=self.sampler_random_state)
+                                          self.randomized_search_n_iter,
+                                          random_state=self.ramdonized_search_random_state)
         else:
             parameter_iterable = ParameterGrid(param_grid)
                  
@@ -60,32 +60,32 @@ class Fine_Tune_XGBoost(object):
             kwargs[key] = value 
         kwargs['callbacks'].append(self.get_early_stop_metric())
         return kwargs
-    def run_grid_search(self, dtrain, folds_params):
+    def run_grid_search(self):
            
         parameter_iterable = self.__get_param_iterable(self.__get_param_grid())  
-        kwargs = self.__get_kwargs(folds_params)
+        kwargs = self.__get_kwargs(self.folds_params)
         for param in parameter_iterable:
             print param
-            bst = xgb.cv(param, dtrain, **kwargs)
+            bst = xgb.cv(param, self.dtrain, **kwargs)
             self.add_to_resultset(param, bst)
         self.disp_result() 
         return
     def get_early_stop_metric(self):
     
         def callback(env):
-            if self.early_stop_metric is None:
-                self.early_stop_metric = env.evaluation_result_list[-1][0]
-                self.early_stop_metric = self.early_stop_metric + '-mean'
+            if self.__grid_search_early_stop_metric is None:
+                self.__grid_search_early_stop_metric = env.evaluation_result_list[-1][0]
+                self.__grid_search_early_stop_metric = self.__grid_search_early_stop_metric + '-mean'
             return
         return callback
     def add_to_resultset(self, param, bst):
-        max_id = bst[self.early_stop_metric].idxmax()
-        self.search_result.append((param, bst.iloc[max_id][self.early_stop_metric], bst.iloc[max_id].tolist()))
+        max_id = bst[self.__grid_search_early_stop_metric].idxmax()
+        self.__grid_search_result.append((param, bst.iloc[max_id][self.__grid_search_early_stop_metric], bst.iloc[max_id].tolist()))
         return    
     def disp_result(self):
-        if not self.display_result:
+        if not self.grid_search_display_result:
             return
-        df = pd.DataFrame(self.search_result, columns= ['param', 'result', 'otherinfo'])
+        df = pd.DataFrame(self.__grid_search_result, columns= ['param', 'result', 'otherinfo'])
         print '\nall para search results:'
         print df
         best_score_id = df['result'].idxmax()
@@ -93,5 +93,5 @@ class Fine_Tune_XGBoost(object):
         print df.iloc[best_score_id]['param']
         print df.iloc[best_score_id]['result']
         print df.iloc[best_score_id]['otherinfo']
-        df.to_csv('temp/search_result.csv')
+        df.to_csv('temp/__grid_search_result.csv')
         return
