@@ -5,3 +5,4 @@ temp/
 evaluation/read_me_1.txt
 *.pyc
 logs/
+data_preprocessed/

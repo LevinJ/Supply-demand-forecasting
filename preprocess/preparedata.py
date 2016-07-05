@@ -103,7 +103,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             self.X_y_Df = pd.concat([self.X_y_Df, col_data],  axis=1)
         return
     def add_pre_gaps(self, data_dir):
-        dumpload = DumpLoad(data_dir + 'order_data/temp/prevgap.df.pickle')
+        dumpfile_path = '../data_preprocessed/' + data_dir.split('/')[-2] + '_prevgap.df.pickle'
+        dumpload = DumpLoad(dumpfile_path)
         if dumpload.isExisiting():
             df = dumpload.load()
         else:
@@ -127,7 +128,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.X_y_Df["rain_check"] = self.X_y_Df["preweather"].map(rain_dict)
         return
     def add_prev_weather(self, data_dir):
-        dumpload = DumpLoad(data_dir + 'weather_data/temp/prevweather.df.pickle')
+        dumpfile_path = '../data_preprocessed/' + data_dir.split('/')[-2] + '_prevweather.df.pickle'
+        dumpload = DumpLoad(dumpfile_path)
         if dumpload.isExisiting():
             df = dumpload.load()
         else:
@@ -140,7 +142,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.add_rain_check()
         return
     def add_prev_traffic(self, data_dir):
-        dumpload = DumpLoad(data_dir + 'traffic_data/temp/prevtraffic.df.pickle')
+        dumpfile_path = '../data_preprocessed/' + data_dir.split('/')[-2] + '_prevtraffic.df.pickle'
+        dumpload = DumpLoad(dumpfile_path)
         if dumpload.isExisiting():
             df = dumpload.load()
         else:
@@ -164,7 +167,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.X_y_Df['gap_diff2'] = self.X_y_Df['gap3'] - self.X_y_Df['gap2']
         return
     def add_district_gap_sum(self):
-        dumpload = DumpLoad(g_singletonDataFilePath.getTrainDir() + 'order_data/temp/district_gap_sum.dict.pickle')
+        dumpfile_path = '../data_preprocessed/' +'training_data_district_gap_sum.dict.pickle'
+        dumpload = DumpLoad(dumpfile_path)
         if dumpload.isExisiting():
             district_gap_sum_dict = dumpload.load()
         else:
@@ -174,7 +178,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.X_y_Df["district_gap_sum"] = self.X_y_Df["start_district_id"].map(district_gap_sum_dict)
         return
     def add_history_data(self,data_dir):
-        dumpload = DumpLoad(data_dir + 'order_data/temp/history_data.df.pickle')
+        dumpfile_path = '../data_preprocessed/' + data_dir.split('/')[-2] + '_history_data.df.pickle'
+        dumpload = DumpLoad(dumpfile_path)
         if dumpload.isExisiting():
             df = dumpload.load()
         else:
