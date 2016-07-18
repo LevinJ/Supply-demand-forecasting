@@ -6,7 +6,7 @@ class DistricId:
     one day is uniformly divided into 144 time slots t1,t2, t144, each 10 minutes long
     """
     def __init__(self):
-        filename = '../data/citydata/season_1/training_data/cluster_map/cluster_map'
+        filename = '../data_raw/cluster_map'
         df = pd.read_csv(filename, delimiter='\t', header=None, names =['distric_hash','district_id'])
         self.dictDistrict = {}
         for _, row in df.iterrows():
