@@ -16,6 +16,7 @@ import pandas as pd
 from splittrainvalidation import SplitTrainValidation
 from splittrainvalidation import HoldoutSplitMethod
 from preprocess.historicaldata import HistoricalData
+from preparegapcsv import prepareGapCsvForPrediction
 
 
 
@@ -23,7 +24,7 @@ from preprocess.historicaldata import HistoricalData
 
 
     
-class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData):
+class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData, prepareGapCsvForPrediction):
     def __init__(self):
         ExploreOrder.__init__(self)
         self.usedFeatures = [101,102,103,2, 4,6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206]
@@ -230,7 +231,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             cv = self.get_imitate_testset2(self.X_y_Df, split_method = self.holdout_split)
         return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel],cv
     def getFeaturesforTestSet(self, data_dir):
-        self.X_y_Df = pd.read_csv(data_dir + 'gap_prediction.csv', index_col=0)
+        self.X_y_Df = self.load_prediction_csv(data_dir)
         self.__engineer_feature(data_dir)
         return self.X_y_Df
     def run(self):

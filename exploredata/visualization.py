@@ -12,7 +12,6 @@ import math
 class visualizeData(ExploreOrder, ExploreWeather, ExploreTraffic):
     def __init__(self):
         ExploreOrder.__init__(self)
-#         self.gapdf, _ = self.loadGapData(g_singletonDataFilePath.getGapCsv_Train())
 #         self.gapdf = self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
 #         self.gap_time_dict = self.gapdf.groupby('time_slotid')['gap'].sum().to_dict()
         self.weathdf = self.load_weatherdf(g_singletonDataFilePath.getTrainDir())

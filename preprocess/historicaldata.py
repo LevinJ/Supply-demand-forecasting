@@ -15,9 +15,16 @@ class HistoricalData(object):
         print len(res)
         return
     def get_history_data_dict(self):
+        """
+        indexes for quick search
+        key = 'start_district_id','time_id'
+        value = 'gap
+        its data includes those from train, test1, test2.
+        """
         t0 = time()
-        data_dir = g_singletonDataFilePath.getTrainDir()
-        filename = data_dir + 'order_data/temp/history_data.dict.pickle'
+
+        filename = "../data_preprocessed/"  + 'traintest_history_data.dict.pickle'
+        
         dumpload = DumpLoad( filename)
         if dumpload.isExisiting():
             return dumpload.load()

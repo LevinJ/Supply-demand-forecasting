@@ -12,10 +12,10 @@ class ExploreTraffic(ExploreData ):
     def __init__(self):
         return
     def run(self):
-        self.__unittest()
+#         self.__unittest()
         data_dir = g_singletonDataFilePath.getTest2Dir()
-        self.save_all_csv(data_dir+ 'traffic_data/')
-        self.combine_all_csv(data_dir + 'traffic_data/temp/', 'traffic_', 'traffic.csv')
+#         self.save_all_csv(data_dir+ 'traffic_data/')
+#         self.combine_all_csv(data_dir + 'traffic_data/temp/', 'traffic_', 'traffic.csv')
         self.get_traffic_dict(data_dir)
         return
     def __unittest(self):
@@ -40,15 +40,15 @@ class ExploreTraffic(ExploreData ):
         return
     def get_intial_colnames(self):
         return ['start_district_hash', 'level_1', 'level_2', 'level_3', 'level_4','Time']
-    def get_traffic_dict(self,dataDir):
+    def get_traffic_dict(self,data_dir):
         t0 = time()
-        filename = dataDir + 'traffic_data/temp/traffic.csv.dict.pickle'
+        filename = '../data_raw/' + data_dir.split('/')[-2]  + '_traffic.csv.dict.pickle'
         dumpload = DumpLoad( filename)
         if dumpload.isExisiting():
             return dumpload.load()
         
         resDict = {}
-        df = self.load_trafficdf(dataDir)
+        df = self.load_trafficdf(data_dir)
         for _, row in df.iterrows():
             resDict[tuple(row[['start_district_id','time_slotid']].tolist())] = row['traffic']
         

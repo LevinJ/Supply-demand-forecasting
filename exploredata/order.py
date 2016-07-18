@@ -32,7 +32,7 @@ class ExploreOrder:
     def addTimeIdColumn(self, df):
         df['time_id'] = df['time_slotid'].apply(singletonTimeslot.getTimeId)
         return
-    def combineAllGapCsv(self, orderFileDir):
+    def combine_gap_csv(self, orderFileDir):
         print "Combin all gaps"
         resDf = pd.DataFrame()
         filePaths = self.getAllFilePaths(orderFileDir + 'order_data/temp/')
@@ -44,7 +44,7 @@ class ExploreOrder:
         resDf = self.sortGapRows(resDf)
         self.addTimeIdColumn(resDf)
         resDf['time_date'] = resDf['time_slotid'].apply(singletonTimeslot.getDate)
-        resDf.to_csv(orderFileDir + 'order_data/temp/'+ 'gap.csv')
+        resDf.to_csv("../data_raw/" + orderFileDir.split('/')[-2]+ "_gap.csv")
         print "Overall gap statistics: \n{}".format(resDf.describe())
         return
     def getAllFilePaths(self, rootpath):
@@ -76,20 +76,20 @@ class ExploreOrder:
         resDf.to_csv(os.path.dirname(filename) + '/temp/'+ os.path.basename(filename) + '_gap.csv')
         print resDf.describe()
         return
-    def loadGapData(self, data_dir):
-        """
-        This is the only interface taht should be called by outsider 
-        It returns the raw csv file and index hash of district/timeslot for quick retrieval of previous gaps
-        """
-        return (self.load_gapdf(data_dir), self.get_gap_dict(data_dir))
+
     def load_gapdf(self, data_dir):
-        filename = data_dir + 'order_data/temp/gap.csv'
+        filename = "../data_raw/" + data_dir.split('/')[-2]+ "_gap.csv"
         df = pd.read_csv(filename, index_col= 0)
 #         print df.describe()
         return df
     def get_gap_dict(self, data_dir):
+        """
+        indexes for quick search
+        key = 'start_district_id','time_slotid
+        value = gap
+        """
         t0 = time()
-        filename = data_dir + 'order_data/temp/gap.csv.dict.pickle'
+        filename = "../data_preprocessed/" + data_dir.split('/')[-2] + '_gap.csv.dict.pickle'
         dumpload = DumpLoad( filename)
         if dumpload.isExisiting():
             return dumpload.load()
@@ -184,11 +184,12 @@ class ExploreOrder:
         return res
     def run(self):
         self.unitTest()
+        data_dir = g_singletonDataFilePath.getTest2Dir()
 #         self.get_gap_meanmedian_dict()
-#         data_dir = g_singletonDataFilePath.getTest2Dir()
 #         self.saveAllGapCsv(data_dir)
-#         self.combineAllGapCsv(data_dir)
-#         res = self.get_gap_dict(data_dir)
+#         self.combine_gap_csv(data_dir)
+#         self.load_gapdf(data_dir)
+        self.get_gap_dict(data_dir)
         
         return
 

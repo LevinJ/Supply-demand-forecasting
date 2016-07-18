@@ -27,5 +27,7 @@ class DataFilePath:
         return 'gap_prediction.csv'
     def getPrevGapFileName(self):
         return "temp/prevgap.df.pickle"
+    def get_dir_name(self, data_dir):
+        return  data_dir.split('/')[-2]
 
 g_singletonDataFilePath = DataFilePath()

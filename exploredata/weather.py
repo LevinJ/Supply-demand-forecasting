@@ -30,15 +30,15 @@ class ExploreWeather(ExploreData ):
         
         
         return
-    def get_weather_dict(self,dataDir):
+    def get_weather_dict(self,data_dir):
         t0 = time()
-        filename = dataDir + 'weather_data/temp/weather.csv.dict.pickle'
+        filename = '../data_raw/' + data_dir.split('/')[-2] + '_weather.csv.dict.pickle'
         dumpload = DumpLoad( filename)
         if dumpload.isExisiting():
             return dumpload.load()
         
         resDict = {}
-        df = self.load_weatherdf(dataDir)
+        df = self.load_weatherdf(data_dir)
         for index, row in df.iterrows():
             resDict[row['time_slotid']] = (index, row['weather'], row['temparature'], row['pm25'])
         for name, group in df.groupby('time_date'):
