@@ -17,6 +17,7 @@ from splittrainvalidation import SplitTrainValidation
 from splittrainvalidation import HoldoutSplitMethod
 from preprocess.historicaldata import HistoricalData
 from preparegapcsv import prepareGapCsvForPrediction
+from sklearn.preprocessing import LabelEncoder
 
 
 
@@ -33,9 +34,12 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
 #                                        'start_district_id_7', 'start_district_id_48']
         self.usedLabel = 'gap'
         self.excludeZerosActual = True
+        # the resultant data dictionary after preprocessing
+        self.res_data_dict = {}
 #         self.randomSate = None
 #         self.test_size = 0.25
         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
+        self.__label_encoder_dict = {}
        
         return
     def getAllFeaturesDict(self):
@@ -189,6 +193,28 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
+    def __add_cross_features(self, data_dir):
+        self.__add_cross_features_(['start_district_id', 'time_id'], 'time_district', data_dir)
+        return
+    def __add_cross_features_(self, exising_feature_names, new_feature_name):
+        
+        for i in range(len(exising_feature_names)):
+            if i ==0:
+                self.X_y_Df[new_feature_name] = self.X_y_Df[exising_feature_names[i]].astype(str)
+                continue
+            
+            self.X_y_Df[new_feature_name] = self.X_y_Df[new_feature_name] + '_' + self.X_y_Df[exising_feature_names[i]].astype(str)  
+         
+#         self.X_y_Df[new_feature_name]  = self.X_y_Df[exising_feature_names].apply(lambda x: '_'.join(x.astype(str)), axis=1)
+        
+#         if data_dir == g_singletonDataFilePath.getTrainDir():
+#             el = LabelEncoder()
+#             el.fit(self.X_y_Df[new_feature_name])
+#             self.__label_encoder_dict[new_feature_name] = el
+#         
+#         el = self.__label_encoder_dict[new_feature_name]
+#         self.X_y_Df[new_feature_name] = el.transform(self.X_y_Df[new_feature_name])
+        return
     def __engineer_feature(self, data_dir = None):
         self.add_pre_gaps(data_dir)
 #         self.add_gap_mean_median(data_dir)
@@ -199,49 +225,70 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.add_history_data(data_dir)
         self.remove_zero_gap()
         self.transformCategories()
-        if hasattr(self, 'busedFeaturesTranslated'):
-            return
-        self.translateUsedFeatures()
-        self.busedFeaturesTranslated = True
-#         self.X_y_Df.to_csv("temp/transformeddata.csv")
         return
 
     def get_train_validationset(self, foldid = -1): 
-        _,_,cv = self.getFeaturesLabel()
+        data_dir = g_singletonDataFilePath.getTrainDir()
+        self.__do_prepare_data()
+        df, cv = self.res_data_dict[data_dir]
         folds = []
         for train_index, test_index in cv:
             folds.append((train_index, test_index))
         train_index = folds[foldid][0]
         test_index = folds[foldid][1]
-        self.X_train = self.X_y_Df.iloc[train_index][self.usedFeatures]
-        self.y_train = self.X_y_Df.iloc[train_index][self.usedLabel]     
-        self.X_test = self.X_y_Df.iloc[test_index][self.usedFeatures]
-        self.y_test = self.X_y_Df.iloc[test_index][self.usedLabel]
+        self.X_train = df.iloc[train_index][self.usedFeatures]
+        self.y_train = df.iloc[train_index][self.usedLabel]     
+        self.X_test =  df.iloc[test_index][self.usedFeatures]
+        self.y_test =  df.iloc[test_index][self.usedLabel]
         return   
     def getFeaturesLabel(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
+        self.__do_prepare_data()
+        df, cv = self.res_data_dict[data_dir]
+        return df[self.usedFeatures], df[self.usedLabel],cv
+        
+        
+        return
+    def __get_feature_label(self):
+        data_dir = g_singletonDataFilePath.getTrainDir()
         self.X_y_Df = self.load_gapdf(data_dir) 
         self.__engineer_feature(data_dir)
-#         self.remove_zero_gap()
+
         if self.holdout_split == HoldoutSplitMethod.kFOLD_FORWARD_CHAINING:
             cv = self.kfold_forward_chaining(self.X_y_Df)
         elif self.holdout_split == HoldoutSplitMethod.KFOLD_BYDATE:
             cv = self.kfold_bydate(self.X_y_Df)
         else:
             cv = self.get_imitate_testset2(self.X_y_Df, split_method = self.holdout_split)
-        return self.X_y_Df[self.usedFeatures], self.X_y_Df[self.usedLabel],cv
-    def getFeaturesforTestSet(self, data_dir):
+
+        self.res_data_dict[data_dir] = self.X_y_Df,cv
+        return
+    def __get_feature_for_test_set(self,data_dir):
         self.X_y_Df = self.load_prediction_csv(data_dir)
         self.__engineer_feature(data_dir)
-        return self.X_y_Df
-    def run(self):
-#         print self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
+        self.res_data_dict[data_dir] = self.X_y_Df
+        return
+    
+    def getFeaturesforTestSet(self, data_dir):
+        self.__do_prepare_data()
+        return self.res_data_dict[data_dir]
         
+    def __do_prepare_data(self):
+        if len(self.res_data_dict) != 0:
+            # the data has already been preprocessed
+            return
+        self.__get_feature_label()
+        self.__get_feature_for_test_set(g_singletonDataFilePath.getTest2Dir())
+        self.__get_feature_for_test_set(g_singletonDataFilePath.getTest1Dir())
         
+        self.translateUsedFeatures()
 
+        return
+    def run(self):
         self.getFeaturesLabel()
         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
+
 
         return
     
