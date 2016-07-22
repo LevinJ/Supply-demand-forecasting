@@ -19,7 +19,7 @@ from preprocess.preparedata import HoldoutSplitMethod
 class LinearRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,901,902]
+#         self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,901,902]
         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS1
         self.save_final_model = False
         self.do_cross_val = True
