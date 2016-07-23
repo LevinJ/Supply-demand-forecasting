@@ -96,7 +96,7 @@ class BaseModel(PrepareData):
         print "cross validation scores: means, {}, std, {}, details,{}".format(np.absolute(scores.mean()), scores.std(), np.absolute(scores))
         return np.absolute(scores.mean())
     def run_train_validation(self):
-        self.get_train_validationset(foldid= self.get_train_validation_foldid())
+        self.X_train, self.y_train,self.X_test,self.y_test = self.get_train_validationset(foldid= self.get_train_validation_foldid())
 #         self.getTrainTestSet()
         self.train()
         self.test()

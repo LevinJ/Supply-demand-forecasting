@@ -241,11 +241,11 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             folds.append((train_index, test_index))
         train_index = folds[foldid][0]
         test_index = folds[foldid][1]
-        self.X_train = df.iloc[train_index][self.usedFeatures]
-        self.y_train = df.iloc[train_index][self.usedLabel]     
-        self.X_test =  df.iloc[test_index][self.usedFeatures]
-        self.y_test =  df.iloc[test_index][self.usedLabel]
-        return   
+        X_train = df.iloc[train_index][self.usedFeatures]
+        y_train = df.iloc[train_index][self.usedLabel]     
+        X_test =  df.iloc[test_index][self.usedFeatures]
+        y_test =  df.iloc[test_index][self.usedLabel]
+        return  X_train, y_train,X_test,y_test
     def getFeaturesLabel(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
         self.__do_prepare_data()
