@@ -18,6 +18,7 @@ from splittrainvalidation import HoldoutSplitMethod
 from preprocess.historicaldata import HistoricalData
 from preparegapcsv import prepareGapCsvForPrediction
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
 
 
 
@@ -96,10 +97,11 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         if  hasattr(self, 'override_used_features'):
             self.usedFeatures = self.override_used_features
             return
+        df_train, _ = self.res_data_dict[g_singletonDataFilePath.getTrainDir()]
         if len(self.usedFeatures) == 0:
-            unused = ['time_slotid', 'time_slot', 'all_requests']
+            unused = ['time_slotid', 'time_date', 'time_slot', 'all_requests']
 #             unused = ['start_district_id', 'time_slotid', 'time_slot', 'all_requests', 'time_id']
-            self.usedFeatures = [col for col in self.X_y_Df.columns if col not in ['gap']] 
+            self.usedFeatures = [col for col in df_train.columns if col not in ['gap']] 
             self.usedFeatures = [x for x in self.usedFeatures if x not in unused]
             return
         res = []
@@ -221,14 +223,12 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         return
     def __engineer_feature(self, data_dir = None):
         self.add_pre_gaps(data_dir)
-#         self.add_gap_mean_median(data_dir)
         self.add_district_gap_sum()
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
         self.add_gap_difference()
         self.add_history_data(data_dir)
         self.remove_zero_gap()
-#         self.transformCategories()
         self.__add_cross_features()
         return
 
@@ -300,6 +300,54 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         df_testset1.to_csv('temp/df_testset1_final.csv')
         df_testset2.to_csv('temp/df_testset2_final.csv')
         return
+    def __get_expanded_col_names(self, cols, sub_cols):
+        """
+        helper method to generate expanded columns after one hot encoding
+        cols, original column names ['a', 'b', 'c']
+        sub_cols, one hot code lenght for each original column [2,3,4]
+        res, the new column names, ['a_1', 'a_2', 'b_1', 'b_2', 'b_3', 'c_1', 'c_2', 'c_3', 'c_4']
+        """
+        res = []
+        if len(cols) != len(sub_cols):
+            raise "cols and expanded sub columns are not consistent"
+        for i in range(len(cols)):
+            prefix = cols[i]
+            sub_num = sub_cols[i]
+            for j in range(sub_num):
+                res.append(prefix + '_' + str(j + 1))
+        return res
+    def __filter_too_big_onehot_encoding(self, enc, to_be_encoded_old, df_train, df_testset1, df_testset2):
+        print "Filter out too big one hot encoding (>=200)", np.array(to_be_encoded_old)[enc.n_values_ >= 200]
+        to_be_encoded = np.array(to_be_encoded_old)[enc.n_values_ < 200]
+        to_be_stacked_df = pd.concat([df_train[to_be_encoded], df_testset1[to_be_encoded], df_testset2[to_be_encoded]], axis = 0)
+        enc.fit(to_be_stacked_df)
+        return enc, to_be_encoded
+    def __do_one_hot_encodings(self):
+        df_train, cv = self.res_data_dict[g_singletonDataFilePath.getTrainDir()]
+        df_testset1 = self.res_data_dict[g_singletonDataFilePath.getTest1Dir()]
+        df_testset2 = self.res_data_dict[g_singletonDataFilePath.getTest2Dir()]
+        enc = OneHotEncoder(sparse=False)
+        cross_feature_dict = self.__get_label_encode_dict()
+        to_be_encoded = []
+        for _, new_feature_name in cross_feature_dict.iteritems():
+            to_be_encoded.append(new_feature_name)
+        #fix all data source
+        to_be_stacked_df = pd.concat([df_train[to_be_encoded], df_testset1[to_be_encoded], df_testset2[to_be_encoded]], axis = 0)
+        enc.fit(to_be_stacked_df)
+        
+        enc, to_be_encoded = self.__filter_too_big_onehot_encoding(enc, to_be_encoded, df_train, df_testset1, df_testset2)
+        # transform on seprate data source
+        self.res_data_dict[g_singletonDataFilePath.getTrainDir()] = self.__do_one_hot_encoding(df_train, enc, to_be_encoded),cv
+        self.res_data_dict[g_singletonDataFilePath.getTest1Dir()] = self.__do_one_hot_encoding(df_testset1,enc, to_be_encoded)
+        self.res_data_dict[g_singletonDataFilePath.getTest2Dir()] = self.__do_one_hot_encoding(df_testset2, enc, to_be_encoded)
+        return
+    def __do_one_hot_encoding(self, df, enc, to_be_encoded):
+        arr = enc.transform(df[to_be_encoded])
+        
+        new_col_names = self.__get_expanded_col_names(to_be_encoded, enc.n_values_)
+        df_res = pd.DataFrame(arr, columns=new_col_names)
+        df = pd.concat([df, df_res], axis = 1)
+        return df
     def __do_prepare_data(self):
         if len(self.res_data_dict) != 0:
             # the data has already been preprocessed
@@ -308,6 +356,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.__get_feature_for_test_set(g_singletonDataFilePath.getTest2Dir())
         self.__get_feature_for_test_set(g_singletonDataFilePath.getTest1Dir())
         self.__do_label_encoding()
+        self.__do_one_hot_encodings()
         self.translateUsedFeatures()
 
         return
@@ -316,7 +365,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
         self.get_train_validationset()
-        self.__save_final_data()
+#         self.__save_final_data()
 
 
         return
