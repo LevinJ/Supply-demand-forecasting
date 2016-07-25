@@ -9,12 +9,15 @@ from bokeh.util.logconfig import level
 import sys
 from utility.tfbasemodel import TFModel
 from preprocess.preparedata import PrepareData
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
+from evaluation.sklearnmape import mean_absolute_percentage_error
 
 class DididNeuralNetowrk(TFModel, PrepareData):
     def __init__(self):
         TFModel.__init__(self)
         PrepareData.__init__(self)
-        self.num_steps = 2000
+        self.num_steps = 100
         self.batch_size = 128
         self.summaries_dir = '/tmp/didi'
         return
@@ -33,6 +36,13 @@ class DididNeuralNetowrk(TFModel, PrepareData):
         self.x_train, self.y_train,self.x_validation,self.y_validation = self.get_train_validationset(-2)
         self.x_train, self.y_train,self.x_validation,self.y_validation = self.x_train.as_matrix(), self.y_train.as_matrix().reshape((-1,1)),\
                                                                          self.x_validation.as_matrix(),self.y_validation.as_matrix().reshape((-1,1))
+#         self.x_train, self.y_train,self.x_validation,self.y_validation = self.x_train.astype(np.float32), self.y_train.astype(np.float32),\
+#                                                                          self.x_validation.astype(np.float32),self.y_validation.astype(np.float32)
+        sc = MinMaxScaler()
+        sc.fit(self.x_train)
+        self.x_train= sc.transform(self.x_train)
+        self.x_validation= sc.transform(self.x_validation)
+        
         self.inputlayer_num = len(self.usedFeatures)
         self.outputlayer_num = 1
         
@@ -62,19 +72,19 @@ class DididNeuralNetowrk(TFModel, PrepareData):
     def add_optimizer_node(self):
         #output node self.train_step
         with tf.name_scope('train'):
-            self.train_step = tf.train.AdamOptimizer(0.001).minimize(self.loss)
+            self.train_step = tf.train.AdamOptimizer(0.01).minimize(self.loss)
         return
     def add_accuracy_node(self):
         #output node self.accuracy
         with tf.name_scope('evaluationmetrics'):
-            with tf.name_scope('correct_prediction'):
-                correct_prediction = tf.equal(tf.argmax(self.y_pred, 1), tf.argmax(self.y_true, 1))
-            with tf.name_scope('accuracy'):
-                self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-            tf.scalar_summary('accuracy', self.accuracy)
+            with tf.name_scope('error_square'):
+                error_square = tf.abs((self.y_true - self.y_pred)/self.y_true)
+            with tf.name_scope('mape'):
+                self.accuracy = tf.reduce_mean(tf.cast(error_square, tf.float32))
+            tf.scalar_summary('mape', self.accuracy)
         return
     def add_evalmetrics_node(self):
-#         self.add_accuracy_node()
+        self.add_accuracy_node()
         return
     def feed_dict(self,feed_type):
         """Make a TensorFlow feed_dict: maps data onto Tensor placeholders."""
@@ -84,6 +94,10 @@ class DididNeuralNetowrk(TFModel, PrepareData):
             return {self.x: xs, self.y_true: ys, self.keep_prob: k}
         if feed_type == "validation":
             xs, ys = self.x_validation, self.y_validation
+            k = 1.0
+            return {self.x: xs, self.y_true: ys, self.keep_prob: k}
+        if feed_type == "validation_wholetrain":
+            xs, ys = self.x_train, self.y_train
             k = 1.0
             return {self.x: xs, self.y_true: ys, self.keep_prob: k}
         # Now we are feeding test data into the neural network
@@ -98,13 +112,15 @@ class DididNeuralNetowrk(TFModel, PrepareData):
             tf.initialize_all_variables().run()
             logging.debug("Initialized")
             for step in range(self.num_steps + 1):
-                summary, _ , loss_train= sess.run([self.merged, self.train_step, self.loss], feed_dict=self.feed_dict("train"))
+                summary, _ , train_loss, train_metrics= sess.run([self.merged, self.train_step, self.loss, self.accuracy], feed_dict=self.feed_dict("train"))
                 self.train_writer.add_summary(summary, step)
                 
                 if step % 10 == 0:
-                    summary, loss_test = sess.run([self.merged, self.loss], feed_dict=self.feed_dict("validation"))
+                    summary, validation_loss, validation_metrics = sess.run([self.merged, self.loss, self.accuracy], feed_dict=self.feed_dict("validation"))
                     self.test_writer.add_summary(summary, step)
-                    logging.info("Step {}/{}, train: {:.3f}, test {:.3f}".format(step, self.num_steps, loss_train, loss_test))
+#                     loss_train = sess.run(self.loss, feed_dict=self.feed_dict("validation_wholetrain"))
+                    logging.info("Step {}/{}, train/test: {:.3f}/{:.3f}, train/test loss: {:.3f}/{:.3f}".format(step, self.num_steps, train_metrics, validation_metrics,\
+                                                                                                                train_loss, validation_loss))
         return
 
 
