@@ -11,7 +11,7 @@ class KNNModel(BaseModel):
         self.usedFeatures = [1201, 101]
         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS4
 #         self.save_final_model = True
-#         self.do_cross_val = False
+        self.do_cross_val = False
         return
     def get_train_validation_foldid(self):
         return -2

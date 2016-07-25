@@ -13,6 +13,7 @@ import logging
 from utility.logger_tool import Logger
 import matplotlib.pyplot as plt
 import pandas as pd
+from sklearn.metrics import mean_squared_error
 
 class BaseModel(PrepareData):
     def __init__(self):
@@ -70,8 +71,8 @@ class BaseModel(PrepareData):
         print "features used:\n {}".format(self.usedFeatures)
         print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, y_pred_train))
         print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test))
-#         print "MSE for training set: {}".format(mean_squared_error(self.y_train, y_pred_train))
-#         print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
+        print "MSE for training set: {}".format(mean_squared_error(self.y_train, y_pred_train))
+        print "MSE for testing set: {}".format(mean_squared_error(self.y_test, y_pred_test))
 #         pd.DataFrame({'y_train':self.y_train.values, 'y_train_pred':y_pred_train}).to_csv('temp/trainpred.csv')
 #         pd.DataFrame({'y_test':self.y_test.values, 'y_test_pred':y_pred_test}).to_csv('temp/testpred.csv')
         
