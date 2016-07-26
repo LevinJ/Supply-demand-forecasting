@@ -22,10 +22,10 @@ class LinearRegressionModel(BaseModel):
 #         self.usedFeatures = [101,102,103,4,5,6, 701,702,703,801,802,901,902]
         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS1
         self.save_final_model = False
-        self.do_cross_val = True
+        self.do_cross_val = False
         return
     def get_train_validation_foldid(self):
-        return -1
+        return -2
     def setClf(self):
 #         self.clf = Ridge(alpha=0.0000001, tol=0.0000001)
         clf = LinearRegression()

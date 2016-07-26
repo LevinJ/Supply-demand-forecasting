@@ -30,7 +30,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
     def __init__(self):
         ExploreOrder.__init__(self)
 #         self.usedFeatures = []
-        self.usedFeatures = [101,102,103,5, 4,6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206]
+        self.usedFeatures = [101,102,103,4, 5, 6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206,13,14]
 #         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
 #                                        'preweather', 'start_district_id_28', 'start_district_id_8',
 #                                        'start_district_id_7', 'start_district_id_48']
@@ -91,6 +91,9 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         featureDict[1205] = ['history_plus_median']
         featureDict[1206] = ['history_plus_mode']
         
+        featureDict[13] = ['district_time']
+        featureDict[14] = ['weather_time']
+        
         
         return featureDict
     def translateUsedFeatures(self):
@@ -109,15 +112,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         [res.extend(featureDict[fea]) for fea in self.usedFeatures]
         self.usedFeatures = res
         return
-    def transformCategories(self):
-#         cols = ['start_district_id', 'time_id']
-        cols = ['start_district_id']
-        self.X_y_Df['start_district_id'] = self.X_y_Df['start_district_id'].astype('category',categories=(np.arange(66) + 1))
-#         self.X_y_Df['time_id'] = self.X_y_Df['time_id'].astype('category',categories=(np.arange(144) + 1))
-        for col in cols:
-            col_data = pd.get_dummies(self.X_y_Df[col], prefix= col)
-            self.X_y_Df = pd.concat([self.X_y_Df, col_data],  axis=1)
-        return
+
     def add_pre_gaps(self, data_dir):
         dumpfile_path = '../data_preprocessed/' + data_dir.split('/')[-2] + '_prevgap.df.pickle'
         dumpload = DumpLoad(dumpfile_path)
@@ -129,16 +124,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
-#     def add_gap_mean_median(self, data_dir):
-#         dumpload = DumpLoad(data_dir + 'order_data/temp/gapmeanmedian.df.pickle')
-#         if dumpload.isExisiting():
-#             df = dumpload.load()
-#         else:
-#             temp_dict = self.get_gap_meanmedian_dict()
-#             df = self.X_y_Df[['start_district_id', 'time_id']].apply(self.find_gap_meanmedian, axis = 1, gap_meanmedian_dict = temp_dict)
-#             dumpload.dump(df)
-#         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
-#         return
+
     def add_rain_check(self):
         rain_dict ={1:1, 2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0}
         self.X_y_Df["rain_check"] = self.X_y_Df["preweather"].map(rain_dict)
@@ -348,6 +334,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         df_res = pd.DataFrame(arr, columns=new_col_names)
         df = pd.concat([df, df_res], axis = 1)
         return df
+    def __do_scaling(self):
+        return
     def __do_prepare_data(self):
         if len(self.res_data_dict) != 0:
             # the data has already been preprocessed
@@ -357,6 +345,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.__get_feature_for_test_set(g_singletonDataFilePath.getTest1Dir())
         self.__do_label_encoding()
         self.__do_one_hot_encodings()
+        self.__do_scaling()
         self.translateUsedFeatures()
 
         return

@@ -38,7 +38,7 @@ class BaseModel(PrepareData):
         fit_params = fit_params if fit_params is not None else {}
         self.clf.fit(self.X_train, self.y_train, **fit_params)
         print "train:", round(time()-t0, 3), "s"
-        self.dispFeatureImportance()
+#         self.dispFeatureImportance()
         self.after_train()
         return
     def save_model(self):
