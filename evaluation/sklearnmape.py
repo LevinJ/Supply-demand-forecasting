@@ -32,8 +32,8 @@ def mean_absolute_percentage_error_xgboost(y_predicted, y_true):
     y_true = y_true.get_label()
     score = -mean_absolute_percentage_error(y_true, y_predicted)
     mse = mean_squared_error(y_true, y_predicted)
-    return ('mape', score)
-#     return [('mse', mse),('mape', score)]
+#     return ('mape', score)
+    return [('mse', mse),('mape', score)]
 
 
 def mean_absolute_percentage_error_scoring(estimator, X, y):

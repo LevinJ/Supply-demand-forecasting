@@ -90,7 +90,7 @@ class BaseModel(PrepareData):
         
         return
     def get_train_validation_foldid(self):
-        return -1
+        return -2
     def run_croos_validation(self):
         features,labels,cv = self.getFeaturesLabel()
         scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv, scoring=mean_absolute_percentage_error_scoring, n_jobs = -1)

@@ -11,10 +11,10 @@ from sklearn.pipeline import Pipeline
 class SVMRegressionModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
-        self.usedFeatures = [1,4,5,6,7]
+#         self.usedFeatures = [1,4,5,6,7]
         self.randomSate = None
-        self.excludeZerosActual = True
-        self.test_size = 0.3
+#         self.excludeZerosActual = True
+#         self.test_size = 0.3
         return
     def setClf(self):
         clf = SVR(C=100, epsilon=0.1, gamma = 0.0001,cache_size = 10240)
