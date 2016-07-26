@@ -17,7 +17,7 @@ class DididNeuralNetowrk(TFModel, PrepareData):
     def __init__(self):
         TFModel.__init__(self)
         PrepareData.__init__(self)
-        self.num_steps = 100
+        self.num_steps = 2000
         self.batch_size = 128
         self.summaries_dir = '/tmp/didi'
         return

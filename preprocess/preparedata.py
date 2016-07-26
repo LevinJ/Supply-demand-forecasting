@@ -29,8 +29,8 @@ from sklearn.preprocessing import OneHotEncoder
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData, prepareGapCsvForPrediction):
     def __init__(self):
         ExploreOrder.__init__(self)
-        self.usedFeatures = []
-#         self.usedFeatures = [101,102,103,2, 4,6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206]
+#         self.usedFeatures = []
+        self.usedFeatures = [101,102,103,5, 4,6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206]
 #         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
 #                                        'preweather', 'start_district_id_28', 'start_district_id_8',
 #                                        'start_district_id_7', 'start_district_id_48']

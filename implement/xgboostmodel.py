@@ -28,7 +28,7 @@ class XGBoostModel(GridSearchXGBoost,ModelFramework):
         param = {'silent':1}
         
         #Run 100 rounds, just to ensure it's sufficiently trained
-        num_boost_round = 100
+        num_boost_round = 10000
         early_stopping_rounds = 3
          
         # specify validations set to watch performance
@@ -103,7 +103,7 @@ class DidiXGBoostModel(XGBoostModel, PrepareData):
         return param_grid
     
     def adjust_cv_param(self):
-        """
+        """e
         This method must be overriden by derived class if it intends to fine tune parameters
         """
         num_boost_round = 100
