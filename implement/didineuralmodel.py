@@ -17,7 +17,7 @@ class DididNeuralNetowrk(TFModel, PrepareData):
     def __init__(self):
         TFModel.__init__(self)
         PrepareData.__init__(self)
-        self.num_steps = 2000
+        self.num_steps = 500
         self.batch_size = 128
         self.summaries_dir = '/tmp/didi'
         return
@@ -58,7 +58,10 @@ class DididNeuralNetowrk(TFModel, PrepareData):
         hidden1 = self.nn_layer(self.x, 500, 'layer1')
         dropped = self.dropout_layer(hidden1)
         
-        self.y_pred = self.nn_layer(dropped, self.outputlayer_num , 'layer2')
+        hidden1 = self.nn_layer(dropped, 300, 'layer2')
+        dropped = self.dropout_layer(hidden1)
+        
+        self.y_pred = self.nn_layer(dropped, self.outputlayer_num , 'layer3')
         return
     def add_loss_node(self):
         #output node self.loss
