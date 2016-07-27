@@ -65,17 +65,27 @@ class DididNeuralNetowrk(TFModel, PrepareData):
         return
     def add_loss_node(self):
         #output node self.loss
+ 
+        self.__add_mape_loss()
+        return
+    def __add_mse_loss(self):
         with tf.name_scope('loss'):
             diff = tf.square(self.y_true - self.y_pred)
             with tf.name_scope('mse'):
                 self.loss = tf.reduce_mean(diff)
             tf.scalar_summary('mse', self.loss)
         return
-    
+    def __add_mape_loss(self):
+        with tf.name_scope('loss'):
+            diff = tf.abs((self.y_true - self.y_pred)/self.y_true)
+            with tf.name_scope('mape'):
+                self.loss = tf.reduce_mean(tf.cast(diff, tf.float32))
+            tf.scalar_summary('loss', self.loss)
+        return
     def add_optimizer_node(self):
         #output node self.train_step
         with tf.name_scope('train'):
-            self.train_step = tf.train.AdamOptimizer(0.01).minimize(self.loss)
+            self.train_step = tf.train.AdamOptimizer(0.001).minimize(self.loss)
         return
     def add_accuracy_node(self):
         #output node self.accuracy
