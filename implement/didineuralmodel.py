@@ -124,6 +124,9 @@ class DididNeuralNetowrk(TFModel, PrepareData):
 #                     loss_train = sess.run(self.loss, feed_dict=self.feed_dict("validation_wholetrain"))
                     logging.info("Step {}/{}, train/test: {:.3f}/{:.3f}, train/test loss: {:.3f}/{:.3f}".format(step, self.num_steps, train_metrics, validation_metrics,\
                                                                                                                 train_loss, validation_loss))
+    
+#                     y_pred = sess.run(self.y_pred, feed_dict=self.feed_dict("validation"))
+#                     logging.info("validation mape :{:.3f}".format(mean_absolute_percentage_error(self.y_validation.reshape(-1), y_pred.reshape(-1))))
         return
 
 
