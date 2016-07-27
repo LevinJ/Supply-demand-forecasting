@@ -334,8 +334,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         df_res = pd.DataFrame(arr, columns=new_col_names)
         df = pd.concat([df, df_res], axis = 1)
         return df
-    def __do_scaling(self):
-        return
+   
     def __do_prepare_data(self):
         if len(self.res_data_dict) != 0:
             # the data has already been preprocessed
@@ -345,7 +344,6 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.__get_feature_for_test_set(g_singletonDataFilePath.getTest1Dir())
         self.__do_label_encoding()
         self.__do_one_hot_encodings()
-        self.__do_scaling()
         self.translateUsedFeatures()
 
         return
