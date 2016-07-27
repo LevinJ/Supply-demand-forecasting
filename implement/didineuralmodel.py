@@ -17,9 +17,10 @@ class DididNeuralNetowrk(TFModel, PrepareData):
     def __init__(self):
         TFModel.__init__(self)
         PrepareData.__init__(self)
-        self.num_steps = 500
+        self.num_steps = 2000
         self.batch_size = 128
         self.summaries_dir = '/tmp/didi'
+        logging.getLogger().addHandler(logging.FileHandler('logs/didnerual.log', mode='w'))
         return
     def add_visualize_node(self):
         # Merge all the summaries and write them out to /tmp/mnist_logs (by default)
@@ -128,7 +129,7 @@ class DididNeuralNetowrk(TFModel, PrepareData):
                 summary, _ , train_loss, train_metrics= sess.run([self.merged, self.train_step, self.loss, self.accuracy], feed_dict=self.feed_dict("train"))
                 self.train_writer.add_summary(summary, step)
                 
-                if step % 10 == 0:
+                if step % 5 == 0:
                     summary, validation_loss, validation_metrics = sess.run([self.merged, self.loss, self.accuracy], feed_dict=self.feed_dict("validation"))
                     self.test_writer.add_summary(summary, step)
 #                     loss_train = sess.run(self.loss, feed_dict=self.feed_dict("validation_wholetrain"))
