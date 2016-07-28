@@ -19,8 +19,6 @@ class DecisionTreeModel(BaseModel):
         min_samples_split = 10
         self.clf = DecisionTreeRegressor(random_state=0, min_samples_split= min_samples_split)
         return
-    def get_train_validation_foldid(self):
-        return -1
     def after_test(self):
         plt.show()
         return

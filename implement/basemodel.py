@@ -89,15 +89,13 @@ class BaseModel(PrepareData):
         df.to_csv(filename , header=None, index=None)
         
         return
-    def get_train_validation_foldid(self):
-        return -2
     def run_croos_validation(self):
         features,labels,cv = self.getFeaturesLabel()
         scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv, scoring=mean_absolute_percentage_error_scoring, n_jobs = -1)
         print "cross validation scores: means, {}, std, {}, details,{}".format(np.absolute(scores.mean()), scores.std(), np.absolute(scores))
         return np.absolute(scores.mean())
     def run_train_validation(self):
-        self.X_train, self.y_train,self.X_test,self.y_test = self.get_train_validationset(foldid= self.get_train_validation_foldid())
+        self.X_train, self.y_train,self.X_test,self.y_test = self.get_train_validationset()
 #         self.getTrainTestSet()
         self.train()
         self.test()

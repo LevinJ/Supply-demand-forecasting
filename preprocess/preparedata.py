@@ -41,6 +41,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
 #         self.randomSate = None
 #         self.test_size = 0.25
         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
+        self.train_validation_foldid = -2
 
        
         return
@@ -218,15 +219,15 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.__add_cross_features()
         return
 
-    def get_train_validationset(self, foldid = -1): 
+    def get_train_validationset(self):
         data_dir = g_singletonDataFilePath.getTrainDir()
         self.__do_prepare_data()
         df, cv = self.res_data_dict[data_dir]
         folds = []
         for train_index, test_index in cv:
             folds.append((train_index, test_index))
-        train_index = folds[foldid][0]
-        test_index = folds[foldid][1]
+        train_index = folds[self.train_validation_foldid][0]
+        test_index = folds[self.train_validation_foldid][1]
         X_train = df.iloc[train_index][self.usedFeatures]
         y_train = df.iloc[train_index][self.usedLabel]     
         X_test =  df.iloc[test_index][self.usedFeatures]

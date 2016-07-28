@@ -37,7 +37,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         # Input data.
         # Load the training, validation and test data into constants that are
         # attached to the graph.
-        self.x_train, self.y_train,self.x_validation,self.y_validation = self.get_train_validationset(-2)
+        self.x_train, self.y_train,self.x_validation,self.y_validation = self.get_train_validationset()
         self.x_train, self.y_train,self.x_validation,self.y_validation = self.x_train.as_matrix(), self.y_train.as_matrix().reshape((-1,1)),\
                                                                          self.x_validation.as_matrix(),self.y_validation.as_matrix().reshape((-1,1))
 #         self.x_train, self.y_train,self.x_validation,self.y_validation = self.x_train.astype(np.float32), self.y_train.astype(np.float32),\

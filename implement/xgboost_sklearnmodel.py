@@ -28,8 +28,6 @@ class XGBoostSklearnModel(BaseModel):
 #         eval_set=[(self.X_train, self.y_train), (self.X_test, self.y_test)]
         extra_fit_params ={'eval_set': None, 'eval_metric': mean_absolute_percentage_error_xgboost, 'early_stopping_rounds': 3, 'verbose':True}
         return extra_fit_params
-    def get_train_validation_foldid(self):
-        return -2
     def after_test(self):
 #         scores_test=[]
 #         scores_train=[]

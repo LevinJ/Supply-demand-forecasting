@@ -12,8 +12,6 @@ class KNNModel(BaseModel):
 #         self.save_final_model = True
         self.do_cross_val = False
         return
-    def get_train_validation_foldid(self):
-        return -2
     def setClf(self):
         clf = KNeighborsClassifier(n_neighbors = 50)
         min_max_scaler = preprocessing.MinMaxScaler()
