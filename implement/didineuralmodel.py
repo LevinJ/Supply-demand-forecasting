@@ -12,13 +12,16 @@ from preprocess.preparedata import PrepareData
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import MinMaxScaler
 from evaluation.sklearnmape import mean_absolute_percentage_error
+from utility.earlystopmonitor import EarlyStopMonitor
 
-class DididNeuralNetowrk(TFModel, PrepareData):
+class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
     def __init__(self):
         TFModel.__init__(self)
         PrepareData.__init__(self)
-        self.num_steps = 2000
+        EarlyStopMonitor.__init__(self)
+        self.num_steps = 20000
         self.batch_size = 128
+        self.early_stopping_rounds = None
         self.summaries_dir = '/tmp/didi'
         logging.getLogger().addHandler(logging.FileHandler('logs/didnerual.log', mode='w'))
         return
@@ -125,16 +128,19 @@ class DididNeuralNetowrk(TFModel, PrepareData):
         with tf.Session(graph=self.graph) as sess:
             tf.initialize_all_variables().run()
             logging.debug("Initialized")
-            for step in range(self.num_steps + 1):
+            for step in range(1, self.num_steps + 1):
                 summary, _ , train_loss, train_metrics= sess.run([self.merged, self.train_step, self.loss, self.accuracy], feed_dict=self.feed_dict("train"))
                 self.train_writer.add_summary(summary, step)
                 
-                if step % 5 == 0:
+                if step % 1 == 0:
                     summary, validation_loss, validation_metrics = sess.run([self.merged, self.loss, self.accuracy], feed_dict=self.feed_dict("validation"))
                     self.test_writer.add_summary(summary, step)
 #                     loss_train = sess.run(self.loss, feed_dict=self.feed_dict("validation_wholetrain"))
                     logging.info("Step {}/{}, train/test: {:.3f}/{:.3f}, train/test loss: {:.3f}/{:.3f}".format(step, self.num_steps, train_metrics, validation_metrics,\
                                                                                                                 train_loss, validation_loss))
+                    if self.get_stop_decisision(step, -validation_metrics):
+                        logging.info("stop here due to early stopping")
+                        return 
     
 #                     y_pred = sess.run(self.y_pred, feed_dict=self.feed_dict("validation"))
 #                     logging.info("validation mape :{:.3f}".format(mean_absolute_percentage_error(self.y_validation.reshape(-1), y_pred.reshape(-1))))
