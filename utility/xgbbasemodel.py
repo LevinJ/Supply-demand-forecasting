@@ -5,8 +5,68 @@ import pandas as pd
 
 
 
+class XGBoostBase(object):
+    def __init__(self):
+        self.do_cross_val = True
+        return
+    def run(self):
+        self.get_model_input()
+        if self.do_cross_val is None:
+            return self.run_grid_search()
+        if self.do_cross_val:
+            return self.run_croos_validation()
+        return self.run_train_validation()
+    def run_croos_validation(self):
+         
+        # Use default parameters only
+        param = {'silent':1}
+        
+        #Run 100 rounds, just to ensure it's sufficiently trained
+        num_boost_round = 100
+        early_stopping_rounds = 3
+         
+        # specify validations set to watch performance
+        xgb.cv(param, self.dtrain_cv, num_boost_round=num_boost_round,
+               callbacks=[xgb.callback.print_evaluation(show_stdv=True),xgb.callback.early_stop(early_stopping_rounds)], **self.folds_params)
 
-class GridSearchXGBoost(object):
+        return 
+    def run_train_validation(self):
+
+        # specify parameters via map, definition are same as c++ version
+        param = {'max_depth':14, 'eta':0.02, 'silent':1, 'objective':'reg:linear' }
+#         param = { 'silent':1}
+         
+        # specify validations set to watch performance
+        evals  = [(self.dtrain,'train'),(self.dvalidation,'eval')]
+        num_boost_round = 100
+        early_stopping_rounds=3
+        
+        xgb.train(param, self.dtrain, num_boost_round=num_boost_round, evals = evals, early_stopping_rounds=early_stopping_rounds,**self.folds_params)
+         
+        print "features used:\n {}".format(self.usedFeatures)
+         
+        return
+    def get_model_input(self):
+        
+        if self.do_cross_val is None or self.do_cross_val: 
+            # for cross validation
+            features,labels,self.cv_folds = self.getFeaturesLabel()
+            self.dtrain_cv  = xgb.DMatrix(features, label= labels,feature_names=features.columns)
+            #for grid search
+            self.folds_params = None
+            return
+        
+        # for train validation
+        x_train, y_train,x_validation,y_validation = self.get_train_validationset()
+        self.dtrain = xgb.DMatrix(x_train, label= y_train,feature_names=x_train.columns)
+        self.dvalidation = xgb.DMatrix(x_validation, label= y_validation,feature_names=x_validation.columns)
+        
+        self.folds_params = None
+        
+       
+        return
+    
+class XGBoostGridSearch(object):
     def __init__(self):
         self.ramdonized_search_enable = False
         self.randomized_search_n_iter = 10
@@ -80,7 +140,7 @@ class GridSearchXGBoost(object):
         kwargs = self.__get_kwargs(self.folds_params)
         for param in parameter_iterable:
             print param
-            bst = xgb.cv(param, self.dtrain, **kwargs)
+            bst = xgb.cv(param, self.dtrain_cv, **kwargs)
             self.__add_to_resultset(param, bst)
         self.__disp_result() 
         return

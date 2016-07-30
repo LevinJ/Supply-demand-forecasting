@@ -12,16 +12,21 @@ import xgboost as xgb
 from evaluation.sklearnmape import mean_absolute_percentage_error_xgboost
 from evaluation.sklearnmape import mean_absolute_percentage_error
 from utility.modelframework import ModelFramework
-from utility.gridsearchexgboost import GridSearchXGBoost
+from utility.xgbbasemodel import XGBoostGridSearch
+from evaluation.sklearnmape import mean_absolute_percentage_error_xgboost_cv
+from utility.xgbbasemodel import XGBoostBase
 
 
 
 
-class DidiXGBoostModel(PrepareData, GridSearchXGBoost):
+class DidiXGBoostModel(XGBoostBase, PrepareData, XGBoostGridSearch):
     def __init__(self):
         PrepareData.__init__(self)
-        GridSearchXGBoost.__init__(self)
-        self.do_cross_val = False
+        XGBoostGridSearch.__init__(self)
+        XGBoostBase.__init__(self)
+        
+
+        self.do_cross_val = None
 #         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_MIN #[78]    train-mape:-0.373462+0.00492894    test-mape:-0.46214+0.0114662
 #         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS1 # [79]    train-mape:-0.396072+0.00363566    test-mape:-0.459982+0.0100845
 #         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS3 #[78]    train-mape:-0.411597+0.00219856    test-mape:-0.454906+0.0124385
@@ -29,57 +34,53 @@ class DidiXGBoostModel(PrepareData, GridSearchXGBoost):
 #         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS6# [82]    train-mape:-0.421504+0.00191357    test-mape:-0.453868+0.0116971
 #         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_FULL#[81]    train-mape:-0.428109+0.000703088    test-mape:-0.451429+0.0114696
         return
-    def run(self):
-        self.get_model_input()
-        if self.do_cross_val is None:
-            return self.run_grid_search()
-        if self.do_cross_val:
-            return self.run_croos_validation()
-        return self.run_train_validation()
+
     def run_croos_validation(self):
          
         # Use default parameters only
         param = {'silent':1}
         
         #Run 100 rounds, just to ensure it's sufficiently trained
-        num_boost_round = 10000
+        num_boost_round = 100
         early_stopping_rounds = 3
          
         # specify validations set to watch performance
-        xgb.cv(param, self.dtrain, num_boost_round=num_boost_round,
+        xgb.cv(param, self.dtrain_cv, num_boost_round=num_boost_round,
                callbacks=[xgb.callback.print_evaluation(show_stdv=True),xgb.callback.early_stop(early_stopping_rounds)], **self.folds_params)
 
         return 
     def run_train_validation(self):
-        folds = self.folds_params['folds']
-        feval = self.folds_params['feval']
-        dtrain = self.dtrain.slice(folds[self.folds_id_used][0])
-        dtest =  self.dtrain.slice(folds[self.folds_id_used][1])
-         
+
         # specify parameters via map, definition are same as c++ version
         param = {'max_depth':14, 'eta':0.02, 'silent':1, 'objective':'reg:linear' }
+#         param = { 'silent':1}
          
         # specify validations set to watch performance
-        evals  = [(dtrain,'train'),(dtest,'eval')]
+        evals  = [(self.dtrain,'train'),(self.dvalidation,'eval')]
         num_boost_round = 100
         early_stopping_rounds=3
         
-        bst = xgb.train(param, dtrain, num_boost_round=num_boost_round, evals = evals, early_stopping_rounds=early_stopping_rounds,feval = feval)
+        xgb.train(param, self.dtrain, num_boost_round=num_boost_round, evals = evals, early_stopping_rounds=early_stopping_rounds,**self.folds_params)
          
         print "features used:\n {}".format(self.usedFeatures)
          
         return
     def get_model_input(self):
-        self.run_type = RunType.RUN_TRAIN_VALIDATION
-        self.folds_id_used = -2
         
+        if self.do_cross_val is None or self.do_cross_val: 
+            # for cross validation
+            features,labels,self.cv_folds = self.getFeaturesLabel()
+            self.dtrain_cv  = xgb.DMatrix(features, label= labels,feature_names=features.columns)
+            #for grid search
+            self.folds_params = {'folds':self.cv_folds, 'feval':mean_absolute_percentage_error_xgboost_cv}
+            return
         
+        # for train validation
+        x_train, y_train,x_validation,y_validation = self.get_train_validationset()
+        self.dtrain = xgb.DMatrix(x_train, label= y_train,feature_names=x_train.columns)
+        self.dvalidation = xgb.DMatrix(x_validation, label= y_validation,feature_names=x_validation.columns)
         
-        features,labels,cv = self.getFeaturesLabel()
-        dtrain = xgb.DMatrix(features, label= labels,feature_names=features.columns)
-        
-        self.dtrain = dtrain
-        self.folds_params = {'folds':cv, 'feval':mean_absolute_percentage_error_xgboost}
+        self.folds_params = {'feval':mean_absolute_percentage_error_xgboost}
         
         return
     def adjust_intial_param(self):
@@ -96,9 +97,9 @@ class DidiXGBoostModel(PrepareData, GridSearchXGBoost):
         """
         self.ramdonized_search_enable = False
         self.randomized_search_n_iter = 2
-        self.grid_search_display_result = False
+        self.grid_search_display_result = True
 
-        param_grid['eta'] = [0.01]  #[54]    train-mape:-0.450673+0.00167039    test-mape:-0.45734+0.00530681
+        param_grid['eta'] = [0.01, 0.05]  #[54]    train-mape:-0.450673+0.00167039    test-mape:-0.45734+0.00530681
         param_grid['max_depth'] = [13] #[78]    train-mape:-0.406378+0.00244131    test-mape:-0.456578+0.0100904
         return param_grid
     
