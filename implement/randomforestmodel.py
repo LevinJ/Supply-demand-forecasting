@@ -16,12 +16,12 @@ class RandomForestModel(BaseModel):
         return
     def setClf(self):
 #         min_samples_split = 3
-        self.clf = RandomForestRegressor(n_estimators = 100, max_features = 'auto', min_samples_split =1, verbose=100)
+        self.clf = RandomForestRegressor(n_estimators = 100, max_features = 0.3, min_samples_split =1, verbose=100, n_jobs=-1)
         return
     def getTunedParamterOptions(self):
 #         tuned_parameters = [{'min_samples_split': np.arange(2, 1000, 1)}]
 #         tuned_parameters = [{'min_samples_split': [5, 8,10,12]}]
-        tuned_parameters = [{'n_estimators': [2000]}]
+        tuned_parameters = [{'n_estimators': [100], 'max_features':['auto', 0.3,0.8,0.5]}]
         return tuned_parameters
 
 
