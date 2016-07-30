@@ -19,10 +19,11 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         TFModel.__init__(self)
         PrepareData.__init__(self)
         EarlyStopMonitor.__init__(self)
-        self.num_steps = 20000
+        self.num_steps = 30000
         self.batch_size = 128
         self.early_stopping_rounds = None
         self.summaries_dir = '/tmp/didi'
+        self.dropout= 0.9
         logging.getLogger().addHandler(logging.FileHandler('logs/didnerual.log', mode='w'))
         return
     def add_visualize_node(self):
@@ -89,7 +90,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
     def add_optimizer_node(self):
         #output node self.train_step
         with tf.name_scope('train'):
-            self.train_step = tf.train.AdamOptimizer(0.001).minimize(self.loss)
+            self.train_step = tf.train.AdamOptimizer(0.5e-3).minimize(self.loss)
         return
     def add_accuracy_node(self):
         #output node self.accuracy
