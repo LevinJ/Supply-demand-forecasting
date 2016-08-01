@@ -26,7 +26,7 @@ class DidiXGBoostModel(XGBoostBase, PrepareData, XGBoostGridSearch):
         XGBoostBase.__init__(self)
         
 
-        self.do_cross_val = True
+        self.do_cross_val = False
 #         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_MIN #[78]    train-mape:-0.373462+0.00492894    test-mape:-0.46214+0.0114662
 #         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS1 # [79]    train-mape:-0.396072+0.00363566    test-mape:-0.459982+0.0100845
 #         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS3 #[78]    train-mape:-0.411597+0.00219856    test-mape:-0.454906+0.0124385

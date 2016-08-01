@@ -19,6 +19,7 @@ from preprocess.historicaldata import HistoricalData
 from preparegapcsv import prepareGapCsvForPrediction
 from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import OneHotEncoder
+from exploredata.poi import ExplorePoi
 
 
 
@@ -26,12 +27,12 @@ from sklearn.preprocessing import OneHotEncoder
 
 
     
-class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData, prepareGapCsvForPrediction):
+class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData, prepareGapCsvForPrediction,ExplorePoi):
     def __init__(self):
         ExploreOrder.__init__(self)
 #         self.usedFeatures = []
 #         self.usedFeatures = [101,102,103,4, 5, 6, 701,702,703,801,802,10,11,1201,1202,1203,1204,1205,1206,13,14]
-        self.usedFeatures = [101,102,103,4, 5, 6, 701,702,703,801,802,10,11,13,14]
+        self.usedFeatures = [101,102,103,4, 5, 6, 701,702,703,801,802,10,11,13,14, 15]
 #         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
 #                                        'preweather', 'start_district_id_28', 'start_district_id_8',
 #                                        'start_district_id_7', 'start_district_id_48']
@@ -96,6 +97,8 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         featureDict[13] = ['district_time']
         featureDict[14] = ['weather_time']
         
+        featureDict[15] = self.get_district_type_list()
+        
         
         return featureDict
     def translateUsedFeatures(self):
@@ -158,6 +161,21 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
             dumpload.dump(df)
         self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
         return
+    
+    def add_poi(self, data_dir):
+        dumpfile_path = '../data_preprocessed/' + data_dir.split('/')[-2] + '_poi.df.pickle'
+        dumpload = DumpLoad(dumpfile_path)
+        if dumpload.isExisiting():
+            df = dumpload.load()
+        else:
+            poi_dict = self.get_district_type_dict()
+            
+            df = self.X_y_Df[['start_district_id']].apply(self.find_poi,axis = 1, poi_dict=poi_dict)
+            
+            dumpload.dump(df)
+        self.X_y_Df = pd.concat([self.X_y_Df, df],  axis=1)
+        return
+    
     def remove_zero_gap(self):
         if not 'gap' in self.X_y_Df.columns:
             # when we perform validation on test set, we do not expect to have 'gap' column
@@ -215,6 +233,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.add_prev_weather(data_dir)
         self.add_prev_traffic(data_dir)
         self.add_gap_difference()
+        self.add_poi(data_dir)
         self.add_history_data(data_dir)
         self.remove_zero_gap()
         self.__add_cross_features()
