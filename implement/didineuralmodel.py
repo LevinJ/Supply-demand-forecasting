@@ -24,7 +24,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         self.early_stopping_rounds = None
         self.summaries_dir = './logs/didi'
         self.dropout= 0.9
-        self.train_validation_foldid = -4
+        self.train_validation_foldid = -6
         logging.getLogger().addHandler(logging.FileHandler('logs/didnerual.log', mode='w'))
         return
     def add_visualize_node(self):
