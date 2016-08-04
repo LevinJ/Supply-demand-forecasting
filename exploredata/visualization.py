@@ -7,12 +7,13 @@ from weather import ExploreWeather
 from traffic import ExploreTraffic
 import numpy as np
 import math
+from poi import ExplorePoi
 
 
-class visualizeData(ExploreOrder, ExploreWeather, ExploreTraffic):
+class visualizeData(ExploreOrder, ExploreWeather, ExploreTraffic, ExplorePoi):
     def __init__(self):
         ExploreOrder.__init__(self)
-#         self.gapdf = self.loadGapCsvFile(g_singletonDataFilePath.getGapCsv_Train())
+        self.gapdf = self.load_gapdf(g_singletonDataFilePath.getTrainDir())
 #         self.gap_time_dict = self.gapdf.groupby('time_slotid')['gap'].sum().to_dict()
         self.weathdf = self.load_weatherdf(g_singletonDataFilePath.getTrainDir())
 #         self.trafficdf = self.load_trafficdf(g_singletonDataFilePath.getTrainDir())
@@ -20,23 +21,29 @@ class visualizeData(ExploreOrder, ExploreWeather, ExploreTraffic):
         return
     def disp_gap_bytimeiid(self):
         gaps_mean = self.gapdf.groupby('time_id')['gap'].mean()
-        for i in gaps_mean.index:
-            plt.plot([i,i], [0, gaps_mean[i]], 'k-')
-        plt.show()
+        gaps_mean.plot(kind='bar')
+        plt.ylabel('Mean of gap')
+        plt.title('Timeslot/Correlation')
         return
     def disp_gap_bydistrict(self):
         gaps_mean = self.gapdf.groupby('start_district_id')['gap'].mean()
-        for i in gaps_mean.index:
-            plt.plot([i,i], [0, gaps_mean[i]], 'k-')
-        plt.show()
+        gaps_mean.plot(kind='bar')
+        plt.ylabel('Mean of gap')
+        plt.title('District/Gap Correlation')
+#         for i in gaps_mean.index:
+#             plt.plot([i,i], [0, gaps_mean[i]], 'k-')
+#         plt.show()
         return
     def disp_gap_bydate(self):
         gaps_mean = self.gapdf.groupby('time_date')['gap'].mean()
         gaps_mean.plot(kind='bar')
+        plt.ylabel('Mean of gap')
+        plt.title('Date/Gap Correlation')
 #         for i in gaps_mean.index:
 #             plt.plot([i,i], [0, gaps_mean[i]], 'k-')
         plt.show()
         return
+   
 #     def drawGapDistribution(self):
 #         self.gapdf[self.gapdf['gapdf'] < 10]['gapdf'].hist(bins=50)
 # #         sns.distplot(self.gapdf['gapdf']);
