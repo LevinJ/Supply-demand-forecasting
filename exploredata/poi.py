@@ -61,8 +61,22 @@ class ExplorePoi:
     def find_poi(self, series, poi_dict=None):
         start_district_id = series.iloc[0]
         return poi_dict[start_district_id]
+    def get_district_type_table(self):
+        dt = self.get_district_type_dict()
+        dt_list = []
+        for item_key, item_value in dt.iteritems():
+            temp_list = [item_key] + item_value.values.tolist()
+            dt_list.append(temp_list)
+        df = pd.DataFrame(dt_list, columns=['start_district_id'] + self.get_district_type_list())
+        return df
+    def __save_district_type_table(self):
+        df = self.get_district_type_table()
+        df.to_csv('temp/dt.csv')
+        print df.describe()
+        return
     def run(self):
         self.get_district_type_dict()
+        self.__save_district_type_table()
         return
 
 #     obj.convertToId(districtHash)

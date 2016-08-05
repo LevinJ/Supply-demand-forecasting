@@ -28,13 +28,13 @@ class VisualizeTrainData(visualizeData):
         
         return
     def poi_distribution(self):
-        dt_list = self.get_district_type_list()
-        dt_sum = pd.Series(np.zeros(len(dt_list)), index=dt_list)
-        dt_dict = self.get_district_type_dict()
-        for _, item_series in dt_dict.iteritems():
-            dt_sum = dt_sum + item_series
-#             for dt in dt_list:
-#                 dt_sum[dt] = dt_sum[dt] + item_dict[dt]
+#         dt_list = self.get_district_type_list()
+#         dt_sum = pd.Series(np.zeros(len(dt_list)), index=dt_list)
+#         dt_dict = self.get_district_type_dict()
+#         for _, item_series in dt_dict.iteritems():
+#             dt_sum = dt_sum + item_series
+        df = self.get_district_type_table()
+        dt_sum = df[self.get_district_type_list()].sum(axis = 0)
         print dt_sum.describe()
         dt_sum.plot(kind='bar')
         plt.xlabel('District Attribute')
@@ -153,6 +153,24 @@ class VisualizeTrainData(visualizeData):
        
 #         plt.title('POI/Gap Correlation')
         return
+    def disp_district_by_district_type(self):
+        df = self.get_district_type_table()
+        dt_list = self.get_district_type_list()
+        size = df.shape[0]
+        col_len = 8
+        row_len = 8
+        
+        _, axarr = plt.subplots(row_len, col_len, sharex=True, sharey=True)
+        for row in range(row_len):
+            for col in range(col_len):
+                index = row * col_len + col
+                if index >= size:
+                    break
+                item = df.iloc[index]
+                x_locations = np.arange(len(dt_list))
+                axarr[row, col].bar(x_locations, item[dt_list])
+                axarr[row, col].set_xlabel('start_district_' + str(item['start_district_id']))
+        return
     
     def disp_gap_bytraffic(self):
         df = self.gapdf
@@ -180,9 +198,10 @@ class VisualizeTrainData(visualizeData):
         
         return
     def bivariate(self):
+        self.disp_district_by_district_type()
 #         self.disp_gap_by_district_type()
 #         self.disp_gap_bytraffic()
-        self.disp_gap_byweather()
+#         self.disp_gap_byweather()
 #         self.disp_gap_bydate()
 #         self.disp_gap_bytimeiid()
 #         self.disp_gap_bydistrict()
