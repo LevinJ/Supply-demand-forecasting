@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 class XGBoostBase(object):
     def __init__(self):
         self.do_cross_val = True
+        self.best_score_colname_in_cv = 'test-mape-mean'
         return
     def run(self):
 #         self.get_model_input()
@@ -24,8 +25,9 @@ class XGBoostBase(object):
         self.set_xgb_parameters()
 
         # specify validations set to watch performance
-        xgb.cv(self.xgb_params, dtrain_cv, folds=cv_folds, **self.xgb_learning_params)
-        return 
+        model = xgb.cv(self.xgb_params, dtrain_cv, folds=cv_folds, **self.xgb_learning_params)
+        best_scroe = model[self.best_score_colname_in_cv].max()
+        return best_scroe
     def set_xgb_parameters(self):
         self.xgb_params = {'silent':1}
         self.xgb_learning_params = {}
@@ -54,7 +56,6 @@ class XGBoostGridSearch(object):
         
         self.grid_search_display_result = True
         self.__grid_search_result = []
-        self.__grid_search_early_stop_metric = None
         
         return
 
@@ -77,11 +78,7 @@ class XGBoostGridSearch(object):
         param_grid = self.get_paramgrid_1()
         param_grid = self.get_paramgrid_2(param_grid) 
         return param_grid
-    def __get_kwargs(self):
-        # specify validations set to watch performance
-        kwargs = self.get_learning_params()
-        kwargs['callbacks'].append(self.__get_early_stop_metric())
-        return kwargs
+
     def run_grid_search(self):
         """
         This method is called by derived class to start grid search process
@@ -90,7 +87,7 @@ class XGBoostGridSearch(object):
         dtrain_cv  = xgb.DMatrix(features, label= labels,feature_names=features.columns)
            
         parameter_iterable = self.__get_param_iterable(self.__get_param_grid())  
-        kwargs = self.__get_kwargs()
+        kwargs = self.get_learning_params()
         for param in parameter_iterable:
             print param
             bst = xgb.cv(param, dtrain_cv, folds=cv_folds,**kwargs)
@@ -98,17 +95,10 @@ class XGBoostGridSearch(object):
 #             xgb.callback.early_stop.cleanup()# clear the callb ack state
         self.__disp_result() 
         return
-    def __get_early_stop_metric(self):
-    
-        def callback(env):
-            if self.__grid_search_early_stop_metric is None:
-                self.__grid_search_early_stop_metric = env.evaluation_result_list[-1][0]
-                self.__grid_search_early_stop_metric = self.__grid_search_early_stop_metric + '-mean'
-            return
-        return callback
+
     def __add_to_resultset(self, param, bst):
-        max_id = bst[self.__grid_search_early_stop_metric].idxmax()
-        self.__grid_search_result.append((param, bst.iloc[max_id][self.__grid_search_early_stop_metric], bst.iloc[max_id].tolist()))
+        max_id = bst[self.best_score_colname_in_cv].idxmax()
+        self.__grid_search_result.append((param, bst.iloc[max_id][self.best_score_colname_in_cv], bst.iloc[max_id].tolist()))
         return    
     def __disp_result(self):
         if not self.grid_search_display_result:

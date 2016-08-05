@@ -18,15 +18,16 @@ class XGBoostSklearnModel(BaseModel):
     def __init__(self):
         BaseModel.__init__(self)
 #         self.save_final_model = True
-        self.do_cross_val = False
+#         self.do_cross_val = False
         return
     def setClf(self):
         self.clf = XGBRegressor(max_depth=7, learning_rate=0.01, n_estimators=100)
         
         return
     def get_fit_params(self):
-#         eval_set=[(self.X_train, self.y_train), (self.X_test, self.y_test)]
-        extra_fit_params ={'eval_set': None, 'eval_metric': mean_absolute_percentage_error_xgboost, 'early_stopping_rounds': 3, 'verbose':True}
+        eval_set=[(self.X_train, self.y_train), (self.X_test, self.y_test)]
+        early_stopping_rounds = 3
+        extra_fit_params ={'eval_set': eval_set, 'eval_metric': mean_absolute_percentage_error_xgboost, 'early_stopping_rounds': early_stopping_rounds, 'verbose':True}
         return extra_fit_params
     def after_test(self):
 #         scores_test=[]

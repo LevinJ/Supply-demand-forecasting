@@ -21,14 +21,15 @@ class DidiXGBoostModel(XGBoostBase, PrepareData, XGBoostGridSearch):
         PrepareData.__init__(self)
         XGBoostGridSearch.__init__(self)
         XGBoostBase.__init__(self)
-        self.do_cross_val = None
+        self.best_score_colname_in_cv = 'test-mape-mean'
+#         self.do_cross_val = False
         
         return
     def set_xgb_parameters(self):
         early_stopping_rounds = 3
-        self.xgb_params = {'max_depth':14, 'eta':0.02, 'silent':1, 'objective':'reg:linear' }
+        self.xgb_params = {'max_depth':14, 'eta':0.01, 'silent':1, 'objective':'reg:linear' }
         self.xgb_learning_params = {
-                                    'num_boost_round': 100,
+                                    'num_boost_round': 200,
                                     'callbacks':[xgb.callback.print_evaluation(show_stdv=True),xgb.callback.early_stop(early_stopping_rounds)],
                                     'feval':mean_absolute_percentage_error_xgboost_cv}
         if self.do_cross_val == False:

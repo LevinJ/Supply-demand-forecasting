@@ -39,6 +39,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
 #                              601,602,603,604,605,606,
 #                              8801,8802
 #                              ]
+#         self.usedFeatures = [101,102,103]
         self.usedFeatures = [101,102,103,104,105,106,107, 
                              201, 203,204,205,206,
                              301,
