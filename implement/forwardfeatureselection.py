@@ -1,10 +1,10 @@
 import numpy as np
 import pickle
 import pandas as pd
-from implement.gradientboostingmodel import GrientBoostingModel
-from implement.knnmodel import KNNModel
+from gradientboostingmodel import GrientBoostingModel
+from knnmodel import KNNModel
 from preprocess.splittrainvalidation import HoldoutSplitMethod
-from implement.xgboostmodel import DidiXGBoostModel
+from xgboostmodel import DidiXGBoostModel
 import logging
 import sys
 
@@ -23,7 +23,7 @@ class ForwardFeatureSel:
                              301,
                              401,402,
                              501,502,503,504,505,506,507,
-                             601,602,603,604,605,606,
+#                              601,602,603,604,605,606,
                              8801,8802
                              ]
 
