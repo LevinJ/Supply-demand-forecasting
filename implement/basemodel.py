@@ -53,7 +53,7 @@ class BaseModel(PrepareData):
     def dispFeatureImportance(self):
         if not hasattr(self.clf, 'feature_importances_'):
             return
-        features_list = np.asanyarray(self.usedFeatures)
+        features_list = np.asanyarray(self.get_used_features())
         sortIndexes = self.clf.feature_importances_.argsort()[::-1]
         features_rank = features_list[sortIndexes]
         num_rank = self.clf.feature_importances_[sortIndexes]
@@ -68,7 +68,7 @@ class BaseModel(PrepareData):
         
         y_pred_train = self.clf.predict(self.X_train)
         y_pred_test = self.clf.predict(self.X_test)
-        print "features used:\n {}".format(self.usedFeatures)
+        print "features used:\n {}".format(self.get_used_features())
         print "MAPE for training set: {}".format(mean_absolute_percentage_error(self.y_train, y_pred_train))
         print "MAPE for testing set: {}".format(mean_absolute_percentage_error(self.y_test, y_pred_test))
         print "MSE for training set: {}".format(mean_squared_error(self.y_train, y_pred_train))
@@ -82,7 +82,7 @@ class BaseModel(PrepareData):
         pass
     def predictTestSet(self, dataDir):
         X_y_Df= self.getFeaturesforTestSet(dataDir)
-        y_pred = self.clf.predict(X_y_Df[self.usedFeatures])
+        y_pred = self.clf.predict(X_y_Df[self.get_used_features()])
         X_y_Df['y_pred'] = y_pred
         df = X_y_Df[['start_district_id', 'time_slotid', 'y_pred']]
         filename = 'logs/'+ self.application_start_time + '_gap_prediction_result.csv'
