@@ -1,0 +1,60 @@
+************************************************************
+                     Feature selection:
+************************************************************
+
+################Final Best combinations: [[-0.444336375 [101, 602, 402, 605, 104]
+  ['gap1', 'history_median', 'rain_check', 'history_plus_median', 'weather_time']]]
+
+Selected features:
+@@@@@@@best combinations: [[-0.44681750000000003
+  [101, 602, 402, 605, 104, 603, 203, 102, 505, 606, 105, 502, 503, 501, 506, 206, 204, 103, 8801, 504, 507, 8802, 401]
+  ['gap1', 'history_median', 'rain_check', 'history_plus_median', 'gap_diff1', 'history_mode', 'start_district_id_51', 'start_district_id_23', 'start_district_id_8', 'start_district_id_37', 'gap2', 'traffic_diff2', 'history_plus_mode', 'gap_diff2', 'traffic2', 'traffic3', 'traffic1', 'traffic_mean', 'poi_sum', 'district_gap_sum', 'gap3', 'district_time', 'traffic_diff1', 'traffic_std', 'weather_time', 'preweather']]]
+
+
+#All features:
+
+@@@@@@@best combinations: [[-0.45627062500000004
+  [101, 602, 402, 605, 104, 603, 203, 102, 505, 606, 105, 502, 503, 501, 506, 206, 204, 103, 8801, 504, 507, 8802, 401, 205, 201, 107, 301, 106, 604, 601]
+  ['gap1', 'history_median', 'rain_check', 'history_plus_median', 'gap_diff1', 'history_mode', 'start_district_id_51', 'start_district_id_23', 'start_district_id_8', 'start_district_id_37', 'gap2', 'traffic_diff2', 'history_plus_mode', 'gap_diff2', 'traffic2', 'traffic3', 'traffic1', 'traffic_mean', 'poi_sum', 'district_gap_sum', 'gap3', 'district_time', 'traffic_diff1', 'traffic_std', 'weather_time', 'preweather', 'district_type_1', 'district_type_2', 'district_type_3', 'district_type_4', 'district_type_5', 'district_type_6', 'district_type_7', 'district_type_8', 'district_type_9', 'district_type_10', 'district_type_11', 'district_type_12', 'district_type_13', 'district_type_14', 'district_type_15', 'district_type_16', 'district_type_17', 'district_type_18', 'district_type_19', 'district_type_20', 'district_type_21', 'district_type_22', 'district_type_23', 'district_type_24', 'district_type_25', 'start_district_id', 'gap_std', 'time_id', 'gap_mean', 'history_plus_mean', 'history_mean']]]
+  
+************************************************************
+                     Hyper prameter tuning:
+************************************************************  
+  
+all para search results:
+[[ {'colsample_bytree': 0.6, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 5}
+  -0.464922375
+  [-0.464922375, 0.0090808439301848509, -0.46309924999999996, 0.013132876596066075]]
+ [ {'colsample_bytree': 0.6, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 6}
+  -0.45256162499999997
+  [-0.45256162499999997, 0.0065562791836814719, -0.45174912499999997, 0.0048462742761192397]]
+ [ {'colsample_bytree': 0.6, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 7}
+  -0.44949637499999995
+  [-0.44949637499999995, 0.0041341308015561207, -0.44817099999999999, 0.0017364733657617615]]
+ [ {'colsample_bytree': 0.8, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 5}
+  -0.45926
+  [-0.45926, 0.0078778890097538253, -0.45765499999999998, 0.012436304826997455]]
+ [ {'colsample_bytree': 0.8, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 6}
+  -0.448401625
+  [-0.44840162500000003, 0.0060176145593062976, -0.448061875, 0.0033492625844169007]]
+ [ {'colsample_bytree': 0.8, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 7}
+  -0.448058875
+  [-0.44805887500000002, 0.0045130121991165681, -0.44669312500000002, 0.0014148805106350803]]
+ [ {'colsample_bytree': 1.0, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 5}
+  -0.457812875
+  [-0.45781287500000001, 0.0085689993353585299, -0.45631887500000001, 0.013436912577276635]]
+ [ {'colsample_bytree': 1.0, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 6}
+  -0.44802362500000004
+  [-0.44802362500000004, 0.0056952719851096675, -0.44783499999999998, 0.0063719145670669605]]
+ [ {'colsample_bytree': 1.0, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 7}
+  -0.447951
+  [-0.44795099999999999, 0.0043364006964301711, -0.44650062499999998, 0.0015851260941562324]]]
+
+best parameters:
+[ {'colsample_bytree': 1.0, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 7}
+ -0.44795099999999999
+ [-0.44795099999999999, 0.0043364006964301711, -0.44650062499999998, 0.0015851260941562324]]
+  
+
+  
+  

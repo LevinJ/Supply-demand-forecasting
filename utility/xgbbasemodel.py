@@ -3,6 +3,7 @@ from sklearn.grid_search import ParameterGrid
 from sklearn.grid_search import ParameterSampler
 import pandas as pd
 import matplotlib.pyplot as plt
+import logging
 
 
 
@@ -62,7 +63,7 @@ class XGBoostGridSearch(object):
     def get_paramgrid_1(self):
         pass
     def get_paramgrid_2(self, param_grid):
-        pass
+        return param_grid
     def get_learning_params(self):
         pass
     def __get_param_iterable(self, param_grid):
@@ -89,27 +90,29 @@ class XGBoostGridSearch(object):
         parameter_iterable = self.__get_param_iterable(self.__get_param_grid())  
         kwargs = self.get_learning_params()
         for param in parameter_iterable:
-            print param
+            logging.info("used parameters: {}".format(param))
             bst = xgb.cv(param, dtrain_cv, folds=cv_folds,**kwargs)
             self.__add_to_resultset(param, bst)
-#             xgb.callback.early_stop.cleanup()# clear the callb ack state
+
         self.__disp_result() 
         return
 
     def __add_to_resultset(self, param, bst):
         max_id = bst[self.best_score_colname_in_cv].idxmax()
         self.__grid_search_result.append((param, bst.iloc[max_id][self.best_score_colname_in_cv], bst.iloc[max_id].tolist()))
+        logging.info("CV score:  {}".format(bst.iloc[max_id]))
         return    
     def __disp_result(self):
         if not self.grid_search_display_result:
             return
         df = pd.DataFrame(self.__grid_search_result, columns= ['param', 'result', 'otherinfo'])
-        print '\nall para search results:'
-        print df
+        logging.info( '\nall para search results:')
+        logging.info("{}".format( df.values))
         best_score_id = df['result'].idxmax()
-        print '\nbest parameters:'
-        print df.iloc[best_score_id]['param']
-        print df.iloc[best_score_id]['result']
-        print df.iloc[best_score_id]['otherinfo']
+        logging.info( '\nbest parameters:')
+#         logging.info("{}".format(df.iloc[best_score_id]['param']))
+#         logging.info("{}".format( df.iloc[best_score_id]['result']))
+        logging.info("{}".format( df.iloc[best_score_id].values))
         df.to_csv('temp/__grid_search_result.csv')
+        
         return
