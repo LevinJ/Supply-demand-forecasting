@@ -91,7 +91,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
     def add_optimizer_node(self):
         #output node self.train_step
         with tf.name_scope('train'):
-            self.train_step = tf.train.AdamOptimizer(5.0e-4).minimize(self.loss)
+            self.train_step = tf.train.AdamOptimizer(3.0e-4).minimize(self.loss)
         return
     def add_accuracy_node(self):
         #output node self.accuracy
