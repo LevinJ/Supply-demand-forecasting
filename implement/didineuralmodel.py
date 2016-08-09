@@ -19,11 +19,20 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         TFModel.__init__(self)
         PrepareData.__init__(self)
         EarlyStopMonitor.__init__(self)
-        self.num_steps = 50000
+        self.num_steps = 30000
         self.batch_size = 128
         self.early_stopping_rounds = None
         self.summaries_dir = './logs/didi'
         self.dropout= 0.9
+        self.usedFeatures = [101,102,103,104,105,
+                             201, 204,
+                             301,
+                             401,402,
+                             501,502,503,
+                             601,602,603,604,605,606,
+                             8801,8802
+                             ]
+        self.train_validation_foldid = -4
         logging.getLogger().addHandler(logging.FileHandler('logs/didnerual.log', mode='w'))
         return
     def add_visualize_node(self):
@@ -90,7 +99,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
     def add_optimizer_node(self):
         #output node self.train_step
         with tf.name_scope('train'):
-            self.train_step = tf.train.AdamOptimizer(3.0e-4).minimize(self.loss)
+            self.train_step = tf.train.AdamOptimizer(5.0e-4).minimize(self.loss)
         return
     def add_accuracy_node(self):
         #output node self.accuracy
@@ -133,7 +142,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
                 summary, _ , train_loss, train_metrics= sess.run([self.merged, self.train_step, self.loss, self.accuracy], feed_dict=self.feed_dict("train"))
                 self.train_writer.add_summary(summary, step)
                 
-                if step % 500 == 0:
+                if step % 100 == 0:
                     summary, validation_loss, validation_metrics = sess.run([self.merged, self.loss, self.accuracy], feed_dict=self.feed_dict("validation"))
                     self.test_writer.add_summary(summary, step)
 #                     loss_train = sess.run(self.loss, feed_dict=self.feed_dict("validation_wholetrain"))
