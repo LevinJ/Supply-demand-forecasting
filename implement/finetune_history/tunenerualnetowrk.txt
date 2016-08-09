@@ -1,0 +1,1 @@
+dd_9. learning rate 5.0e-4, score 0.42, but quite bumpy.

@@ -19,12 +19,12 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         TFModel.__init__(self)
         PrepareData.__init__(self)
         EarlyStopMonitor.__init__(self)
-        self.num_steps = 30000
+        self.num_steps = 50000
         self.batch_size = 128
         self.early_stopping_rounds = None
         self.summaries_dir = './logs/didi'
         self.dropout= 0.9
-        self.train_validation_foldid = -6
+        self.train_validation_foldid = -2
         logging.getLogger().addHandler(logging.FileHandler('logs/didnerual.log', mode='w'))
         return
     def add_visualize_node(self):
@@ -49,7 +49,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         self.x_train= sc.transform(self.x_train)
         self.x_validation= sc.transform(self.x_validation)
         
-        self.inputlayer_num = len(self.usedFeatures)
+        self.inputlayer_num = len(self.get_used_features())
         self.outputlayer_num = 1
         
         # Input placehoolders
@@ -91,7 +91,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
     def add_optimizer_node(self):
         #output node self.train_step
         with tf.name_scope('train'):
-            self.train_step = tf.train.AdamOptimizer(0.5e-3).minimize(self.loss)
+            self.train_step = tf.train.AdamOptimizer(5.0e-4).minimize(self.loss)
         return
     def add_accuracy_node(self):
         #output node self.accuracy
@@ -134,7 +134,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
                 summary, _ , train_loss, train_metrics= sess.run([self.merged, self.train_step, self.loss, self.accuracy], feed_dict=self.feed_dict("train"))
                 self.train_writer.add_summary(summary, step)
                 
-                if step % 1 == 0:
+                if step % 50 == 0:
                     summary, validation_loss, validation_metrics = sess.run([self.merged, self.loss, self.accuracy], feed_dict=self.feed_dict("validation"))
                     self.test_writer.add_summary(summary, step)
 #                     loss_train = sess.run(self.loss, feed_dict=self.feed_dict("validation_wholetrain"))
