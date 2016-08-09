@@ -57,10 +57,10 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.res_data_dict = {}
 #         self.randomSate = None
 #         self.test_size = 0.25
-#         self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_FULL
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
 #         self.holdout_split = HoldoutSplitMethod.KFOLD_BYDATE
-        self.holdout_split = HoldoutSplitMethod.kFOLD_FORWARD_CHAINING
-        self.train_validation_foldid = -1
+#         self.holdout_split = HoldoutSplitMethod.kFOLD_FORWARD_CHAINING
+        self.train_validation_foldid = -4
 
        
         return
