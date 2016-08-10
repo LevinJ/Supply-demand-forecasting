@@ -1,5 +1,5 @@
 
-from basemodel import BaseModel
+from utility.sklearnbasemodel import BaseModel
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import preprocessing
 from sklearn.pipeline import Pipeline

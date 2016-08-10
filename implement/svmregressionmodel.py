@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath('..'))
 
-from basemodel import BaseModel
+from utility.sklearnbasemodel import BaseModel
 import numpy as np
 from sklearn.svm import SVR
 from sklearn import preprocessing

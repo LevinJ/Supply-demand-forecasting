@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # p(sys.path)
 
 # print os.environ['PYTHONPATH'].split(os.pathsep)
-from basemodel import BaseModel
+from utility.sklearnbasemodel import BaseModel
 import numpy as np
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import LinearRegression

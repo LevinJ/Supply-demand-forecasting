@@ -24,7 +24,8 @@ class DidiXGBoostModel(XGBoostBase, PrepareData, XGBoostGridSearch):
         XGBoostGridSearch.__init__(self)
         XGBoostBase.__init__(self)
         self.best_score_colname_in_cv = 'test-mape-mean'
-        self.do_cross_val = None
+        self.do_cross_val = False
+        self.train_validation_foldid = -2
         if self.do_cross_val is None:
             root = logging.getLogger()
             root.setLevel(logging.DEBUG)
