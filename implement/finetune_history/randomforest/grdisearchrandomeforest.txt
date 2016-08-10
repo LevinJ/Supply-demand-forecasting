@@ -1,0 +1,224 @@
+start timer
+run grid search on model: RandomForestModel
+cross validation strategy: HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
+used features: [101, 102, 103, 104, 105, 106, 107, 201, 203, 204, 205, 206, 301, 401, 402, 501, 502, 503, 504, 505, 506, 507, 601, 602, 603, 604, 605, 606, 8801, 8802]
+tuned parameters: [{'n_estimators': [100], 'max_features': ['auto', 0.3, 0.8, 0.5]}]
+Filter out too big one hot encoding (>=200) ['weather_time' 'district_time']
+Fitting 3 folds for each of 4 candidates, totalling 12 fits
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to new file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to new file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+[CV] max_features=auto, n_estimators=100 .............................
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] max_features=auto, n_estimators=100 .............................
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+[CV] max_features=auto, n_estimators=100 .............................
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+[CV] max_features=0.3, n_estimators=100 ..............................
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] .... max_features=0.3, n_estimators=100, score=-0.699652 -  33.5s
+[Parallel(n_jobs=-1)]: Done   1 tasks      | elapsed:   35.8s
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] max_features=0.3, n_estimators=100 ..............................
+[CV] .... max_features=0.3, n_estimators=100, score=-0.660960 -  36.9s
+[Parallel(n_jobs=-1)]: Done   2 tasks      | elapsed:  1.2min
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+[CV] max_features=0.3, n_estimators=100 ..............................
+[CV] ... max_features=auto, n_estimators=100, score=-0.695853 - 1.8min
+[Parallel(n_jobs=-1)]: Done   3 tasks      | elapsed:  1.8min
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] max_features=0.8, n_estimators=100 ..............................
+[CV] .... max_features=0.3, n_estimators=100, score=-0.639582 -  39.8s
+[Parallel(n_jobs=-1)]: Done   4 tasks      | elapsed:  1.9min
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] max_features=0.8, n_estimators=100 ..............................
+[CV] ... max_features=auto, n_estimators=100, score=-0.664037 - 1.8min
+[Parallel(n_jobs=-1)]: Done   5 tasks      | elapsed:  1.9min
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+[CV] max_features=0.8, n_estimators=100 ..............................
+[CV] ... max_features=auto, n_estimators=100, score=-0.649721 - 2.0min
+[Parallel(n_jobs=-1)]: Done  13 out of  12 | elapsed:  2.1min remaining:    0.0s
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] max_features=0.5, n_estimators=100 ..............................
+[CV] .... max_features=0.5, n_estimators=100, score=-0.698118 -  56.5s
+[Parallel(n_jobs=-1)]: Done  13 out of  12 | elapsed:  3.0min remaining:    0.0s
+Pickling array (shape=(57L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(43L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516007776-0.pkl
+Memmaping (shape=(14L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_8728_487237840\8728-511024320-516008016-0.pkl
+Pickling array (shape=(43L,), dtype=object).
+Pickling array (shape=(14L,), dtype=object).
+Pickling array (shape=(43L,), dtype=int64).
+Pickling array (shape=(14L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] max_features=0.5, n_estimators=100 ..............................
+[CV] .... max_features=0.8, n_estimators=100, score=-0.694655 - 1.4min
+[Parallel(n_jobs=-1)]: Done  13 out of  12 | elapsed:  3.2min remaining:    0.0s
+[CV] max_features=0.5, n_estimators=100 ..............................
+[CV] .... max_features=0.8, n_estimators=100, score=-0.657334 - 1.6min
+[Parallel(n_jobs=-1)]: Done  13 out of  12 | elapsed:  3.4min remaining:    0.0s
+[CV] .... max_features=0.8, n_estimators=100, score=-0.648648 - 1.6min
+[Parallel(n_jobs=-1)]: Done  13 out of  12 | elapsed:  3.5min remaining:    0.0s
+[CV] .... max_features=0.5, n_estimators=100, score=-0.661086 -  51.1s
+[Parallel(n_jobs=-1)]: Done  13 out of  12 | elapsed:  3.9min remaining:    0.0s
+[CV] .... max_features=0.5, n_estimators=100, score=-0.639507 -  50.0s
+[Parallel(n_jobs=-1)]: Done  13 out of  12 | elapsed:  4.1min remaining:    0.0s
+[Parallel(n_jobs=-1)]: Done  12 out of  12 | elapsed:  4.1min finished
+estimaator parameters: <bound method GridSearchCV.get_params of GridSearchCV(cv=[(Int64Index([ 1336,  1337,  1338,  1339,  1340,  1341,  1342,  1343,  1344,
+             1345,
+            ...
+            77422, 77423, 77424, 77425, 77426, 77427, 77428, 77429, 77430,
+            77431],
+           dtype='int64', length=27087), Int64Index([ 78583,  78584,  78585,  78586,  7858...02600, 102601, 102602, 102603,
+            102604, 102605],
+           dtype='int64', length=1108))],
+       error_score='raise',
+       estimator=RandomForestRegressor(bootstrap=True, criterion='mse', max_depth=None,
+           max_features='auto', max_leaf_nodes=None, min_samples_leaf=1,
+           min_samples_split=2, min_weight_fraction_leaf=0.0,
+           n_estimators=100, n_jobs=1, oob_score=False, random_state=None,
+           verbose=0, warm_start=False),
+       fit_params={}, iid=True, n_jobs=-1,
+       param_grid=[{'n_estimators': [100], 'max_features': ['auto', 0.3, 0.8, 0.5]}],
+       pre_dispatch='2*n_jobs', refit=True,
+       scoring=<function mean_absolute_percentage_error_scoring at 0x000000000A4E3C88>,
+       verbose=500)>
+Best parameters: {'max_features': 0.8, 'n_estimators': 100}
+Best Scores: 0.670518616317
+Score grid: [mean: -0.67352, std: 0.01928, params: {'max_features': 'auto', 'n_estimators': 100}, mean: -0.67148, std: 0.02486, params: {'max_features': 0.3, 'n_estimators': 100}, mean: -0.67052, std: 0.01996, params: {'max_features': 0.8, 'n_estimators': 100}, mean: -0.67087, std: 0.02420, params: {'max_features': 0.5, 'n_estimators': 100}]
+parameters: {'max_features': 'auto', 'n_estimators': 100}
+mean_validation_score: 0.673517014083
+cv_validation_scores: [ 0.69585325  0.66403695  0.64972061]
+parameters: {'max_features': 0.3, 'n_estimators': 100}
+mean_validation_score: 0.671478524146
+cv_validation_scores: [ 0.69965227  0.66095983  0.63958249]
+parameters: {'max_features': 0.8, 'n_estimators': 100}
+mean_validation_score: 0.670518616317
+cv_validation_scores: [ 0.69465479  0.65733391  0.64864769]
+parameters: {'max_features': 0.5, 'n_estimators': 100}
+mean_validation_score: 0.670867927819
+cv_validation_scores: [ 0.69811763  0.66108553  0.63950665]
+end timer
+Duration: 0 hours, 8 minutes and 58 seconds
