@@ -24,12 +24,12 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         self.early_stopping_rounds = None
         self.summaries_dir = './logs/didi'
         self.dropout= 0.9
-        self.usedFeatures = [101,102,103,104,105,
-                             201, 204,
+        self.usedFeatures = [101,102,103,104,105,106,107, 
+                             201, 203,204,205,206,
                              301,
                              401,402,
-                             501,502,503,
-                             601,602,603,604,605,606,
+                             501,502,503,504,505,506,507,
+                            601,602,603,604,605,606,
                              8801,8802
                              ]
         self.train_validation_foldid = -4
