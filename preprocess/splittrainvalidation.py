@@ -119,9 +119,9 @@ class SplitTrainValidation(object):
         df.reset_index(drop=True, inplace = True)
         res = []
         # training 1-15, validation 16-21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 15, split_method), self.__get_train_validation_indexes(df, '2016-01-16', 6)
-        res.append(item)
-        
+#         item = self.__get_train_validation_indexes(df, '2016-01-01', 15, split_method), self.__get_train_validation_indexes(df, '2016-01-16', 6)
+#         res.append(item)
+#         
         # training 1-16, validation 17-21
         item = self.__get_train_validation_indexes(df, '2016-01-01', 16, split_method), self.__get_train_validation_indexes(df, '2016-01-17', 5)
         res.append(item)
@@ -135,12 +135,12 @@ class SplitTrainValidation(object):
         res.append(item)
         
         # training 1-19, validation 19-21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 19, split_method), self.__get_train_validation_indexes(df, '2016-01-20', 2)
-        res.append(item)
-        
-        # training 1-20, validation 21
-        item = self.__get_train_validation_indexes(df, '2016-01-01', 20, split_method), self.__get_train_validation_indexes(df, '2016-01-21', 1)
-        res.append(item)
+#         item = self.__get_train_validation_indexes(df, '2016-01-01', 19, split_method), self.__get_train_validation_indexes(df, '2016-01-20', 2)
+#         res.append(item)
+#         
+#         # training 1-20, validation 21
+#         item = self.__get_train_validation_indexes(df, '2016-01-01', 20, split_method), self.__get_train_validation_indexes(df, '2016-01-21', 1)
+#         res.append(item)
         return res
     def __get_train_validation_indexes(self,df, start_date, days_num, split_method = HoldoutSplitMethod.IMITTATE_TEST2_MIN):
         dates = self.__get_date(start_date, days_num, days_step=1)

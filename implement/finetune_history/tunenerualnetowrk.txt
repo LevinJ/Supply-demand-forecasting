@@ -1,1 +1,2 @@
-dd_9. learning rate 5.0e-4, score 0.42, but quite bumpy.
+All features: 0.420
+without history: 0.430
