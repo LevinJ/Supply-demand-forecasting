@@ -13,9 +13,9 @@ class ForwardFeatureSel:
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)
         root.addHandler(logging.StreamHandler(sys.stdout))
-        root.addHandler(logging.FileHandler('logs/forwardfeatureselection.log', mode='w'))
+        root.addHandler(logging.FileHandler('logs/forwardfeatureselection_knn.log', mode='w'))
         clfDict = {1: GrientBoostingModel, 2:KNNModel, 3: DidiXGBoostModel}
-        self.clf =  clfDict[3]()
+        self.clf =  clfDict[2]()
 #         self.result = []
 #         self.featureList = [101,102, 201,502]
         self.featureList =  [101,102,103,104,105,106,107, 
@@ -43,7 +43,7 @@ class ForwardFeatureSel:
         return self.disResult(result_combinations)
         
     def run(self):
-        base_feature_list = [] 
+        base_feature_list = [603, 101,602,103,203,606] 
         featureLists =  self.generateFeatureList(base_feature_list)
         self.selectBestFeaturList(featureLists)
         

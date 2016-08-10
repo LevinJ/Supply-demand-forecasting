@@ -38,7 +38,7 @@ class BaseModel(PrepareData):
         fit_params = fit_params if fit_params is not None else {}
         self.clf.fit(self.X_train, self.y_train, **fit_params)
         print "train:", round(time()-t0, 3), "s"
-#         self.dispFeatureImportance()
+        self.dispFeatureImportance()
         self.after_train()
         return
     def save_model(self):
@@ -93,7 +93,7 @@ class BaseModel(PrepareData):
         features,labels,cv = self.getFeaturesLabel()
         scores = cross_validation.cross_val_score(self.clf, features, labels, cv=cv, scoring=mean_absolute_percentage_error_scoring, n_jobs = -1)
         print "cross validation scores: means, {}, std, {}, details,{}".format(np.absolute(scores.mean()), scores.std(), np.absolute(scores))
-        return np.absolute(scores.mean())
+        return -np.absolute(scores.mean())
     def run_train_validation(self):
         self.X_train, self.y_train,self.X_test,self.y_test = self.get_train_validationset()
 #         self.getTrainTestSet()

@@ -1,0 +1,300 @@
+start timer
+run grid search on model: KNNModel
+cross validation strategy: HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
+used features: [603, 101, 602, 103, 203, 606]
+tuned parameters: [{'estimator__n_neighbors': array([30, 31, 32, 33, 34, 35])}]
+Filter out too big one hot encoding (>=200) ['weather_time' 'district_time']
+Fitting 3 folds for each of 6 candidates, totalling 18 fits
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to new file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to new file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+[CV] estimator__n_neighbors=30 .......................................
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] estimator__n_neighbors=30 .......................................
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+[CV] estimator__n_neighbors=30 .......................................
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=30, score=-0.449509 -   1.4s
+[Parallel(n_jobs=-1)]: Done   1 tasks      | elapsed:    3.9s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] estimator__n_neighbors=31 .......................................
+[CV] ............. estimator__n_neighbors=30, score=-0.453643 -   1.5s
+[Parallel(n_jobs=-1)]: Done   2 tasks      | elapsed:    3.9s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+[CV] estimator__n_neighbors=31 .......................................
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=30, score=-0.451566 -   1.6s
+[Parallel(n_jobs=-1)]: Done   3 tasks      | elapsed:    4.4s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+[CV] estimator__n_neighbors=31 .......................................
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=31, score=-0.444765 -   1.3s
+[Parallel(n_jobs=-1)]: Done   4 tasks      | elapsed:    5.3s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+[CV] estimator__n_neighbors=32 .......................................
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=31, score=-0.453651 -   1.5s
+[Parallel(n_jobs=-1)]: Done   5 tasks      | elapsed:    5.5s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] estimator__n_neighbors=32 .......................................
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+[CV] estimator__n_neighbors=32 .......................................
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=31, score=-0.445156 -   1.5s
+[Parallel(n_jobs=-1)]: Done   6 tasks      | elapsed:    6.0s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+[CV] estimator__n_neighbors=33 .......................................
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=32, score=-0.451996 -   1.4s
+[Parallel(n_jobs=-1)]: Done   7 tasks      | elapsed:    6.9s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+[CV] estimator__n_neighbors=33 .......................................
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=32, score=-0.448345 -   1.4s
+[Parallel(n_jobs=-1)]: Done   8 tasks      | elapsed:    7.0s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+[CV] estimator__n_neighbors=33 .......................................
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=33, score=-0.450692 -   1.8s
+[Parallel(n_jobs=-1)]: Done   9 tasks      | elapsed:    7.9s
+Pickling array (shape=(9L,), dtype=object).
+[CV] estimator__n_neighbors=34 .......................................
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=33, score=-0.441359 -   1.4s
+[Parallel(n_jobs=-1)]: Done  10 tasks      | elapsed:    8.4s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+[CV] estimator__n_neighbors=34 .......................................
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=33, score=-0.447732 -   1.4s
+[Parallel(n_jobs=-1)]: Done  11 tasks      | elapsed:    8.5s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+[CV] estimator__n_neighbors=34 .......................................
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(27087L,), dtype=int64).
+Pickling array (shape=(1795L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=32, score=-0.443122 -   3.1s
+[Parallel(n_jobs=-1)]: Done  19 out of  18 | elapsed:    8.8s remaining:    0.0s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(28862L,), dtype=int64).
+Pickling array (shape=(1448L,), dtype=int64).
+[CV] estimator__n_neighbors=35 .......................................
+[CV] ............. estimator__n_neighbors=34, score=-0.450145 -   1.6s
+[Parallel(n_jobs=-1)]: Done  19 out of  18 | elapsed:    9.6s remaining:    0.0s
+Pickling array (shape=(9L,), dtype=object).
+Pickling array (shape=(102680L,), dtype=int64).
+Memmaping (shape=(7L, 102680L), dtype=float64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-497310176-0.pkl
+[CV] estimator__n_neighbors=35 .......................................
+Memmaping (shape=(2L, 102680L), dtype=int64) to old file c:\users\jianz\appdata\local\temp\joblib_memmaping_pool_7292_497184328\7292-510868616-516020304-0.pkl
+Pickling array (shape=(7L,), dtype=object).
+Pickling array (shape=(2L,), dtype=object).
+Pickling array (shape=(7L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(102680L,), dtype=int64).
+Pickling array (shape=(30557L,), dtype=int64).
+Pickling array (shape=(1108L,), dtype=int64).
+[CV] ............. estimator__n_neighbors=34, score=-0.447391 -   1.4s
+[Parallel(n_jobs=-1)]: Done  19 out of  18 | elapsed:    9.9s remaining:    0.0s
+[CV] estimator__n_neighbors=35 .......................................
+[CV] ............. estimator__n_neighbors=34, score=-0.449320 -   1.5s
+[Parallel(n_jobs=-1)]: Done  19 out of  18 | elapsed:   10.1s remaining:    0.0s
+[CV] ............. estimator__n_neighbors=35, score=-0.453210 -   2.2s
+[Parallel(n_jobs=-1)]: Done  19 out of  18 | elapsed:   11.1s remaining:    0.0s
+[CV] ............. estimator__n_neighbors=35, score=-0.446029 -   1.5s
+[Parallel(n_jobs=-1)]: Done  19 out of  18 | elapsed:   11.3s remaining:    0.0s
+[CV] ............. estimator__n_neighbors=35, score=-0.449456 -   1.3s
+[Parallel(n_jobs=-1)]: Done  19 out of  18 | elapsed:   11.3s remaining:    0.0s
+[Parallel(n_jobs=-1)]: Done  18 out of  18 | elapsed:   11.3s finished
+estimaator parameters: <bound method GridSearchCV.get_params of GridSearchCV(cv=[(Int64Index([ 1336,  1337,  1338,  1339,  1340,  1341,  1342,  1343,  1344,
+             1345,
+            ...
+            77422, 77423, 77424, 77425, 77426, 77427, 77428, 77429, 77430,
+            77431],
+           dtype='int64', length=27087), Int64Index([ 78583,  78584,  78585,  78586,  7858...02600, 102601, 102602, 102603,
+            102604, 102605],
+           dtype='int64', length=1108))],
+       error_score='raise',
+       estimator=Pipeline(steps=[('scaler', MinMaxScaler(copy=True, feature_range=(0, 1))), ('estimator', KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+           metric_params=None, n_jobs=1, n_neighbors=25, p=2,
+           weights='uniform'))]),
+       fit_params={}, iid=True, n_jobs=-1,
+       param_grid=[{'estimator__n_neighbors': array([30, 31, 32, 33, 34, 35])}],
+       pre_dispatch='2*n_jobs', refit=True,
+       scoring=<function mean_absolute_percentage_error_scoring at 0x000000000A335C88>,
+       verbose=500)>
+Best parameters: {'estimator__n_neighbors': 33}
+Best Scores: 0.446832389381
+Score grid: [mean: -0.45174, std: 0.00169, params: {'estimator__n_neighbors': 30}, mean: -0.44853, std: 0.00410, params: {'estimator__n_neighbors': 31}, mean: -0.44811, std: 0.00364, params: {'estimator__n_neighbors': 32}, mean: -0.44683, std: 0.00389, params: {'estimator__n_neighbors': 33}, mean: -0.44902, std: 0.00115, params: {'estimator__n_neighbors': 34}, mean: -0.44986, std: 0.00293, params: {'estimator__n_neighbors': 35}]
+parameters: {'estimator__n_neighbors': 30}
+mean_validation_score: 0.451738138277
+cv_validation_scores: [ 0.45364262  0.44950864  0.45156645]
+parameters: {'estimator__n_neighbors': 31}
+mean_validation_score: 0.448530301247
+cv_validation_scores: [ 0.45365062  0.44476502  0.4451559 ]
+parameters: {'estimator__n_neighbors': 32}
+mean_validation_score: 0.448112905182
+cv_validation_scores: [ 0.45199573  0.44312198  0.44834502]
+parameters: {'estimator__n_neighbors': 33}
+mean_validation_score: 0.446832389381
+cv_validation_scores: [ 0.45069229  0.44135876  0.44773247]
+parameters: {'estimator__n_neighbors': 34}
+mean_validation_score: 0.449018809514
+cv_validation_scores: [ 0.4501455   0.44739129  0.44932047]
+parameters: {'estimator__n_neighbors': 35}
+mean_validation_score: 0.449863928298
+cv_validation_scores: [ 0.45320963  0.4460287   0.44945587]
+end timer
+Duration: 0 hours, 1 minutes and 2 seconds

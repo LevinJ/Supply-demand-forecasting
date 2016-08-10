@@ -414,7 +414,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest2Dir())
         self.getFeaturesforTestSet(g_singletonDataFilePath.getTest1Dir())
         self.get_train_validationset()
-#         self.__save_final_data()
+        self.__save_final_data()
 
 
         return
