@@ -43,10 +43,10 @@ Instructions for running the scripts
 4.  Extract data_raw.zip under root direcoty of the project. After extraction, all raw files will be under data_preprocessed folder
 5.	In the console/terminal, set implement as current directory
 5. 	Run scripts
-	Run python didineuralmodel.py file to train/validate neural network model   
-	Run python knnmodel.py file to train/validate KNN model  
-	Run python randomforestmodel.py file to train/validate random forest model  
-	Run python xgboostmodel.py file to train/validation GBM model  
-	Run python forwardfeatureselection file to try out greedy forward feature selection  
-	Run python tunemodels.py file to try out grid search for models  
+	Run python didineuralmodel.py  to train/validate neural network model   
+	Run python knnmodel.py  to train/validate KNN model  
+	Run python randomforestmodel.py  to train/validate random forest model  
+	Run python xgboostmodel.py  to train/validation GBM model  
+	Run python forwardfeatureselection  to try out greedy forward feature selection  
+	Run python tunemodels.py to try out grid search for models  
 
