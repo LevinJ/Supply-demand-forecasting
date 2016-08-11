@@ -33,8 +33,8 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
                              8801,8802
                              ]
         self.train_validation_foldid = -2 #0.415
-        self.train_validation_foldid = -1 #0.425
-        self.train_validation_foldid = -3 #0.430
+#         self.train_validation_foldid = -1 #0.425
+#         self.train_validation_foldid = -3 #0.430
         logging.getLogger().addHandler(logging.FileHandler('logs/didnerual.log', mode='w'))
         return
     def add_visualize_node(self):
@@ -77,7 +77,7 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         hidden1 = self.nn_layer(dropped, 300, 'layer2')
         dropped = self.dropout_layer(hidden1)
         
-        self.y_pred = self.nn_layer(dropped, self.outputlayer_num , 'layer2')
+        self.y_pred = self.nn_layer(dropped, self.outputlayer_num , 'layer3')
         return
     def add_loss_node(self):
         #output node self.loss
