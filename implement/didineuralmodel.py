@@ -82,7 +82,8 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
     def add_loss_node(self):
         #output node self.loss
  
-        self.__add_mape_loss()
+#         self.__add_mape_loss()
+        self.__add_mse_loss()
         return
     def __add_mse_loss(self):
         with tf.name_scope('loss'):
