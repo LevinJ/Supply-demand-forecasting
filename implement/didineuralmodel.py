@@ -74,8 +74,8 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         hidden1 = self.nn_layer(self.x, 500, 'layer1')
         dropped = self.dropout_layer(hidden1)
         
-#         hidden1 = self.nn_layer(dropped, 300, 'layer2')
-#         dropped = self.dropout_layer(hidden1)
+        hidden1 = self.nn_layer(dropped, 300, 'layer2')
+        dropped = self.dropout_layer(hidden1)
         
         self.y_pred = self.nn_layer(dropped, self.outputlayer_num , 'layer2')
         return
