@@ -24,7 +24,7 @@ class DidiXGBoostModel(XGBoostBase, PrepareData, XGBoostGridSearch):
         XGBoostGridSearch.__init__(self)
         XGBoostBase.__init__(self)
         self.best_score_colname_in_cv = 'test-mape-mean'
-        self.do_cross_val = None
+        self.do_cross_val = False
         self.train_validation_foldid = -2
         if self.do_cross_val is None:
             root = logging.getLogger()
@@ -35,8 +35,8 @@ class DidiXGBoostModel(XGBoostBase, PrepareData, XGBoostGridSearch):
         return
     def set_xgb_parameters(self):
         early_stopping_rounds = 3
-        self.xgb_params = {'max_depth':14, 'eta':0.01, 'silent':1, 'objective':'reg:linear' }
-        self.xgb_params = {'silent':1 }
+        self.xgb_params = {'silent':1, 'colsample_bytree': 0.8, 'silent': 1, 'lambda ': 1, 'min_child_weight': 1, 'subsample': 0.8, 'eta': 0.01, 'objective': 'reg:linear', 'max_depth': 7}
+#         self.xgb_params = {'silent':1 }
         self.xgb_learning_params = {
                                     'num_boost_round': 200,
                                     'callbacks':[xgb.callback.print_evaluation(show_stdv=True),xgb.callback.early_stop(early_stopping_rounds)],

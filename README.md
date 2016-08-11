@@ -33,7 +33,6 @@ Required libray to run the scripts
 --------------
 * Sklearn
 * XGBOOST
-* Sklearn
 * Tensorflow
 
 Instructions for running the scripts
@@ -42,11 +41,12 @@ Instructions for running the scripts
 2.	Get data files( data_preprocessed.zip and data_raw.zip) from the author of this project report
 3.  Extract data_preprocessed.zip under root directory of the project. After extraction, all temporary preproces dump files will be under data_preprocessed folder
 4.  Extract data_raw.zip under root direcoty of the project. After extraction, all raw files will be under data_preprocessed folder
+5.	In the console/terminal, set implement as current directory
 5. 	Run scripts
-	*Run implement/didineuralmodel.py file to train/validate neural network model.
-	*Run implement/xgboostmodel.py file to train/validation GBM model
-	*Run implement/knnmodel.py file to train/validate KNN model
-	*Run implement/randomforestmodel.py file to train/validate random forest model
-	*Run implement/forwardfeatureselection file to try out greedy forward feature selection
-	*Run implement/tunemodels.py file to try out grid search for models
+	..*Run python didineuralmodel.py file to train/validate neural network model.
+	..*Run python knnmodel.py file to train/validate KNN model
+	..*Run python randomforestmodel.py file to train/validate random forest model
+	..*Run python xgboostmodel.py file to train/validation GBM model
+	..*Run python forwardfeatureselection file to try out greedy forward feature selection
+	..*Run python tunemodels.py file to try out grid search for models
 

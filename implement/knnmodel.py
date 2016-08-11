@@ -20,10 +20,10 @@ class KNNModel(BaseModel):
         self.usedFeatures = [603, 101, 602, 103, 203, 606]
         self.train_validation_foldid = -2
 #         self.save_final_model = True
-        self.do_cross_val = False
+        self.do_cross_val = True
         return
     def setClf(self):
-        clf = KNeighborsClassifier(n_neighbors = 25)
+        clf = KNeighborsClassifier(n_neighbors = 33)
         min_max_scaler = preprocessing.MinMaxScaler()
         self.clf = Pipeline([('scaler', min_max_scaler), ('estimator', clf)])
         return
