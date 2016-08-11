@@ -74,16 +74,16 @@ class DididNeuralNetowrk(TFModel, PrepareData, EarlyStopMonitor):
         hidden1 = self.nn_layer(self.x, 500, 'layer1')
         dropped = self.dropout_layer(hidden1)
         
-        hidden1 = self.nn_layer(dropped, 300, 'layer2')
-        dropped = self.dropout_layer(hidden1)
+#         hidden1 = self.nn_layer(dropped, 300, 'layer2')
+#         dropped = self.dropout_layer(hidden1)
         
-        self.y_pred = self.nn_layer(dropped, self.outputlayer_num , 'layer3')
+        self.y_pred = self.nn_layer(dropped, self.outputlayer_num , 'layer2')
         return
     def add_loss_node(self):
         #output node self.loss
  
-#         self.__add_mape_loss()
-        self.__add_mse_loss()
+        self.__add_mape_loss()
+#         self.__add_mse_loss()
         return
     def __add_mse_loss(self):
         with tf.name_scope('loss'):
