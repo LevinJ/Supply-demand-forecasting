@@ -40,7 +40,7 @@ Instructions for running the scripts
 1.  Download the source codes from github
 2.	Get data files( data_preprocessed.zip and data_raw.zip) from the author of this project report
 3.  Extract data_preprocessed.zip under root directory of the project. After extraction, all temporary preproces dump files will be under data_preprocessed folder
-4.  Extract data_raw.zip under root direcoty of the project. After extraction, all raw files will be under data_preprocessed folder
+4.  Extract data_raw.zip under root direcoty of the project. After extraction, all raw files will be under data_raw folder
 5.	In the console/terminal, set implement as current directory
 5. 	Run scripts  
 	Run python didineuralmodel.py  to train/validate neural network model   
