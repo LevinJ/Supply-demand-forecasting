@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath('..'))
 
 from utility.sklearnbasemodel import BaseModel
 from sklearn.neighbors import KNeighborsClassifier
