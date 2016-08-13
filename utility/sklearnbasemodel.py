@@ -16,11 +16,17 @@ import pandas as pd
 from sklearn.metrics import mean_squared_error
 
 class BaseModel(PrepareData):
+    """Base class for SKlearn based learning model.
+
+    It implements all common functionality, including model training/validation, cross valiation, testing, and saving.
+    """
     def __init__(self):
         PrepareData.__init__(self)
         self.setClf()
         self.application_start_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        """whether to save the model after train/validate"""
         self.save_final_model =False
+        """True means to do cross vdlidation, and False means do train/validation"""
         self.do_cross_val = True
 #         logfile_name = r'logs//' + self.__class__.__name__+ '_' +self.application_start_time + '.txt'
 #         _=Logger(filename=logfile_name,filemode='w',level=logging.DEBUG)
@@ -28,6 +34,9 @@ class BaseModel(PrepareData):
         
         return
     def setClf(self):
+        """set the classifier isntance by self.clf = ...
+           must be overridden by derived class
+        """
         pass
     def after_train(self):
         pass
@@ -49,6 +58,9 @@ class BaseModel(PrepareData):
         self.predictTestSet(g_singletonDataFilePath.getTest2Dir())
         return
     def get_fit_params(self):
+        """Returns extra parameters that can be passed to fit function
+        If necessary, derived class can override this method
+        """
         return None
     def dispFeatureImportance(self):
         if not hasattr(self.clf, 'feature_importances_'):

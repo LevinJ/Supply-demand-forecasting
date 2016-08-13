@@ -8,6 +8,14 @@ import logging
 
 
 class XGBoostBase(object):
+    """Base class for XGBoost learning model.
+
+    It implements some common functionality, including model training/validation, cross valiation.
+    Derived class need to override set_xgb_parameters method to specify xgboost parameters.
+    
+    To use this class properly, it must be guarantted that its derived class also inherit preparedata class which
+    has interface get_train_validationset and getFeaturesLabel
+    """
     def __init__(self):
         self.do_cross_val = True
         self.best_score_colname_in_cv = 'test-mape-mean'
@@ -50,6 +58,13 @@ class XGBoostBase(object):
 
     
 class XGBoostGridSearch(object):
+    """Base class for XGBoost learning model.
+
+    It implements parameter grid search functionality
+    
+    To use this class properly, it must be guarantted that its derived class also inherit preparedata class which
+    has interface get_train_validationset and getFeaturesLabel
+    """
     def __init__(self):
         self.ramdonized_search_enable = False
         self.randomized_search_n_iter = 10

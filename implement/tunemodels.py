@@ -18,6 +18,10 @@ from xgboost_sklearnmodel import XGBoostSklearnModel
 
 
 class TuneModel:
+    """Grid search best paramers for sklearn based learning model
+       Both exhaustive and random search are supported
+       at the end ot he search, it will also save the model, predict on the test dataset.
+    """
     def __init__(self):
         self.application_start_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
         logfile_name = r'logs/tunealgorithm_' +self.application_start_time + '.txt'

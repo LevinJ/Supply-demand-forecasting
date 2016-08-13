@@ -9,6 +9,10 @@ import logging
 import sys
 
 class ForwardFeatureSel:
+    """Implement greedy forward feature selection
+       it requries the model to implement run_croos_validation method
+       it support two ways to find best feature combinations: manual and automatic
+    """
     def __init__(self):
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)

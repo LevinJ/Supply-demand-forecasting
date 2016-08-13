@@ -5,9 +5,6 @@ from datetime import timedelta
 from enum import Enum
 
 class HoldoutSplitMethod(Enum):
-#     NONE = 1
-    BYDATESLOT_RANDOM = 2
-    IMITATE_PUBLICSET = 3
     KFOLD_BYDATE      = 4
     kFOLD_FORWARD_CHAINING = 5
     IMITTATE_TEST2_MIN = 6
@@ -19,16 +16,18 @@ class HoldoutSplitMethod(Enum):
     IMITTATE_TEST2_PLUS6 = 12
     
 class SplitTrainValidation(object):
+    """This class implement differenct cross validation strategy, and is intened to be called by preprare data to return CV folds.
+    """
     def __init__(self):
         return
-    def kfold_bydate(self, df, n_folds = 10):
+    def get_kfold_bydate(self, df, n_folds = 10):
         df.sort_values(by = ['time_date','time_id','start_district_id'], axis = 0, inplace = True)
         df.reset_index(drop=True, inplace = True)
         kf = KFold(df.shape[0], n_folds= n_folds, shuffle=False)
         for train_index, test_index in kf:
             print("TRAIN:", train_index, "TEST:", test_index)
         return kf
-    def kfold_forward_chaining(self, df):
+    def get_kfold_forward_chaining(self, df):
         res = []
         df.sort_values(by = ['time_date','time_id','start_district_id'], axis = 0, inplace = True)
         df.reset_index(drop=True, inplace = True)
@@ -150,8 +149,8 @@ class SplitTrainValidation(object):
         return indexes
     def run(self, df):
         self.__unit_test()
-#         self.kfold_bydate(df)
-#         self.kfold_forward_chaining(df)
+#         self.get_kfold_bydate(df)
+#         self.get_kfold_forward_chaining(df)
         return
     
 

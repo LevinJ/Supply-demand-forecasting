@@ -28,6 +28,12 @@ from exploredata.poi import ExplorePoi
 
     
 class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSet, SplitTrainValidation,HistoricalData, prepareGapCsvForPrediction,ExplorePoi):
+    """ Aggreate all data source, transform them into a big table with features and labels that can be fed into learnig algorithms
+        
+         This class keep all the feature engineerining/trnasformation transparent to cleint. Cient can call any of its public method to get data/cv folds, it will start preprocessing
+         the data, stoe them in dictionalry (res_data_dict), and return the result. Next time when the client try fetching data/cv folds, this class will look up the dictionary and
+         return the result.
+    """
     def __init__(self):
         ExploreOrder.__init__(self)
 #         self.usedFeatures = []
@@ -47,17 +53,17 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
                              501,502,503,504,505,506,507,
                              601,602,603,604,605,606,
                              8801,8802
-                             ]
+                             ] # Features that is actually used by learning algorith
 #         self.override_used_features = ['gap1', 'time_id', 'gap2', 'gap3', 'traffic2', 'traffic1', 'traffic3',
 #                                        'preweather', 'start_district_id_28', 'start_district_id_8',
 #                                        'start_district_id_7', 'start_district_id_48']
         self.usedLabel = 'gap'
-        self.excludeZerosActual = True
+        self.excludeZerosActual = True # whether to exclud row with gap being zero
         # the resultant data dictionary after preprocessing
-        self.res_data_dict = {}
+        self.res_data_dict = {} # dictionary that 
 #         self.randomSate = None
 #         self.test_size = 0.25
-        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS2
+        self.holdout_split = HoldoutSplitMethod.IMITTATE_TEST2_PLUS2 # cross validation split strategy
 #         self.holdout_split = HoldoutSplitMethod.KFOLD_BYDATE
 #         self.holdout_split = HoldoutSplitMethod.kFOLD_FORWARD_CHAINING
         self.train_validation_foldid = -2
@@ -66,6 +72,7 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         return
     
     def __get_all_features_dict(self):
+        """return all the featurs engineered """
         featureDict ={}
 #         preGaps = ['gap1', 'gap2', 'gap3']
         districtids = ['start_district_id_' + str(i + 1) for i in range(66)]
@@ -309,9 +316,9 @@ class PrepareData(ExploreOrder, ExploreWeather, ExploreTraffic, PrepareHoldoutSe
         self.__engineer_feature(data_dir)
 
         if self.holdout_split == HoldoutSplitMethod.kFOLD_FORWARD_CHAINING:
-            cv = self.kfold_forward_chaining(self.X_y_Df)
+            cv = self.get_kfold_forward_chaining(self.X_y_Df)
         elif self.holdout_split == HoldoutSplitMethod.KFOLD_BYDATE:
-            cv = self.kfold_bydate(self.X_y_Df)
+            cv = self.get_kfold_bydate(self.X_y_Df)
         else:
             cv = self.get_imitate_testset2(self.X_y_Df, split_method = self.holdout_split)
         
