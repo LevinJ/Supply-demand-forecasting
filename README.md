@@ -3,6 +3,8 @@ The Di-Tech Challenge(1) is organized by DiDi Chuxing, Chinaâ€™s largest ride-ha
 
 Supply-demand forecasting helps to predict the gap of drivers and riders at a certain time period in a specific geographic area, and it is critical to enabling Didi to maximize utilization of drivers and ensure that riders can always get a car whenever and wherever they may need a ride.
 
+When I learned of the challenge announcement, I just completed all the required courses in Udacity Machine Learning Nanodegree. It¡¯s exciting to choose this competition as my Capstone project, practice and consolidate what I¡¯ve learned throughout the Nanodegree program by tackling a real world problem, and what¡¯s more, in a highly competitive ongoing contest!
+
 This project report describes my solution for this competition.
 
 The best score in Di-Tech challenge leaderboard is about 0.39. Our final modelâ€™s score is 0.42. 
@@ -37,7 +39,7 @@ Required library to run the scripts
 
 Instructions for running the scripts
 --------------
-1.  Download the source codes from github
+1.  Download the source codes from [here](https://github.com/LevinJ/Supply-demand-forecasting)
 2.	Get data files( data_preprocessed.zip and data_raw.zip) from [Dropbox shared link](https://www.dropbox.com/sh/33cfeiidegucins/AACdvKFkiyCcbqByBTl3wG8wa?dl=0)
 3.  Extract data_preprocessed.zip under root directory of the project. After extraction, all temporary preprocessed dump files will be under data_preprocessed folder
 4.  Extract data_raw.zip under root directory of the project. After extraction, all raw files will be under data_raw folder

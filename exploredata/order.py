@@ -7,6 +7,7 @@ from utility.datafilepath import g_singletonDataFilePath
 from time import time
 from utility.dumpload import DumpLoad
 import numpy as np
+from seaborn.utils import iqr
 
 
 
@@ -182,14 +183,25 @@ class ExploreOrder:
         res =pd.Series([min_list.mean(), np.median(min_list), plus_list.mean(), np.median(plus_list)], index = index)
         
         return res
+    def get_outlier_threshold(self, series):
+        q3, q1 = np.percentile(series, [75 ,25])
+        iqr = q3 - q1
+        lower_innerfence = q1 - 1.5*iqr
+        upper_innerfence = q3 + 1.5*iqr
+        
+        lower_outerfence = q1 -3*iqr
+        upper_outerfence = q3 + 3*iqr
+        print("lower_outerfence:{}, upper_outerfence{}", lower_outerfence,upper_outerfence)
+        return upper_outerfence
     def run(self):
         self.unitTest()
         data_dir = g_singletonDataFilePath.getTest2Dir()
 #         self.get_gap_meanmedian_dict()
 #         self.saveAllGapCsv(data_dir)
 #         self.combine_gap_csv(data_dir)
-#         self.load_gapdf(data_dir)
-        self.get_gap_dict(data_dir)
+        df = self.load_gapdf(data_dir)
+        res = self.get_outlier_threshold(df['gap'])
+#         self.get_gap_dict(data_dir)
         
         return
 
