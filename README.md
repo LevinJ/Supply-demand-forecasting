@@ -1,5 +1,5 @@
 # Rider-Driver Supply and Demand Gap Forecast
-The Di-Tech Challenge(1) is organized by DiDi Chuxing, Chinaâ€™s largest ride-hailing company. It challenges contestants to use real data to generate predictive rider-driver supply and demand gap model, to direct drivers to where riders will need to be picked up.
+The Di-Tech Challenge(1) is organized by DiDi Chuxing, China's largest ride-hailing company. It challenges contestants to use real data to generate predictive rider-driver supply and demand gap model, to direct drivers to where riders will need to be picked up.
 
 When I learned of the challenge announcement, I just completed all the required courses in Udacity Machine Learning Engineer Nanodegree. It¡¯s exciting to choose this competition as my Capstone project, practice and consolidate what I¡¯ve learned throughout the Nanodegree program by tackling a real world problem, and what¡¯s more, in a highly competitive ongoing contest!
 
@@ -10,9 +10,9 @@ The development life cycle of this machine learning project can be summarized us
 4.	Identify KNN, Random Forest, GBM Neural network as potential models/algorithms, Find out state of art benchmark that these models aims to reach/beat.
 5.	Perform feature engineering and, feature transformation, outlier and missing value handling.
 6.	Implement models by leveraging Sklearn, XGBoost, and Tensorflow learning libraries.
-7.	Fine tune the models via iterative feature selection/engineering, model selection, hyper parameter tuning. Cross validation is used to ensure that the model generalize well into unseen data.
+7.	Fine tune the models via iterative feature selection/engineering, model selection, hyper parameter tuning. Cross validation is used to ensure that the model generalize well into unseen data.  
 
-The best score in Di-Tech challenge leaderboard is about 0.39. Our final modelâ€™s score is 0.42. A score of 0.42 is not really state of the art for this competition, but still it is quite respectable. This score gap of 0.03 might be further narrowed by experimenting some improvement ideas listed in improvement section of the project report.
+The best score in Di-Tech challenge leaderboard is about 0.39. Our final model's score is 0.42. A score of 0.42 is not really state of the art for this competition, but still it is quite respectable. This score gap of 0.03 might be further narrowed by experimenting some improvement ideas listed in improvement section of this document.
 
 For details, please refer to the project report Rider-Driver Supply and Demand Gap Forecast.pdf, which resides under the root directory of this github project.
 
