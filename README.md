@@ -7,11 +7,11 @@ The development life cycle of this machine learning project can be summarized us
 
 1.	Define the problem as a supervised regression learning problem
 2.	Define MAPE as the metrics to evaluate the models
-3.	Explore the data type, basic statistics and distribution of features and labels, perform univariate and bivariate visualizations to gain insight into the data, and guide feature engineering and cross validation strategy design.
+3.	Explore the data type, basic statistics and distribution of features and labels, perform univariate and bivariate visualizations to gain insight into the data, and guide feature engineering and cross validation strategy.
 4.	Identify KNN, Random Forest, GBM Neural network as potential models/algorithms, Find out state of art benchmark that these models aims to reach/beat.
-5.	Perform feature engineering and, feature transformation, outlier and missing value handling.
+5.	Perform feature engineering, feature transformation, outlier and missing value handling.
 6.	Implement models by leveraging Sklearn, XGBoost, and Tensorflow learning libraries.
-7.	Fine tune the models via iterative feature selection/engineering, model selection, hyper parameter tuning. Cross validation is used to ensure that the model generalize well into unseen data.  
+7.	Fine tune the models via iterative feature selection/engineering, model selection, hyper parameter tuning. Cross validation is used to ensure that the models generalize well into unseen data.  
 
 The best score in Di-Tech challenge leaderboard is about 0.39. Our final model's score is 0.42. A score of 0.42 is not really state of the art for this competition, but still it is quite respectable. This score gap of 0.03 might be further narrowed by experimenting some improvement ideas listed in improvement section of this document.
 
