@@ -1,12 +1,13 @@
 # Rider-Driver Supply and Demand Gap Forecast
-The Di-Tech Challenge(1) is organized by DiDi Chuxing, China's largest ride-hailing company. It challenges contestants to use real data to generate predictive rider-driver supply and demand gap model, to direct drivers to where riders will need to be picked up.
+The [Di-Tech Challenge](http://research.xiaojukeji.com/competition/main.action?competitionId=DiTech2016&&locale=en) is organized by DiDi Chuxing, China's largest ride-hailing company. It challenges contestants to use real data to generate predictive rider-driver supply and demand gap model, to direct drivers to where riders will need to be picked up.
 
-When I learned of the challenge announcement, I just completed all the required courses in Udacity Machine Learning Engineer Nanodegree. It¡¯s exciting to choose this competition as my Capstone project, practice and consolidate what I¡¯ve learned throughout the Nanodegree program by tackling a real world problem, and what¡¯s more, in a highly competitive ongoing contest!
+When I learned of the challenge announcement, I just completed all the required courses in Udacity Machine Learning Engineer Nanodegree. It's exciting to choose this competition as my Capstone project, practice and consolidate what I've learned throughout the Nanodegree program by tackling a real world problem, and what's more, in a highly competitive ongoing contest!
 
-The development life cycle of this machine learning project can be summarized using below steps:   
-1.  Define the problem as a supervised regression learning problem
+The development life cycle of this machine learning project can be summarized using below steps:
+
+1.	Define the problem as a supervised regression learning problem
 2.	Define MAPE as the metrics to evaluate the models
-3.	Explore the data type, basic statistics and distribution of features and labels, perform univariate and bivariate visualizations to gain insight into the data, and guide feature engineering and cross validation strategy design.  
+3.	Explore the data type, basic statistics and distribution of features and labels, perform univariate and bivariate visualizations to gain insight into the data, and guide feature engineering and cross validation strategy design.
 4.	Identify KNN, Random Forest, GBM Neural network as potential models/algorithms, Find out state of art benchmark that these models aims to reach/beat.
 5.	Perform feature engineering and, feature transformation, outlier and missing value handling.
 6.	Implement models by leveraging Sklearn, XGBoost, and Tensorflow learning libraries.
