@@ -15,7 +15,7 @@ The development life cycle of this machine learning project can be summarized us
 
 The best score in Di-Tech challenge leaderboard is about 0.39. Our final model's score is 0.42. A score of 0.42 is not really state of the art for this competition, but still it is quite respectable. This score gap of 0.03 might be further narrowed by experimenting some improvement ideas listed in improvement section of this document.
 
-For details, please refer to the project report Rider-Driver Supply and Demand Gap Forecast.pdf, which resides under the root directory of this github project.
+For details, please refer to the **[project report](https://github.com/LevinJ/Supply-demand-forecasting/blob/master/Rider-Driver%20Supply%20and%20Demand%20Gap%20Forecast.pdf)** Rider-Driver Supply and Demand Gap Forecast.pdf, which resides under the root directory of this github project.
 
 
 
